@@ -1,0 +1,203 @@
+{
+  "info": {
+    "_postman_id": "copyvet-2025-collection",
+    "name": "API CopyVet 2025",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "7418211"
+  },
+  "item": [
+    {
+      "name": "Técnicos",
+      "item": [
+        {
+          "name": "Listar Técnicos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/tecnico",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "tecnico"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Técnico por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/tecnico/get/2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "tecnico", "get", "2"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categorías",
+      "item": [
+        {
+          "name": "Listar Categorías",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/categoria",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "categoria"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Categoría por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/categoria/get/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "categoria", "get", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Listar Todos los Tickets (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/ticket",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "ticket"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Ticket por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/ticket/get/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "ticket", "get", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tickets por Rol - Administrador",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/ticket/getByRol/Administrador/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "ticket", "getByRol", "Administrador", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tickets por Rol - Técnico",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/ticket/getByRol/Técnico/2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "ticket", "getByRol", "Técnico", "2"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tickets por Rol - Cliente",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/ticket/getByRol/Cliente/5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "ticket", "getByRol", "Cliente", "5"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Asignaciones",
+      "item": [
+        {
+          "name": "Listar Asignaciones",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/asignacion",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "asignacion"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Asignaciones por Técnico",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/asignacion/getByTecnico/2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "asignacion", "getByTecnico", "2"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Histórico",
+      "item": [
+        {
+          "name": "Histórico por Ticket",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/historico/getByTicket/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "historico", "getByTicket", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
