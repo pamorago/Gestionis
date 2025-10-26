@@ -27,7 +27,7 @@ require_once "models/HistoricoModel.php";
 require_once "models/MascotaModel.php";
 require_once "models/EstadoTicketModel.php";
 require_once "models/SlaModel.php";
-require_once "models/AsistenteModel.php";
+require_once "models/VeterinarioModel.php";
 require_once "models/AsignacionModel.php";
 
 /***--- Agregar todos los controladores*/
@@ -38,7 +38,7 @@ require_once "controllers/HistoricoController.php";
 require_once "controllers/MascotaController.php";
 require_once "controllers/EstadoTicketController.php";
 require_once "controllers/SlaController.php";
-require_once "controllers/AsistenteController.php";
+require_once "controllers/VeterinarioController.php";
 require_once "controllers/AsignacionController.php";
 
 //Enrutador

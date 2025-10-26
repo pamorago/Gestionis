@@ -38,8 +38,8 @@ class AsignacionModel
         }
     }
 
-    // Asignaciones de un asistente específico
-    public function getByAsistente($idUsuario)
+    // Asignaciones de un Veterinario específico
+    public function getByVeterinario($idUsuario)
     {
         try {
             $vSql = "SELECT 

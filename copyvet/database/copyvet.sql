@@ -112,6 +112,34 @@ VALUES
         NULL
     ), -- Asistente
     (
+        'Patricia Morales',
+        'patricia.morales@copyvet.com',
+        '8888-4445',
+        3,
+        NULL
+    ), -- Asistente
+    (
+        'Jorge Fernández',
+        'jorge.fernandez@copyvet.com',
+        '8888-4446',
+        3,
+        NULL
+    ), -- Asistente
+    (
+        'Daniela Ruiz',
+        'daniela.ruiz@copyvet.com',
+        '8888-4447',
+        3,
+        NULL
+    ), -- Asistente
+    (
+        'Miguel Ángel Cruz',
+        'miguel.cruz@copyvet.com',
+        '8888-4448',
+        3,
+        NULL
+    ), -- Asistente
+    (
         'María López',
         'maria.lopez@gmail.com',
         '8888-5555',
