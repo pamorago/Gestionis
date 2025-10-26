@@ -22,8 +22,21 @@ export default function CreateTicket() {
   const navigate = useNavigate();
   const location = useLocation();
   const { decodeToken } = useContext(UserContext);
+  const { decodeToken, autorize } = useContext(UserContext);
   const userData = decodeToken() || {};
   const userId = userData?.id_usuario || userData?.sub || userData?.id;
+
+  // Determinar si el usuario es Cliente
+  const getUserRole = () => {
+    if (typeof userData.rol === "string") return userData.rol;
+    if (userData.rol && userData.rol.name) return userData.rol.name;
+    if (userData.role) return userData.role;
+    if (userData.nombre_rol) return userData.nombre_rol;
+    return "";
+  };
+  const userRole = getUserRole();
+  const isCliente =
+    userRole === "Cliente" || autorize?.({ requiredRoles: ["Cliente"] });
 
   const [vets, setVets] = useState([]);
   const [cats, setCats] = useState([
@@ -347,6 +360,20 @@ export default function CreateTicket() {
       return;
     }
 
+    const payload = {
+      titulo: form.titulo,
+      descripcion: form.descripcion,
+      fecha_cita: form.fecha_cita,
+      id_estado: 1, // Asumimos 1 = Abierto
+      id_categoria: Number(form.id_categoria),
+      id_mascota: Number(form.id_mascota),
+      id_creado_por_usuario: Number(userId),
+      // Solo incluir veterinario asignado si NO es Cliente o si se proporcionó
+      id_asignado_a_usuario: form.id_asignado_a_usuario
+        ? Number(form.id_asignado_a_usuario)
+        : null,
+    };
+
     try {
       // Si hay un nombre de mascota en los parámetros, crear nueva mascota
       const params = new URLSearchParams(location.search);
@@ -551,6 +578,38 @@ export default function CreateTicket() {
             ))}
           </Select>
         </FormControl>
+
+        {/* Campo de Veterinario solo visible para usuarios que NO sean Cliente */}
+        {!isCliente && (
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Veterinario asignado</InputLabel>
+            <Select
+              value={form.id_asignado_a_usuario}
+              label="Veterinario asignado"
+              onChange={(e) =>
+                setForm({ ...form, id_asignado_a_usuario: e.target.value })
+              }
+            >
+              <MenuItem value="">-- Sin asignar --</MenuItem>
+              {vets.map((v) => (
+                <MenuItem
+                  key={v.id_veterinario || v.id_usuario}
+                  value={v.id_veterinario || v.id_usuario}
+                >
+                  {v.nombre_veterinario || v.nombre_completo}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+
+        {isCliente && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            Como cliente, un veterinario será asignado automáticamente a tu
+            ticket.
+          </Alert>
+        )}
+
         <Box sx={{ mt: 2 }}>
           <Button
             type="submit"
@@ -564,7 +623,7 @@ export default function CreateTicket() {
       </form>
 
       <Typography variant="caption" sx={{ mt: 2, display: "block" }}>
-        ID Usuario creador (no editable): {userId ?? "no autenticado"}
+        ID Usuario : {userId ?? "no autenticado"}
       </Typography>
     </Container>
   );
