@@ -61,12 +61,26 @@ class user
         $request = new Request();
         //Obtener json enviado
         $inputJSON = $request->getJSON();
+
+        if (!$inputJSON) {
+            $json = array(
+                'status' => 400,
+                'result' => 'Datos inválidos o vacíos'
+            );
+            echo json_encode($json, http_response_code($json["status"]));
+            return;
+        }
+
         $usuario = new UserModel();
         $result = $usuario->login($inputJSON);
         if (isset($result) && !empty($result) && $result != false) {
             $response->toJSON($result);
         } else {
-            $response->toJSON($response, "Usuario no valido");
+            $json = array(
+                'status' => 401,
+                'result' => 'Credenciales inválidas'
+            );
+            echo json_encode($json, http_response_code($json["status"]));
         }
     }
     public function create()

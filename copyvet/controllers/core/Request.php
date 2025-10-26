@@ -1,4 +1,4 @@
-<?php 
+<?php
 class Request
 {
     public $params;
@@ -49,11 +49,18 @@ class Request
 
     public function getJSON()
     {
-
         $content = trim(file_get_contents("php://input"));
+
+        if (empty($content)) {
+            return null;
+        }
+
         $decoded = json_decode($content);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return null;
+        }
 
         return $decoded;
     }
-   
 }

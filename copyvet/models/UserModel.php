@@ -83,7 +83,7 @@ class UserModel
             $vSql = "SELECT 
                         u.id_usuario AS id_asistente,
                         u.nombre_completo AS nombre_asistente,
-                        u.correo,
+                        u.email,
                         u.telefono
                     FROM usuarios u
                     WHERE u.id_rol = 3
@@ -97,19 +97,29 @@ class UserModel
     public function login($objeto)
     {
         try {
-            $vSql = "SELECT * FROM usuarios WHERE correo = '$objeto->correo';";
+            // Validar que el objeto tenga las propiedades necesarias
+            if (!isset($objeto->email) || empty($objeto->email)) {
+                return false;
+            }
+
+            $vSql = "SELECT * FROM usuarios WHERE email = '$objeto->email';";
 
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             if (!empty($vResultado) && is_object($vResultado[0])) {
                 $user = $vResultado[0];
-                // Nota: En copyvet necesitamos implementar el manejo de contraseñas
+
+                // Verificar la contraseña
+                if (!isset($objeto->password) || !password_verify($objeto->password, $user->password)) {
+                    return false;
+                }
+
                 $usuario = $this->get($user->id_usuario);
                 if (!empty($usuario)) {
                     // Datos para el token JWT
                     $data = [
                         'id' => $usuario->id_usuario,
                         'nombre' => $usuario->nombre_completo,
-                        'correo' => $usuario->correo,
+                        'email' => $usuario->email,
                         'rol' => $usuario->rol,
                         'iat' => time(),  // Hora de emisión
                         'exp' => time() + 3600 // Expiración en 1 hora
@@ -131,9 +141,12 @@ class UserModel
     public function create($objeto)
     {
         try {
+            // Hash de la contraseña
+            $password_hash = password_hash($objeto->password, PASSWORD_BCRYPT);
+
             //Consulta sql            
-            $vSql = "INSERT INTO usuarios (nombre_completo, correo, telefono, id_rol, especialidad) 
-                     VALUES ('$objeto->nombre_completo', '$objeto->correo', '$objeto->telefono', 
+            $vSql = "INSERT INTO usuarios (nombre_completo, email, password, telefono, id_rol, especialidad) 
+                     VALUES ('$objeto->nombre_completo', '$objeto->email', '$password_hash', '$objeto->telefono', 
                              $objeto->id_rol, " . ($objeto->especialidad ? "'$objeto->especialidad'" : "NULL") . ")";
 
             //Ejecutar la consulta

@@ -15,7 +15,7 @@ class VeterinarioModel
             $vSql = "SELECT 
                         u.id_usuario AS id_veterinario,
                         u.nombre_completo AS nombre_veterinario,
-                        u.correo,
+                        u.email,
                         u.telefono,
                         u.especialidad,
                         COALESCE(COUNT(CASE WHEN e.nombre_estado IN ('Abierto', 'En proceso') THEN 1 END), 0) AS tickets_activos
@@ -39,7 +39,7 @@ class VeterinarioModel
             $vSql = "SELECT 
                         u.id_usuario AS id_veterinario,
                         u.nombre_completo,
-                        u.correo,
+                        u.email,
                         u.telefono,
                         u.especialidad,
                         COALESCE(COUNT(t.id_ticket), 0) AS total_tickets,

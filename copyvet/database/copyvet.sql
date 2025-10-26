@@ -46,7 +46,8 @@ CREATE TABLE
     usuarios (
         id_usuario INT (11) PRIMARY KEY AUTO_INCREMENT,
         nombre_completo VARCHAR(100),
-        correo VARCHAR(100),
+        email VARCHAR(100) UNIQUE,
+        password VARCHAR(255),
         telefono VARCHAR(20),
         id_rol INT (11),
         especialidad VARCHAR(100) NULL,
@@ -56,132 +57,151 @@ CREATE TABLE
 INSERT INTO
     usuarios (
         nombre_completo,
-        correo,
+        email,
+        password,
         telefono,
         id_rol,
         especialidad
     )
 VALUES
     (
-        'Laura Ramírez',
-        'laura.ramirez@copyvet.com',
-        '8888-1111',
+        'Root Admin',
+        'admin@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
+        '8888-0000',
         1,
         NULL
-    ), -- Admin
+    ), -- Admin - password: 123456
     (
         'Carlos Méndez',
         'carlos.mendez@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-2222',
         2,
         'Cirugía General'
-    ), -- Veterinario
+    ), -- Veterinario - password: 123456
     (
         'Ana Gómez',
         'ana.gomez@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-3333',
         2,
         'Medicina Interna'
-    ), -- Veterinario
+    ), -- Veterinario - password: 123456
     (
         'Ricardo Soto',
         'ricardo.soto@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-7777',
         2,
         'Dermatología'
-    ), -- Veterinario
+    ), -- Veterinario - password: 123456
     (
         'Sofia Torres',
         'sofia.torres@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-8888',
         2,
         'Especies Exóticas'
-    ), -- Veterinario
+    ), -- Veterinario - password: 123456
     (
         'Mario Castro',
         'mario.castro@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-9999',
         2,
         'Traumatología'
-    ), -- Veterinario
+    ), -- Veterinario - password: 123456
     (
         'Luis Pérez',
         'luis.perez@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-4444',
         3,
         NULL
-    ), -- Asistente
+    ), -- Asistente - password: 123456
     (
         'Patricia Morales',
         'patricia.morales@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-4445',
         3,
         NULL
-    ), -- Asistente
+    ), -- Asistente - password: 123456
     (
         'Jorge Fernández',
         'jorge.fernandez@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-4446',
         3,
         NULL
-    ), -- Asistente
+    ), -- Asistente - password: 123456
     (
         'Daniela Ruiz',
         'daniela.ruiz@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-4447',
         3,
         NULL
-    ), -- Asistente
+    ), -- Asistente - password: 123456
     (
         'Miguel Ángel Cruz',
         'miguel.cruz@copyvet.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-4448',
         3,
         NULL
-    ), -- Asistente
+    ), -- Asistente - password: 123456
     (
         'María López',
         'maria.lopez@gmail.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-5555',
         4,
         NULL
-    ), -- Cliente
+    ), -- Cliente - password: 123456
     (
         'Pedro Jiménez',
         'pedro.jimenez@gmail.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-6666',
         4,
         NULL
-    ),
+    ), -- Cliente - password: 123456
     (
         'Carmen Rojas',
         'carmen.rojas@gmail.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-1010',
         4,
         NULL
-    ),
+    ), -- Cliente - password: 123456
     (
         'Juan Vargas',
         'juan.vargas@gmail.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-1212',
         4,
         NULL
-    ),
+    ), -- Cliente - password: 123456
     (
         'Ana Martinez',
         'ana.martinez@gmail.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-1414',
         4,
         NULL
-    ),
+    ), -- Cliente - password: 123456
     (
         'Roberto Sánchez',
         'roberto.sanchez@gmail.com',
+        '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8888-1616',
         4,
         NULL
     );
 
+-- Cliente - password: 123456
 -- Cliente
 -- ======================================================
 -- TABLA: mascotas
