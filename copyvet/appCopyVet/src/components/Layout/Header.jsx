@@ -17,14 +17,32 @@ import LiveTvIcon from "@mui/icons-material/LiveTv";
 import Tooltip from "@mui/material/Tooltip";
 import { useCart } from "../../hooks/useCart";
 import { UserContext } from "../../context/UserContext";
+import CopyVetService from "../../services/CopyVetService";
 
 export default function Header() {
   //Obtener usuario
-  const {user, decodeToken,autorize}= useContext(UserContext)
-  const [userData,setUserData]=useState(decodeToken())
-  useEffect(()=>{setUserData(decodeToken())},[user])
-  
-  const {cart, getCountItems}=useCart()
+  const { user, decodeToken, autorize } = useContext(UserContext);
+  const [userData, setUserData] = useState(decodeToken());
+  useEffect(() => {
+    setUserData(decodeToken());
+  }, [user, decodeToken]);
+
+  const { cart, getCountItems } = useCart();
+  const [ticketsCount, setTicketsCount] = useState(0);
+  // Obtener total de tickets desde CopyVet para mostrar en la notificación
+  useEffect(() => {
+    let mounted = true;
+    CopyVetService.getTickets()
+      .then((res) => {
+        const data = res.data;
+        const count = Array.isArray(data) ? data.length : 0;
+        if (mounted) setTicketsCount(count);
+      })
+      .catch(() => {
+        if (mounted) setTicketsCount(0);
+      });
+    return () => (mounted = false);
+  }, []);
   //Gestión menu usuario
   const [anchorElUser, setAnchorEl] = useState(null);
   //Gestión menu opciones
@@ -66,10 +84,15 @@ export default function Header() {
   ];
   //Lista enlaces menu principal
   const navItems = [
-    { name: "Peliculas", link: "/movie",roles:null },
-    { name: "Cátalogo de Peliculas", link: "/catalog-movies/", roles:null },
-    { name: "Filtrar Peliculas", link: "/movie/filter", roles:null },
-    { name: "Mantenimiento Peliculas", link: "/movie-table/", roles:['Administrador'] },
+    { name: "Tickets", link: "/tickets", roles: null },
+    { name: "Crear Ticket", link: "/ticket/create", roles: ["Cliente"] }, // Solo visible para clientes
+    { name: "Veterinarios", link: "/technicians", roles: null },
+    { name: "Categorías", link: "/categories", roles: null },
+    {
+      name: "Tablero Asignaciones",
+      link: "/assignments",
+      roles: ["Administrador", "Veterinario"],
+    },
   ];
   //Identificador menu principal
   const menuIdPrincipal = "menu-appbar";
@@ -79,36 +102,37 @@ export default function Header() {
       {navItems &&
         navItems.map((item, index) => {
           //if(autorize(requiredRoles:['Administrador']))
-        if(userData && item.roles){
-          //Verificar rol
-          if(autorize({requiredRoles:item.roles})){
-            //Rutas con restricción
-            return (<Button
-              key={index}
-              component={Link}
-              to={item.link}
-              color="secondary"
-            >
-              <Typography textAlign="center">{item.name}</Typography>
-            </Button>)
+          if (userData && item.roles) {
+            //Verificar rol
+            if (autorize({ requiredRoles: item.roles })) {
+              //Rutas con restricción
+              return (
+                <Button
+                  key={index}
+                  component={Link}
+                  to={item.link}
+                  color="secondary"
+                >
+                  <Typography textAlign="center">{item.name}</Typography>
+                </Button>
+              );
+            }
+          } else {
+            if (item.roles == null) {
+              //Rutas sin restricción
+              return (
+                <Button
+                  key={index}
+                  component={Link}
+                  to={item.link}
+                  color="secondary"
+                >
+                  <Typography textAlign="center">{item.name}</Typography>
+                </Button>
+              );
+            }
           }
-        }else{
-          if(item.roles==null){
-            //Rutas sin restricción
-            return (<Button
-              key={index}
-              component={Link}
-              to={item.link}
-              color="secondary"
-            >
-              <Typography textAlign="center">{item.name}</Typography>
-            </Button>)
-          }
-        }
-                
-            
-         
-})}
+        })}
     </Box>
   );
   //Menu Principal responsivo
@@ -150,29 +174,33 @@ export default function Header() {
         open={Boolean(anchorElUser)}
         onClose={handleUserMenuClose}
       >
-        {userData &&(
+        {userData && (
           <MenuItem>
             <Typography variant="subtitle1" gutterBottom>
               {userData?.email}
             </Typography>
           </MenuItem>
-       )}
+        )}
 
-        {userItems.map((setting, index) =>  {
-          //Verificar las opciones del usuario 
-          if(setting.login && userData && Object.keys(userData).length >0){
-            return (<MenuItem key={index} component={Link} to={setting.link}>
-              <Typography sx={{ textAlign: 'center' }}>
-                {setting.name}
-              </Typography>
-            </MenuItem>)
-          }else if(!setting.login && Object.keys(userData).length==0){
-            return (<MenuItem key={index} component={Link} to={setting.link}>
-              <Typography sx={{ textAlign: 'center' }}>
-                {setting.name}
-              </Typography>
-            </MenuItem>)
-          }          
+        {userItems.map((setting, index) => {
+          //Verificar las opciones del usuario
+          if (setting.login && userData && Object.keys(userData).length > 0) {
+            return (
+              <MenuItem key={index} component={Link} to={setting.link}>
+                <Typography sx={{ textAlign: "center" }}>
+                  {setting.name}
+                </Typography>
+              </MenuItem>
+            );
+          } else if (!setting.login && Object.keys(userData).length == 0) {
+            return (
+              <MenuItem key={index} component={Link} to={setting.link}>
+                <Typography sx={{ textAlign: "center" }}>
+                  {setting.name}
+                </Typography>
+              </MenuItem>
+            );
+          }
         })}
       </Menu>
     </Box>
@@ -257,13 +285,13 @@ export default function Header() {
             {menuPrincipalMobile}
           </Menu>
           {/* Enlace página inicio */}
-          <Tooltip title="Alquiler peliculas">
+          <Tooltip title="Casos CopyVet">
             <IconButton
               size="large"
               edge="end"
               component="a"
               href="/"
-              aria-label="Alquiler peliculas"
+              aria-label="Casos CopyVet"
               color="primary"
             >
               <LiveTvIcon />
@@ -284,7 +312,7 @@ export default function Header() {
               </Badge>
             </IconButton>
             <IconButton size="large" color="inherit">
-              <Badge badgeContent={17} color="primary">
+              <Badge badgeContent={ticketsCount} color="primary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
