@@ -1,0 +1,27 @@
+<?php
+class asignacion
+{
+    public function index()
+    {
+        try {
+            $response = new Response();
+            $model = new AsignacionModel();
+            $result = $model->all();
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function getByTecnico($idUsuario)
+    {
+        try {
+            $response = new Response();
+            $model = new AsignacionModel();
+            $result = $model->getByTecnico($idUsuario);
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+}
