@@ -8,6 +8,7 @@ class TicketService {
     return axios.get(`${BASE_URL}ticket/getByRol/${encodeURIComponent(role)}/${userId}`);
   }
   getHistorico(id) { return axios.get(BASE_URL + 'ticket/getHistorico/' + id); }
+  getImagenes(id) { return axios.get(BASE_URL + 'ticket/getImagenes/' + id); }
   create(payload) { return axios.post(BASE_URL + 'ticket', payload); }
 }
 

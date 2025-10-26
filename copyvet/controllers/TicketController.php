@@ -114,4 +114,25 @@ class ticket
             handleException($e);
         }
     }
+
+    public function getImagenes($id)
+    {
+        try {
+            $response = new Response();
+            $model = new TicketModel();
+            $result = $model->getImagenes($id);
+
+            // Si no hay resultados, devolver array vacío con status 200
+            if (!$result || !is_array($result) || count($result) === 0) {
+                // Forzar status 200 y devolver array vacío
+                http_response_code(200);
+                echo json_encode([]);
+                return;
+            }
+
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }

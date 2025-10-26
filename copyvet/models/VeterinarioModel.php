@@ -18,10 +18,14 @@ class VeterinarioModel
                         u.email,
                         u.telefono,
                         u.especialidad,
-                        COALESCE(COUNT(CASE WHEN e.nombre_estado IN ('Abierto', 'En proceso') THEN 1 END), 0) AS tickets_activos
+                        COALESCE(COUNT(CASE WHEN e.nombre_estado IN ('Abierto', 'En proceso') THEN 1 END), 0) AS tickets_activos,
+                        COALESCE(SUM(CASE WHEN e.nombre_estado IN ('Abierto', 'En proceso') THEN s.tiempo_resolucion ELSE 0 END), 0) AS horas_comprometidas,
+                        24 AS horas_disponibles_total
                     FROM usuarios u
                     LEFT JOIN tickets t ON u.id_usuario = t.id_asignado_a_usuario
                     LEFT JOIN estadosticket e ON e.id_estado = t.id_estado
+                    LEFT JOIN categorias c ON c.id_categoria = t.id_categoria
+                    LEFT JOIN sla s ON s.id_sla = c.id_sla
                     WHERE u.id_rol = 2
                     GROUP BY u.id_usuario
                     ORDER BY u.nombre_completo;";
@@ -45,10 +49,14 @@ class VeterinarioModel
                         COALESCE(COUNT(t.id_ticket), 0) AS total_tickets,
                         COALESCE(SUM(CASE WHEN e.nombre_estado = 'Cerrado' THEN 1 ELSE 0 END), 0) AS tickets_cerrados,
                         COALESCE(SUM(CASE WHEN e.nombre_estado = 'En proceso' THEN 1 ELSE 0 END), 0) AS tickets_en_proceso,
-                        COALESCE(SUM(CASE WHEN e.nombre_estado = 'Abierto' THEN 1 ELSE 0 END), 0) AS tickets_abiertos
+                        COALESCE(SUM(CASE WHEN e.nombre_estado = 'Abierto' THEN 1 ELSE 0 END), 0) AS tickets_abiertos,
+                        COALESCE(SUM(CASE WHEN e.nombre_estado IN ('Abierto', 'En proceso') THEN s.tiempo_resolucion ELSE 0 END), 0) AS horas_comprometidas,
+                        24 AS horas_disponibles_total
                     FROM usuarios u
                     LEFT JOIN tickets t ON u.id_usuario = t.id_asignado_a_usuario
                     LEFT JOIN estadosticket e ON e.id_estado = t.id_estado
+                    LEFT JOIN categorias c ON c.id_categoria = t.id_categoria
+                    LEFT JOIN sla s ON s.id_sla = c.id_sla
                     WHERE u.id_rol = 2 AND u.id_usuario = $id
                     GROUP BY u.id_usuario;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);

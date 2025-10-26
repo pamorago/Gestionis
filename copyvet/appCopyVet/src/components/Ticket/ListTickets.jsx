@@ -84,17 +84,46 @@ export default function ListTickets() {
   const getStatusColor = (estado) => {
     switch (estado?.toLowerCase()) {
       case "abierto":
-        return "primary";
+        return "primary"; // Azul
       case "en proceso":
-        return "warning";
+        return "success"; // Verde
       case "cerrado":
-        return "success";
-      case "resuelto":
-        return "success";
+        return "error"; // Rojo
+      case "cancelado":
+        return "warning"; // Amarillo
       default:
         return "default";
     }
   };
+
+  // Función para obtener la prioridad del estado (menor número = mayor prioridad)
+  const getStatusPriority = (estado) => {
+    switch (estado?.toLowerCase()) {
+      case "abierto":
+        return 1;
+      case "en proceso":
+        return 2;
+      case "cerrado":
+        return 3;
+      case "resuelto":
+        return 3;
+      default:
+        return 4;
+    }
+  };
+
+  // Ordenar tickets por estado y luego por fecha
+  const sortedTickets = [...tickets].sort((a, b) => {
+    // Primero ordenar por estado
+    const priorityDiff =
+      getStatusPriority(a.nombre_estado) - getStatusPriority(b.nombre_estado);
+    if (priorityDiff !== 0) return priorityDiff;
+
+    // Si tienen el mismo estado, ordenar por fecha (más reciente primero)
+    const dateA = new Date(a.fecha_creacion);
+    const dateB = new Date(b.fecha_creacion);
+    return dateB - dateA;
+  });
 
   return (
     <Container sx={{ p: 2 }}>
@@ -103,12 +132,12 @@ export default function ListTickets() {
           Tickets
         </Typography>
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          Viendo tickets como: <strong>{roleSel}</strong>
+          Conectado como: <strong>{roleSel}</strong>
         </Typography>
       </Box>
 
       <Grid container spacing={2}>
-        {tickets.map((t) => (
+        {sortedTickets.map((t) => (
           <Grid item xs={12} sm={6} md={4} key={t.id_ticket}>
             <Card elevation={2}>
               <CardActionArea component={Link} to={`/ticket/${t.id_ticket}`}>
@@ -157,14 +186,14 @@ export default function ListTickets() {
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
                   >
+                    {t.mascota && (
+                      <Typography variant="body2" color="text.secondary">
+                        🐾 Mascota: <strong>{t.mascota}</strong>
+                      </Typography>
+                    )}
                     {t.nombre_categoria && (
                       <Typography variant="caption" color="text.secondary">
                         📁 Categoría: <strong>{t.nombre_categoria}</strong>
-                      </Typography>
-                    )}
-                    {t.mascota && (
-                      <Typography variant="caption" color="text.secondary">
-                        🐾 Mascota: <strong>{t.mascota}</strong>
                       </Typography>
                     )}
                     {t.cliente && (

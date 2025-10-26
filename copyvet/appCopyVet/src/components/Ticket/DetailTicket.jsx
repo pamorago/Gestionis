@@ -12,39 +12,60 @@ import {
   Chip,
 } from "@mui/material";
 
-function calculateSLAStatus(ticket) {
-  if (!ticket.tiempo_transcurrido || !ticket.sla_resolucion) return "default";
-  const remaining = ticket.sla_resolucion - ticket.tiempo_transcurrido;
-  if (remaining <= 0) return "error";
-  if (remaining < 60) return "warning";
-  return "success";
-}
+// Función para obtener el color del estado
+const getStatusColor = (estado) => {
+  switch (estado?.toLowerCase()) {
+    case "abierto":
+      return "primary"; // Azul
+    case "en proceso":
+      return "success"; // Verde
+    case "cerrado":
+      return "error"; // Rojo
+    case "cancelado":
+      return "warning"; // Amarillo
+    default:
+      return "default";
+  }
+};
 
 export default function DetailTicket() {
   const { id } = useParams();
   const [ticket, setTicket] = useState(null);
   const [history, setHistory] = useState([]);
+  const [imagenes, setImagenes] = useState([]);
 
   useEffect(() => {
     if (!id) return;
 
-    Promise.all([TicketService.get(id), TicketService.getHistorico(id)])
-      .then(([ticketResponse, historyResponse]) => {
+    Promise.all([
+      TicketService.get(id),
+      TicketService.getHistorico(id),
+      TicketService.getImagenes(id).catch(() => ({ data: [] })), // Si falla, devolver array vacío
+    ])
+      .then(([ticketResponse, historyResponse, imagenesResponse]) => {
         setTicket(ticketResponse.data || ticketResponse.data?.[0] || null);
         setHistory(
           Array.isArray(historyResponse.data) ? historyResponse.data : []
         );
+        // Validar que imagenesResponse tenga data y sea un array válido
+        const imagenesData = imagenesResponse?.data;
+        if (Array.isArray(imagenesData) && imagenesData.length > 0) {
+          setImagenes(imagenesData);
+        } else {
+          setImagenes([]);
+        }
       })
       .catch((err) => {
         console.error("Error loading ticket details:", err);
         setTicket(null);
         setHistory([]);
+        setImagenes([]);
       });
   }, [id]);
 
   if (!ticket) return <Container sx={{ p: 2 }}>Cargando ticket...</Container>;
 
-  const slaStatus = calculateSLAStatus(ticket);
+  const statusColor = getStatusColor(ticket.nombre_estado);
 
   return (
     <Container sx={{ p: 2 }}>
@@ -52,7 +73,7 @@ export default function DetailTicket() {
         #{ticket.id_ticket} - {ticket.titulo}
         <Chip
           label={ticket.nombre_estado}
-          color={slaStatus}
+          color={statusColor}
           size="small"
           sx={{ ml: 2 }}
         />
@@ -80,6 +101,41 @@ export default function DetailTicket() {
             SLA resolución: {ticket.sla_resolucion} minutos
           </Typography>
         </Paper>
+
+        {imagenes.length > 0 && (
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Imágenes del ticket
+            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+              {imagenes.map((img) => (
+                <Paper
+                  key={img.id_imagen}
+                  elevation={3}
+                  sx={{
+                    overflow: "hidden",
+                    maxWidth: 400,
+                  }}
+                >
+                  <img
+                    src={`http://localhost:81/copyvet/uploads/${img.imagen}`}
+                    alt={`Imagen del ticket ${ticket.id_ticket}`}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      display: "block",
+                    }}
+                  />
+                  <Box sx={{ p: 1, bgcolor: "grey.100" }}>
+                    <Typography variant="caption" color="text.secondary">
+                      Subida: {new Date(img.created_at).toLocaleString()}
+                    </Typography>
+                  </Box>
+                </Paper>
+              ))}
+            </Box>
+          </Box>
+        )}
 
         <Box sx={{ mt: 3 }}>
           <Typography variant="h6">Historial de cambios</Typography>

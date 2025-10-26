@@ -8,6 +8,8 @@ USE copyvet;
 -- Eliminar tablas existentes en orden inverso (debido a las relaciones)
 DROP TABLE IF EXISTS historico;
 
+DROP TABLE IF EXISTS ticketimage;
+
 DROP TABLE IF EXISTS tickets;
 
 DROP TABLE IF EXISTS mascotas;
@@ -68,7 +70,7 @@ VALUES
         'Root Admin',
         'admin@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-0000',
+        '2456-7891',
         1,
         NULL
     ), -- Admin - password: 123456
@@ -76,7 +78,7 @@ VALUES
         'Carlos Méndez',
         'carlos.mendez@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-2222',
+        '8712-3456',
         2,
         'Cirugía General'
     ), -- Veterinario - password: 123456
@@ -84,7 +86,7 @@ VALUES
         'Ana Gómez',
         'ana.gomez@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-3333',
+        '7234-5678',
         2,
         'Medicina Interna'
     ), -- Veterinario - password: 123456
@@ -92,7 +94,7 @@ VALUES
         'Ricardo Soto',
         'ricardo.soto@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-7777',
+        '6345-2891',
         2,
         'Dermatología'
     ), -- Veterinario - password: 123456
@@ -100,7 +102,7 @@ VALUES
         'Sofia Torres',
         'sofia.torres@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-8888',
+        '8923-4567',
         2,
         'Especies Exóticas'
     ), -- Veterinario - password: 123456
@@ -108,7 +110,7 @@ VALUES
         'Mario Castro',
         'mario.castro@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-9999',
+        '7156-8923',
         2,
         'Traumatología'
     ), -- Veterinario - password: 123456
@@ -116,7 +118,7 @@ VALUES
         'Luis Pérez',
         'luis.perez@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-4444',
+        '6478-1234',
         3,
         NULL
     ), -- Asistente - password: 123456
@@ -124,7 +126,7 @@ VALUES
         'Patricia Morales',
         'patricia.morales@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-4445',
+        '8234-5679',
         3,
         NULL
     ), -- Asistente - password: 123456
@@ -132,7 +134,7 @@ VALUES
         'Jorge Fernández',
         'jorge.fernandez@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-4446',
+        '7891-2345',
         3,
         NULL
     ), -- Asistente - password: 123456
@@ -140,7 +142,7 @@ VALUES
         'Daniela Ruiz',
         'daniela.ruiz@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-4447',
+        '6123-8945',
         3,
         NULL
     ), -- Asistente - password: 123456
@@ -148,7 +150,7 @@ VALUES
         'Miguel Ángel Cruz',
         'miguel.cruz@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-4448',
+        '8567-3421',
         3,
         NULL
     ), -- Asistente - password: 123456
@@ -156,7 +158,7 @@ VALUES
         'María López',
         'maria.lopez@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-5555',
+        '7345-6789',
         4,
         NULL
     ), -- Cliente - password: 123456
@@ -164,7 +166,7 @@ VALUES
         'Pedro Jiménez',
         'pedro.jimenez@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-6666',
+        '6891-2347',
         4,
         NULL
     ), -- Cliente - password: 123456
@@ -172,7 +174,7 @@ VALUES
         'Carmen Rojas',
         'carmen.rojas@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-1010',
+        '8912-4568',
         4,
         NULL
     ), -- Cliente - password: 123456
@@ -180,7 +182,7 @@ VALUES
         'Juan Vargas',
         'juan.vargas@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-1212',
+        '7234-8916',
         4,
         NULL
     ), -- Cliente - password: 123456
@@ -188,7 +190,7 @@ VALUES
         'Ana Martinez',
         'ana.martinez@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-1414',
+        '6456-1237',
         4,
         NULL
     ), -- Cliente - password: 123456
@@ -196,7 +198,7 @@ VALUES
         'Roberto Sánchez',
         'roberto.sanchez@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
-        '8888-1616',
+        '8678-9123',
         4,
         NULL
     );
@@ -431,8 +433,8 @@ VALUES
     (
         'Vacunación anual para Max',
         'Aplicar vacuna antirrábica y revisión general',
-        '2025-10-01 09:00:00',
-        '2025-10-03 10:00:00',
+        '2025-10-24 09:00:00',
+        '2025-10-26 10:00:00',
         1,
         1,
         1,
@@ -571,6 +573,50 @@ VALUES
         13,
         5
     );
+
+-- ======================================================
+-- TABLA: ticketimage
+-- ======================================================
+CREATE TABLE
+    ticketimage (
+        id_imagen INT (11) PRIMARY KEY AUTO_INCREMENT,
+        id_ticket INT (11),
+        imagen VARCHAR(255),
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (id_ticket) REFERENCES tickets (id_ticket)
+    ) ENGINE = InnoDB;
+
+INSERT INTO
+    ticketimage (id_ticket, imagen, created_at)
+VALUES
+    (
+        11,
+        'CopyVetVacunacionRocky.jpeg',
+        '2025-10-03 14:30:00'
+    ), -- Vacunación Rocky
+    (
+        4,
+        'CopyVetRadiografiaNina.jpeg',
+        '2025-10-09 10:30:00'
+    ), -- Consulta Dermatológica Nina
+    (
+        5,
+        'CopyVetConsultaExotica.jpg',
+        '2025-10-10 14:30:00'
+    ), -- Revisión Coco - Especies Exóticas
+    (
+        9,
+        'CopyVetDermatologiaLuna.jpg',
+        '2025-10-01 13:30:00'
+    ), -- Control Dermatológico Luna
+    (
+        12,
+        'CopyVetRadiografiaNina.jpeg',
+        '2025-10-05 11:30:00'
+    );
+
+-- Revisión quirúrgica de Luna
+;
 
 -- ======================================================
 -- TABLA: historico

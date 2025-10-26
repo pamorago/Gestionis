@@ -238,4 +238,15 @@ class TicketModel
             handleException($e);
         }
     }
+
+    public function getImagenes($id_ticket)
+    {
+        try {
+            $vSql = "SELECT * FROM ticketimage WHERE id_ticket = $id_ticket ORDER BY created_at DESC;";
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }
