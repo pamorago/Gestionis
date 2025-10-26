@@ -55,7 +55,21 @@ class UserModel
     public function getVeterinarios()
     {
         try {
-            $vSql = "SELECT * FROM vista_veterinarios;";
+            $vSql = "SELECT 
+                        u.id_usuario AS id_veterinario,
+                        u.nombre_completo AS nombre_veterinario,
+                        u.especialidad,
+                        COUNT(
+                            CASE
+                                WHEN e.nombre_estado IN ('Abierto', 'En proceso') THEN 1
+                            END
+                        ) AS tickets_activos
+                    FROM usuarios u
+                    LEFT JOIN tickets t ON u.id_usuario = t.id_asignado_a_usuario
+                    LEFT JOIN estadosticket e ON e.id_estado = t.id_estado
+                    WHERE u.id_rol = 2
+                    GROUP BY u.id_usuario
+                    ORDER BY u.nombre_completo;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
         } catch (Exception $e) {
@@ -63,10 +77,17 @@ class UserModel
         }
     }
 
-    public function getTecnicos()
+    public function getAsistentes()
     {
         try {
-            $vSql = "SELECT * FROM vista_asistentes;";
+            $vSql = "SELECT 
+                        u.id_usuario AS id_asistente,
+                        u.nombre_completo AS nombre_asistente,
+                        u.correo,
+                        u.telefono
+                    FROM usuarios u
+                    WHERE u.id_rol = 3
+                    ORDER BY u.nombre_completo;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
         } catch (Exception $e) {

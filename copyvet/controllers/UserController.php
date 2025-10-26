@@ -36,12 +36,12 @@ class user
         $response->toJSON($result);
     }
 
-    public function getTecnicos()
+    public function getAsistentes()
     {
         $response = new Response();
         //Obtener el listado del Modelo
         $usuario = new UserModel();
-        $result = $usuario->getTecnicos();
+        $result = $usuario->getAsistentes();
         //Dar respuesta
         $response->toJSON($result);
     }

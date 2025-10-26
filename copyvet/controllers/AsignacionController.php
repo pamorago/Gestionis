@@ -13,12 +13,12 @@ class asignacion
         }
     }
 
-    public function getByTecnico($idUsuario)
+    public function getByAsistente($idUsuario)
     {
         try {
             $response = new Response();
             $model = new AsignacionModel();
-            $result = $model->getByTecnico($idUsuario);
+            $result = $model->getByAsistente($idUsuario);
             $response->toJSON($result);
         } catch (Exception $e) {
             handleException($e);

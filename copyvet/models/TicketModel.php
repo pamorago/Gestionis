@@ -10,7 +10,29 @@ class TicketModel
     public function all()
     {
         try {
-            $vSql = "SELECT * FROM vista_tickets;";
+            $vSql = "SELECT 
+                        t.id_ticket,
+                        t.titulo,
+                        t.descripcion,
+                        e.nombre_estado,
+                        c.nombre_categoria,
+                        s.descripcion AS prioridad,
+                        m.nombre AS mascota,
+                        u1.nombre_completo AS cliente,
+                        u2.nombre_completo AS asignado_a,
+                        t.fecha_creacion,
+                        t.fecha_cita,
+                        s.tiempo_minutos AS sla_respuesta,
+                        s.tiempo_resolucion AS sla_resolucion,
+                        TIMESTAMPDIFF(MINUTE, t.fecha_creacion, NOW()) AS tiempo_transcurrido
+                    FROM tickets t
+                    JOIN estadosticket e ON e.id_estado = t.id_estado
+                    JOIN categorias c ON c.id_categoria = t.id_categoria
+                    JOIN sla s ON s.id_sla = c.id_sla
+                    JOIN mascotas m ON m.id_mascota = t.id_mascota
+                    JOIN usuarios u1 ON u1.id_usuario = t.id_creado_por_usuario
+                    JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario
+                    ORDER BY t.fecha_creacion DESC;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
         } catch (Exception $e) {
@@ -21,7 +43,34 @@ class TicketModel
     public function get($id)
     {
         try {
-            $vSql = "SELECT * FROM vista_detalle_ticket WHERE id_ticket = $id;";
+            $vSql = "SELECT 
+                        t.id_ticket,
+                        t.titulo,
+                        t.descripcion,
+                        e.nombre_estado,
+                        e.id_estado,
+                        c.nombre_categoria,
+                        c.id_categoria,
+                        s.descripcion AS prioridad,
+                        m.nombre AS mascota,
+                        m.id_mascota,
+                        u1.nombre_completo AS cliente,
+                        u1.id_usuario AS id_creado_por_usuario,
+                        u2.nombre_completo AS asignado_a,
+                        u2.id_usuario AS id_asignado_a_usuario,
+                        t.fecha_creacion,
+                        t.fecha_cita,
+                        s.tiempo_minutos AS sla_respuesta,
+                        s.tiempo_resolucion AS sla_resolucion,
+                        TIMESTAMPDIFF(MINUTE, t.fecha_creacion, NOW()) AS tiempo_transcurrido
+                    FROM tickets t
+                    JOIN estadosticket e ON e.id_estado = t.id_estado
+                    JOIN categorias c ON c.id_categoria = t.id_categoria
+                    JOIN sla s ON s.id_sla = c.id_sla
+                    JOIN mascotas m ON m.id_mascota = t.id_mascota
+                    JOIN usuarios u1 ON u1.id_usuario = t.id_creado_por_usuario
+                    JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario
+                    WHERE t.id_ticket = $id;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado[0];
         } catch (Exception $e) {
@@ -33,22 +82,39 @@ class TicketModel
     public function getByRol($rol, $idUsuario)
     {
         try {
+            $baseQuery = "SELECT 
+                        t.id_ticket,
+                        t.titulo,
+                        t.descripcion,
+                        e.nombre_estado,
+                        c.nombre_categoria,
+                        s.descripcion AS prioridad,
+                        m.nombre AS mascota,
+                        u1.nombre_completo AS cliente,
+                        u2.nombre_completo AS asignado_a,
+                        t.fecha_creacion,
+                        t.fecha_cita,
+                        s.tiempo_minutos AS sla_respuesta,
+                        s.tiempo_resolucion AS sla_resolucion,
+                        TIMESTAMPDIFF(MINUTE, t.fecha_creacion, NOW()) AS tiempo_transcurrido
+                    FROM tickets t
+                    JOIN estadosticket e ON e.id_estado = t.id_estado
+                    JOIN categorias c ON c.id_categoria = t.id_categoria
+                    JOIN sla s ON s.id_sla = c.id_sla
+                    JOIN mascotas m ON m.id_mascota = t.id_mascota
+                    JOIN usuarios u1 ON u1.id_usuario = t.id_creado_por_usuario
+                    JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario";
+
             switch ($rol) {
                 case 'Administrador':
-                    $vSql = "SELECT * FROM vista_tickets;";
+                    $vSql = $baseQuery . " ORDER BY t.fecha_creacion DESC;";
                     break;
                 case 'Cliente':
-                    $vSql = "SELECT * FROM vista_tickets WHERE cliente = (
-                                SELECT nombre_completo FROM usuarios WHERE id_usuario = $idUsuario
-                             );";
+                    $vSql = $baseQuery . " WHERE t.id_creado_por_usuario = $idUsuario ORDER BY t.fecha_creacion DESC;";
                     break;
                 case 'Técnico':
                 case 'Veterinario':
-                    $vSql = "SELECT * FROM vista_tickets WHERE tecnico = (
-                                SELECT nombre_completo FROM usuarios WHERE id_usuario = $idUsuario
-                             ) OR veterinario = (
-                                SELECT nombre_completo FROM usuarios WHERE id_usuario = $idUsuario
-                             );";
+                    $vSql = $baseQuery . " WHERE t.id_asignado_a_usuario = $idUsuario ORDER BY t.fecha_creacion DESC;";
                     break;
                 default:
                     throw new Exception('Rol no válido');

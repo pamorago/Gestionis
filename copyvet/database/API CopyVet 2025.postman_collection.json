@@ -14,11 +14,11 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:81/copyvet/tecnico",
+              "raw": "http://localhost:81/copyvet/asistente",
               "protocol": "http",
               "host": ["localhost"],
               "port": "81",
-              "path": ["copyvet", "tecnico"]
+              "path": ["copyvet", "asistente"]
             }
           },
           "response": []
@@ -28,11 +28,11 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:81/copyvet/tecnico/get/2",
+              "raw": "http://localhost:81/copyvet/asistente/get/2",
               "protocol": "http",
               "host": ["localhost"],
               "port": "81",
-              "path": ["copyvet", "tecnico", "get", "2"]
+              "path": ["copyvet", "asistente", "get", "2"]
             }
           },
           "response": []
@@ -169,11 +169,11 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:81/copyvet/asignacion/getByTecnico/2",
+              "raw": "http://localhost:81/copyvet/asignacion/getByasistente/2",
               "protocol": "http",
               "host": ["localhost"],
               "port": "81",
-              "path": ["copyvet", "asignacion", "getByTecnico", "2"]
+              "path": ["copyvet", "asignacion", "getByasistente", "2"]
             }
           },
           "response": []
