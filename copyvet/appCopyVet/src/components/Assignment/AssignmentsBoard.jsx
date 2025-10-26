@@ -14,15 +14,20 @@ function slaColor(remainingMinutes) {
 // Componente para mostrar tickets de un veterinario
 function VeterinarianTickets({ id }) {
   const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
 
+    setLoading(true);
     VeterinarioService.getTickets(id)
       .then((r) => setTickets(Array.isArray(r.data) ? r.data : []))
       .catch((err) => {
         console.error("Error loading vet tickets:", err);
         setTickets([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [id]);
 
@@ -59,7 +64,12 @@ function VeterinarianTickets({ id }) {
           </Paper>
         );
       })}
-      {tickets.length === 0 && (
+      {loading && (
+        <Typography variant="body2" sx={{ pt: 1, color: "text.secondary" }}>
+          Cargando tickets...
+        </Typography>
+      )}
+      {!loading && tickets.length === 0 && (
         <Typography variant="body2" sx={{ pt: 1, color: "text.secondary" }}>
           Sin tickets asignados
         </Typography>
@@ -72,16 +82,20 @@ VeterinarianTickets.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
-
 export default function AssignmentsBoard() {
   const [vets, setVets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     VeterinarioService.list()
       .then((r) => setVets(Array.isArray(r.data) ? r.data : []))
       .catch((err) => {
         console.error("Error loading vets:", err);
         setVets([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -108,7 +122,12 @@ export default function AssignmentsBoard() {
             </Paper>
           </Grid>
         ))}
-        {vets.length === 0 && (
+        {loading && (
+          <Grid item xs={12}>
+            <Typography sx={{ p: 2 }}>Cargando veterinarios...</Typography>
+          </Grid>
+        )}
+        {!loading && vets.length === 0 && (
           <Grid item xs={12}>
             <Typography sx={{ p: 2 }}>
               No hay veterinarios disponibles.

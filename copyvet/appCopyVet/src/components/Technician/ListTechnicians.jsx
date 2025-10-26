@@ -12,13 +12,18 @@ import {
 
 export default function ListTechnicians() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     VeterinarioService.list()
       .then((r) => setItems(Array.isArray(r.data) ? r.data : []))
       .catch((err) => {
         console.error("Error fetching veterinarios:", err);
         setItems([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -43,7 +48,8 @@ export default function ListTechnicians() {
             <Divider />
           </div>
         ))}
-        {items.length === 0 && (
+        {loading && <Typography sx={{ p: 2 }}>Cargando técnicos...</Typography>}
+        {!loading && items.length === 0 && (
           <Typography sx={{ p: 2 }}>No hay técnicos disponibles.</Typography>
         )}
       </List>

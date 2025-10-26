@@ -114,6 +114,7 @@ class TicketModel
                     break;
                 case 'Técnico':
                 case 'Veterinario':
+                case 'Asistente':
                     $vSql = $baseQuery . " WHERE t.id_asignado_a_usuario = $idUsuario ORDER BY t.fecha_creacion DESC;";
                     break;
                 default:

@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE_URL = import.meta.env.VITE_COPYVET_BASE_URL || `${window.location.origin}/copyvet/`;
+const BASE_URL = import.meta.env.VITE_BASE_URL || `${window.location.origin}/copyvet/`;
 
 class TicketService {
   list() { return axios.get(BASE_URL + 'ticket'); }
