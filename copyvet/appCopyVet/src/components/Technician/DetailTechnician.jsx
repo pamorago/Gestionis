@@ -20,7 +20,10 @@ export default function DetailTechnician() {
     if (!id) return;
 
     // Cargar detalles del veterinario y sus tickets
-    Promise.all([VeterinarioService.get(id), VeterinarioService.getTickets(id)])
+    Promise.all([
+      VeterinarioService.get(id).catch(() => ({ data: null })),
+      VeterinarioService.getTickets(id).catch(() => ({ data: [] })),
+    ])
       .then(([techResponse, ticketsResponse]) => {
         setTech(techResponse.data || techResponse.data?.[0] || null);
         setTickets(
@@ -34,7 +37,24 @@ export default function DetailTechnician() {
       });
   }, [id]);
 
-  if (!tech) return <Container sx={{ p: 2 }}>Cargando técnico...</Container>;
+  // Calcular tiempo disponible en horas
+  const calcularTiempoDisponible = (horasComprometidas, horasTotal = 24) => {
+    const horasComprometidasReal = (horasComprometidas || 0) / 60; // Convertir minutos a horas
+    const disponible = horasTotal - horasComprometidasReal;
+    return {
+      disponible: Math.max(0, disponible).toFixed(1),
+      comprometidas: horasComprometidasReal.toFixed(1),
+      total: horasTotal,
+    };
+  };
+
+  if (!tech)
+    return <Container sx={{ p: 2 }}>Cargando veterinario...</Container>;
+
+  const tiempo = calcularTiempoDisponible(
+    tech.horas_comprometidas,
+    tech.horas_disponibles_total
+  );
 
   return (
     <Container sx={{ p: 2 }}>
@@ -60,6 +80,12 @@ export default function DetailTechnician() {
           <Typography>Abiertos: {tech.tickets_abiertos ?? "-"}</Typography>
           <Typography>En proceso: {tech.tickets_en_proceso ?? "-"}</Typography>
           <Typography>Cerrados: {tech.tickets_cerrados ?? "-"}</Typography>
+          <Typography sx={{ mt: 2, fontWeight: "bold", color: "primary.main" }}>
+            ⏰ Tiempo disponible: {tiempo.disponible}h / {tiempo.total}h
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            Horas comprometidas: {tiempo.comprometidas}h
+          </Typography>
         </Paper>
 
         <Box sx={{ mt: 3 }}>
