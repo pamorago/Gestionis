@@ -348,10 +348,10 @@ CREATE TABLE
 INSERT INTO
     sla (descripcion, tiempo_minutos, tiempo_resolucion)
 VALUES
-    ('Urgente', 10, 240),
-    ('Alta Prioridad', 30, 480),
-    ('Normal', 60, 1440),
-    ('Baja Prioridad', 120, 2880);
+    ('Urgente', 10, 120),
+    ('Alta Prioridad', 30, 240),
+    ('Normal', 60, 480),
+    ('Baja Prioridad', 120, 720);
 
 -- ======================================================
 -- TABLA: categorias

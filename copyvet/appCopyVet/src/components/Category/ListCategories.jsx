@@ -12,13 +12,18 @@ import { Link } from "react-router-dom";
 
 export default function ListCategories() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     CategoriaService.list()
       .then((r) => setItems(Array.isArray(r.data) ? r.data : []))
       .catch((err) => {
         console.error("Error fetching categories:", err);
         setItems([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -33,7 +38,10 @@ export default function ListCategories() {
             <ListItem
               component={Link}
               to={`/category/${c.id_categoria}`}
-              button
+              sx={{
+                cursor: "pointer",
+                "&:hover": { backgroundColor: "action.hover" },
+              }}
             >
               <ListItemText
                 primary={c.nombre_categoria}
@@ -43,7 +51,10 @@ export default function ListCategories() {
             <Divider />
           </React.Fragment>
         ))}
-        {items.length === 0 && (
+        {loading && (
+          <Typography sx={{ p: 2 }}>Cargando categorías...</Typography>
+        )}
+        {!loading && items.length === 0 && (
           <Typography sx={{ p: 2 }}>No hay categorías disponibles.</Typography>
         )}
       </List>
