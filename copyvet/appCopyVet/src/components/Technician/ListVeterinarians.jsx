@@ -124,7 +124,7 @@ export default function ListVeterinarians() {
                       >
                         <EmailIcon fontSize="small" color="action" />
                         <Typography variant="body2" color="text.secondary">
-                          {v.correo || "N/A"}
+                          {v.email || "N/A"}
                         </Typography>
                       </Box>
                       <Box

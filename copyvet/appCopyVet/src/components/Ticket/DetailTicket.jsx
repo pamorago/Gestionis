@@ -1,16 +1,35 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import TicketService from "../../services/TicketService";
 import {
   Container,
   Typography,
   Box,
   Paper,
-  List,
-  ListItem,
-  ListItemText,
   Chip,
+  IconButton,
+  Grid,
+  Card,
+  CardContent,
+  Stack,
+  Divider,
+  Rating,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@mui/material";
+import {
+  ArrowBack as ArrowBackIcon,
+  Person as PersonIcon,
+  Pets as PetsIcon,
+  Category as CategoryIcon,
+  Assignment as AssignmentIcon,
+  CalendarToday as CalendarIcon,
+  Star as StarIcon,
+} from "@mui/icons-material";
 
 // Función para obtener el color del estado
 const getStatusColor = (estado) => {
@@ -30,9 +49,13 @@ const getStatusColor = (estado) => {
 
 export default function DetailTicket() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [ticket, setTicket] = useState(null);
   const [history, setHistory] = useState([]);
   const [imagenes, setImagenes] = useState([]);
+  const [openRating, setOpenRating] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comentario, setComentario] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -40,14 +63,13 @@ export default function DetailTicket() {
     Promise.all([
       TicketService.get(id),
       TicketService.getHistorico(id),
-      TicketService.getImagenes(id).catch(() => ({ data: [] })), // Si falla, devolver array vacío
+      TicketService.getImagenes(id).catch(() => ({ data: [] })),
     ])
       .then(([ticketResponse, historyResponse, imagenesResponse]) => {
         setTicket(ticketResponse.data || ticketResponse.data?.[0] || null);
         setHistory(
           Array.isArray(historyResponse.data) ? historyResponse.data : []
         );
-        // Validar que imagenesResponse tenga data y sea un array válido
         const imagenesData = imagenesResponse?.data;
         if (Array.isArray(imagenesData) && imagenesData.length > 0) {
           setImagenes(imagenesData);
@@ -63,99 +85,392 @@ export default function DetailTicket() {
       });
   }, [id]);
 
+  const handleOpenRating = () => setOpenRating(true);
+  const handleCloseRating = () => {
+    setOpenRating(false);
+    setRating(0);
+    setComentario("");
+  };
+
+  const handleSubmitRating = () => {
+    // TODO: Enviar valoración al backend
+    console.log("Valoración:", rating, "Comentario:", comentario);
+    handleCloseRating();
+  };
+
+  // Formatear fecha
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  // Formatear tiempo en horas y minutos
+  const formatTime = (minutes) => {
+    if (!minutes) return "0 min";
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0) return `${hours}h ${mins}min`;
+    return `${mins}min`;
+  };
+
   if (!ticket) return <Container sx={{ p: 2 }}>Cargando ticket...</Container>;
 
   const statusColor = getStatusColor(ticket.nombre_estado);
+  const isCerrado = ticket.nombre_estado?.toLowerCase() === "cerrado";
 
   return (
-    <Container sx={{ p: 2 }}>
-      <Typography variant="h4">
-        #{ticket.id_ticket} - {ticket.titulo}
-        <Chip
-          label={ticket.nombre_estado}
-          color={statusColor}
-          size="small"
-          sx={{ ml: 2 }}
-        />
-      </Typography>
-      <Typography variant="subtitle1" sx={{ mt: 1 }}>
-        {ticket.descripcion}
-      </Typography>
+    <Container sx={{ p: 2, maxWidth: "lg" }}>
+      {/* Botón de regresar */}
+      <Box sx={{ mb: 2 }}>
+        <IconButton
+          onClick={() => navigate(-1)}
+          sx={{
+            bgcolor: "primary.main",
+            color: "white",
+            "&:hover": {
+              bgcolor: "primary.dark",
+            },
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
 
-      <Box sx={{ mt: 2 }}>
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="h6">Detalles del ticket</Typography>
-          <Typography>Estado: {ticket.nombre_estado}</Typography>
-          <Typography>Prioridad: {ticket.prioridad}</Typography>
-          <Typography>Cliente: {ticket.cliente}</Typography>
-          <Typography>Mascota: {ticket.mascota}</Typography>
-          <Typography>Categoría: {ticket.nombre_categoria}</Typography>
-          <Typography>Asignado a: {ticket.asignado_a}</Typography>
-          <Typography>Fecha creación: {ticket.fecha_creacion}</Typography>
-          <Typography>Fecha cita: {ticket.fecha_cita}</Typography>
-          <Typography>
-            Tiempo transcurrido: {ticket.tiempo_transcurrido} minutos
-          </Typography>
-          <Typography>SLA respuesta: {ticket.sla_respuesta} minutos</Typography>
-          <Typography>
-            SLA resolución: {ticket.sla_resolucion} minutos
-          </Typography>
-        </Paper>
-
-        {imagenes.length > 0 && (
-          <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Imágenes del ticket
-            </Typography>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-              {imagenes.map((img) => (
-                <Paper
-                  key={img.id_imagen}
-                  elevation={3}
-                  sx={{
-                    overflow: "hidden",
-                    maxWidth: 400,
-                  }}
-                >
-                  <img
-                    src={`http://localhost:81/copyvet/uploads/${img.imagen}`}
-                    alt={`Imagen del ticket ${ticket.id_ticket}`}
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      display: "block",
-                    }}
-                  />
-                  <Box sx={{ p: 1, bgcolor: "grey.100" }}>
-                    <Typography variant="caption" color="text.secondary">
-                      Subida: {new Date(img.created_at).toLocaleString()}
-                    </Typography>
-                  </Box>
-                </Paper>
-              ))}
+      {/* Encabezado */}
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+          <Typography variant="h4">#{ticket.id_ticket}</Typography>
+          <Chip
+            label={ticket.nombre_estado}
+            color={statusColor}
+            size="medium"
+          />
+          {isCerrado && ticket.valoracion && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Rating value={ticket.valoracion} readOnly size="small" />
+              <Typography variant="body2" color="text.secondary">
+                ({ticket.valoracion})
+              </Typography>
             </Box>
-          </Box>
-        )}
+          )}
+        </Box>
+        <Typography variant="h5" gutterBottom>
+          {ticket.titulo}
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          {ticket.descripcion}
+        </Typography>
+      </Box>
 
-        <Box sx={{ mt: 3 }}>
-          <Typography variant="h6">Historial de cambios</Typography>
-          <List>
-            {history.map((h) => (
-              <ListItem key={h.id_historico || h.id}>
-                <ListItemText
-                  primary={`${h.fecha || h.fecha_creacion || ""} - ${h.usuario || ""}`}
-                  secondary={`Estado: ${h.estado || h.estado_anterior || ""} • ${h.comentario || ""}`}
-                />
-              </ListItem>
-            ))}
-            {history.length === 0 && (
-              <Typography sx={{ p: 2 }}>
+      <Grid container spacing={3}>
+        {/* Información principal */}
+        <Grid item xs={12} md={8}>
+          <Paper sx={{ p: 3, mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Detalles del Ticket
+            </Typography>
+            <Stack spacing={2} divider={<Divider />}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <PersonIcon color="action" />
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Cliente
+                  </Typography>
+                  <Typography variant="body1">{ticket.cliente}</Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <PetsIcon color="action" />
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Mascota
+                  </Typography>
+                  <Typography variant="body1">{ticket.mascota}</Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <CategoryIcon color="action" />
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Categoría
+                  </Typography>
+                  <Typography variant="body1">
+                    {ticket.nombre_categoria}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <AssignmentIcon color="action" />
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Asignado a
+                  </Typography>
+                  <Typography variant="body1">
+                    {ticket.asignado_a || "Sin asignar"}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <CalendarIcon color="action" />
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Fecha de Cita
+                  </Typography>
+                  <Typography variant="body1">
+                    {formatDate(ticket.fecha_cita)}
+                  </Typography>
+                </Box>
+              </Box>
+            </Stack>
+          </Paper>
+
+          {/* Imágenes */}
+          {imagenes.length > 0 && (
+            <Paper sx={{ p: 3, mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Imágenes del Ticket
+              </Typography>
+              <Grid container spacing={2}>
+                {imagenes.map((img) => (
+                  <Grid item xs={12} sm={6} md={4} key={img.id_imagen}>
+                    <Card>
+                      <Box
+                        component="img"
+                        src={`http://localhost:81/copyvet/uploads/${img.imagen}`}
+                        alt={`Imagen del ticket ${ticket.id_ticket}`}
+                        sx={{
+                          width: "100%",
+                          height: 200,
+                          objectFit: "cover",
+                        }}
+                      />
+                      <CardContent>
+                        <Typography variant="caption" color="text.secondary">
+                          {formatDate(img.created_at)}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </Paper>
+          )}
+
+          {/* Historial */}
+          <Paper sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Historial de Cambios
+            </Typography>
+            {history.length === 0 ? (
+              <Typography color="text.secondary">
                 No hay registros en el historial.
               </Typography>
+            ) : (
+              <Stack spacing={2}>
+                {history.map((h, index) => (
+                  <Box
+                    key={h.id_historico || h.id || index}
+                    sx={{
+                      p: 2,
+                      bgcolor: "background.default",
+                      borderRadius: 1,
+                      borderLeft: 3,
+                      borderColor: "primary.main",
+                    }}
+                  >
+                    <Typography variant="body2" fontWeight="bold">
+                      {h.usuario || "Sistema"}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {formatDate(h.fecha || h.fecha_creacion)}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                      Estado: {h.estado || h.estado_anterior}
+                    </Typography>
+                    {h.comentario && (
+                      <Typography variant="body2" color="text.secondary">
+                        {h.comentario}
+                      </Typography>
+                    )}
+                  </Box>
+                ))}
+              </Stack>
             )}
-          </List>
-        </Box>
-      </Box>
+          </Paper>
+        </Grid>
+
+        {/* Panel lateral */}
+        <Grid item xs={12} md={4}>
+          {/* Tiempos y SLA */}
+          <Paper sx={{ p: 3, mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Información de Tiempo
+            </Typography>
+            <Stack spacing={2}>
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  Fecha de Creación
+                </Typography>
+                <Typography variant="body2">
+                  {formatDate(ticket.fecha_creacion)}
+                </Typography>
+              </Box>
+
+              <Divider />
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  Tiempo Transcurrido
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontWeight="bold"
+                  color="primary.main"
+                >
+                  {formatTime(ticket.tiempo_transcurrido)}
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  SLA Respuesta
+                </Typography>
+                <Typography variant="body2">
+                  {formatTime(ticket.sla_respuesta)}
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  SLA Resolución
+                </Typography>
+                <Typography variant="body2">
+                  {formatTime(ticket.sla_resolucion)}
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  Prioridad
+                </Typography>
+                <Chip
+                  label={ticket.prioridad}
+                  size="small"
+                  color={
+                    ticket.prioridad?.toLowerCase().includes("alta")
+                      ? "error"
+                      : ticket.prioridad?.toLowerCase().includes("media")
+                        ? "warning"
+                        : "default"
+                  }
+                />
+              </Box>
+            </Stack>
+          </Paper>
+
+          {/* Valoración */}
+          {isCerrado && (
+            <Paper sx={{ p: 3 }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              >
+                <StarIcon color="warning" />
+                Valoración
+              </Typography>
+              {ticket.valoracion ? (
+                <Box>
+                  <Rating value={ticket.valoracion} readOnly size="large" />
+                  <Typography variant="h4" color="warning.main" sx={{ mt: 1 }}>
+                    {ticket.valoracion}/5
+                  </Typography>
+                  {ticket.comentario_valoracion && (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 2 }}
+                    >
+                      &ldquo;{ticket.comentario_valoracion}&rdquo;
+                    </Typography>
+                  )}
+                </Box>
+              ) : (
+                <Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    Este ticket aún no ha sido valorado.
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    startIcon={<StarIcon />}
+                    onClick={handleOpenRating}
+                  >
+                    Valorar Servicio
+                  </Button>
+                </Box>
+              )}
+            </Paper>
+          )}
+        </Grid>
+      </Grid>
+
+      {/* Dialog de valoración */}
+      <Dialog
+        open={openRating}
+        onClose={handleCloseRating}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Valorar Servicio</DialogTitle>
+        <DialogContent>
+          <Box sx={{ py: 2, textAlign: "center" }}>
+            <Typography variant="body1" gutterBottom>
+              ¿Cómo calificarías este servicio?
+            </Typography>
+            <Rating
+              value={rating}
+              onChange={(e, newValue) => setRating(newValue)}
+              size="large"
+              sx={{ my: 2 }}
+            />
+            <TextField
+              label="Comentario (opcional)"
+              multiline
+              rows={4}
+              fullWidth
+              value={comentario}
+              onChange={(e) => setComentario(e.target.value)}
+              sx={{ mt: 2 }}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseRating}>Cancelar</Button>
+          <Button
+            onClick={handleSubmitRating}
+            variant="contained"
+            disabled={rating === 0}
+          >
+            Enviar Valoración
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

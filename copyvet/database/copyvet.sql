@@ -435,7 +435,7 @@ VALUES
         'Aplicar vacuna antirrábica y revisión general',
         '2025-10-24 09:00:00',
         '2025-10-26 10:00:00',
-        1,
+        2,
         1,
         1,
         5,

@@ -86,8 +86,9 @@ export default function Header() {
   const navItems = [
     { name: "Tickets", link: "/tickets", roles: null },
     { name: "Crear Ticket", link: "/ticket/create", roles: ["Cliente"] }, // Solo visible para clientes
-    { name: "Veterinarios", link: "/technicians", roles: null },
+    { name: "Veterinarios", link: "/veterinarians", roles: null },
     { name: "Categorías", link: "/categories", roles: null },
+    { name: "Calendario", link: "/calendar", roles: null },
     {
       name: "Tablero Asignaciones",
       link: "/assignments",

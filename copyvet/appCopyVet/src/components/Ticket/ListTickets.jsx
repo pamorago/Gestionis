@@ -42,17 +42,12 @@ export default function ListTickets() {
   const userId = getUserId();
 
   useEffect(() => {
-    console.log("UserData:", userData);
-    console.log("Role:", roleSel);
-    console.log("UserID:", userId);
-
     setLoading(true);
 
     if (!userId) {
       // Sin usuario autenticado, mostrar todos los tickets
       TicketService.list()
         .then((r) => {
-          console.log("Tickets recibidos:", r.data);
           setTickets(Array.isArray(r.data) ? r.data : []);
         })
         .catch((err) => {

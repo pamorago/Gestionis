@@ -23,8 +23,9 @@ import { Login } from "./components/User/Login";
 import { Logout } from "./components/User/Logout";
 import { Signup } from "./components/User/Signup";
 import { Auth } from "./components/User/Auth";
-import ListTechnicians from "./components/Technician/ListTechnicians";
-import DetailTechnician from "./components/Technician/DetailTechnician";
+import ListVeterinarians from "./components/Technician/ListVeterinarians";
+import DetailVeterinarian from "./components/Technician/DetailVeterinarian";
+import Calendar from "./components/Technician/Calendar";
 import ListCategories from "./components/Category/ListCategories";
 import DetailCategory from "./components/Category/DetailCategory";
 import ListTickets from "./components/Ticket/ListTickets";
@@ -119,12 +120,12 @@ const rutas = createBrowserRouter([
       },
       // Rutas CopyVet
       {
-        path: "/technicians",
-        element: <ListTechnicians />,
+        path: "/veterinarians",
+        element: <ListVeterinarians />,
       },
       {
-        path: "/technician/:id",
-        element: <DetailTechnician />,
+        path: "/veterinarian/:id",
+        element: <DetailVeterinarian />,
       },
       {
         path: "/categories",
@@ -149,6 +150,10 @@ const rutas = createBrowserRouter([
       {
         path: "/assignments",
         element: <AssignmentsBoard />,
+      },
+      {
+        path: "/calendar",
+        element: <Calendar />,
       },
     ],
   },
