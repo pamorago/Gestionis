@@ -1,16 +1,24 @@
 import { Container, Typography, Box, Paper, Grid, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import PetsIcon from "@mui/icons-material/Pets";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import veteImagen from "../../assets/veterinaria-dra-cats.jpg";
 
 export default function Welcome() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <Container sx={{ p: 4 }} maxWidth="lg">
+      {/* Language Switcher in top right */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <LanguageSwitcher />
+      </Box>
+
       {/* Hero Section */}
       <Box sx={{ textAlign: "center", mb: 6 }}>
         <Typography
@@ -23,11 +31,10 @@ export default function Welcome() {
           🐾 CopyVet
         </Typography>
         <Typography variant="h5" color="text.secondary" paragraph>
-          Sistema de Gestión de Tickets Veterinarios
+          {t("veterinaryTicketManagement")}
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
-          Conectamos a dueños de mascotas con veterinarios profesionales de
-          manera eficiente y organizada
+          {t("connectPetOwners")}
         </Typography>
       </Box>
 
@@ -36,19 +43,13 @@ export default function Welcome() {
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={7}>
             <Typography variant="h4" gutterBottom color="primary">
-              ¿Quiénes Somos?
+              {t("whoWeAre")}?
             </Typography>
             <Typography variant="body1" paragraph>
-              CopyVet es una plataforma innovadora diseñada para facilitar la
-              comunicación y gestión de servicios veterinarios. Nuestro sistema
-              de tickets permite a los dueños de mascotas crear solicitudes de
-              atención médica de manera rápida y sencilla, mientras que los
-              veterinarios pueden gestionar su carga de trabajo de forma
-              eficiente.
+              {t("aboutDescription1")}
             </Typography>
             <Typography variant="body1" paragraph>
-              Con más de 5 años de experiencia en el sector, nos hemos
-              consolidado como la solución líder para clínicas veterinarias que
+              {t("aboutDescription2")}
               buscan optimizar sus procesos y ofrecer un mejor servicio a sus
               clientes.
             </Typography>
@@ -57,7 +58,7 @@ export default function Welcome() {
             <Box
               component="img"
               src={veteImagen}
-              alt="Sistema de tickets veterinarios"
+              alt={t("veterinarySystemAlt")}
               sx={{
                 width: "100%",
                 height: "auto",
@@ -72,19 +73,17 @@ export default function Welcome() {
       {/* Características */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom color="primary" align="center">
-          Nuestros Servicios
+          {t("ourServices")}
         </Typography>
         <Grid container spacing={3} sx={{ mt: 2 }}>
           <Grid item xs={12} md={6}>
             <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <PetsIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
-                <Typography variant="h6">Atención Personalizada</Typography>
+                <Typography variant="h6">{t("personalizedCare")}</Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                Cada mascota es única. Nuestro sistema permite registrar
-                información detallada de cada paciente, incluyendo historial
-                médico, raza, edad y condiciones especiales.
+                {t("personalizedCareDescription")}
               </Typography>
             </Paper>
           </Grid>
@@ -96,12 +95,12 @@ export default function Welcome() {
                   color="primary"
                   sx={{ fontSize: 40, mr: 2 }}
                 />
-                <Typography variant="h6">Veterinarios Certificados</Typography>
+                <Typography variant="h6">
+                  {t("certifiedVeterinarians")}
+                </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                Contamos con un equipo de veterinarios altamente calificados y
-                especializados en diversas áreas como medicina interna, cirugía,
-                dermatología y más.
+                {t("certifiedVeterinariansDescription")}
               </Typography>
             </Paper>
           </Grid>
@@ -110,12 +109,10 @@ export default function Welcome() {
             <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <AssignmentIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
-                <Typography variant="h6">Gestión de Tickets</Typography>
+                <Typography variant="h6">{t("ticketManagement")}</Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                Sistema inteligente de asignación de tickets que prioriza casos
-                urgentes y distribuye la carga de trabajo equitativamente entre
-                veterinarios.
+                {t("ticketManagementDescription")}
               </Typography>
             </Paper>
           </Grid>
@@ -127,12 +124,10 @@ export default function Welcome() {
                   color="primary"
                   sx={{ fontSize: 40, mr: 2 }}
                 />
-                <Typography variant="h6">Soporte 24/7</Typography>
+                <Typography variant="h6">{t("support247")}</Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                Nuestro equipo de atención al cliente está disponible las 24
-                horas del día, los 7 días de la semana para resolver cualquier
-                duda o emergencia.
+                {t("support247Description")}
               </Typography>
             </Paper>
           </Grid>
@@ -144,27 +139,18 @@ export default function Welcome() {
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ p: 3, height: "100%" }}>
             <Typography variant="h5" gutterBottom color="primary">
-              Nuestra Misión
+              {t("ourMission")}
             </Typography>
-            <Typography variant="body1">
-              Proporcionar una plataforma tecnológica que mejore la calidad de
-              atención veterinaria, facilitando la comunicación entre clientes y
-              profesionales, optimizando procesos y garantizando el bienestar de
-              las mascotas.
-            </Typography>
+            <Typography variant="body1">{t("missionDescription")}</Typography>
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ p: 3, height: "100%" }}>
             <Typography variant="h5" gutterBottom color="primary">
-              Nuestra Visión
+              {t("ourVision")}
             </Typography>
-            <Typography variant="body1">
-              Ser la plataforma líder en gestión de servicios veterinarios en
-              América Latina, reconocida por nuestra innovación tecnológica,
-              excelencia en el servicio y compromiso con el bienestar animal.
-            </Typography>
+            <Typography variant="body1">{t("visionDescription")}</Typography>
           </Paper>
         </Grid>
       </Grid>
@@ -180,10 +166,10 @@ export default function Welcome() {
         }}
       >
         <Typography variant="h5" color="white" gutterBottom>
-          ¿Listo para comenzar?
+          {t("readyToStart")}?
         </Typography>
         <Typography variant="body1" color="white" paragraph>
-          Únete a cientos de clientes satisfechos que confían en CopyVet
+          {t("joinSatisfiedClients")}
         </Typography>
         <Button
           variant="contained"
@@ -191,7 +177,7 @@ export default function Welcome() {
           size="large"
           onClick={() => navigate("/user/create")}
         >
-          Registrarse Ahora
+          {t("registerNow")}
         </Button>
       </Box>
     </Container>

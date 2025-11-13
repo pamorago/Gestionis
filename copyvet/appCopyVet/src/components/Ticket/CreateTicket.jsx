@@ -1,10 +1,11 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import TicketService from "../../services/TicketService";
-import VeterinarioService from "../../services/VeterinarioService";
+import UserService from "../../services/UserService";
 import CategoriaService from "../../services/CategoriaService";
 import CopyVetService from "../../services/CopyVetService";
 import { UserContext } from "../../context/UserContext";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   TextField,
@@ -19,6 +20,7 @@ import {
 } from "@mui/material";
 
 export default function CreateTicket() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { decodeToken } = useContext(UserContext);
   const userData = decodeToken() || {};
@@ -41,7 +43,7 @@ export default function CreateTicket() {
   useEffect(() => {
     // Cargar datos necesarios para el formulario
     Promise.all([
-      VeterinarioService.list(),
+      UserService.getUsers(),
       CategoriaService.list(),
       CopyVetService.getMascotas(),
     ])
@@ -78,7 +80,7 @@ export default function CreateTicket() {
     setError("");
 
     if (!userId) {
-      setError("Usuario no autenticado");
+      setError(t("userNotAuthenticated"));
       return;
     }
 
@@ -102,8 +104,8 @@ export default function CreateTicket() {
         navigate("/tickets");
       }
     } catch (err) {
-      console.error("Error creating ticket:", err);
-      setError("Error al crear el ticket. Por favor intente nuevamente.");
+      console.error("Error creando ticket:", err);
+      setError(t("errorCreatingTicket"));
     }
   };
 
@@ -184,15 +186,16 @@ export default function CreateTicket() {
         </FormControl>
 
         <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Veterinario asignado</InputLabel>
+          <InputLabel>{t("assignedVeterinarian")}</InputLabel>
           <Select
             value={form.id_asignado_a_usuario}
-            label="Veterinario asignado"
+            label={t("assignedVeterinarian")}
             required
             onChange={(e) =>
               setForm({ ...form, id_asignado_a_usuario: e.target.value })
             }
           >
+            <MenuItem value="">{t("selectVeterinarian")}</MenuItem>
             {vets.map((v) => (
               <MenuItem
                 key={v.id_veterinario || v.id_usuario}
@@ -211,13 +214,13 @@ export default function CreateTicket() {
             color="primary"
             size="large"
           >
-            Crear Ticket
+            {t("createTicketButton")}
           </Button>
         </Box>
       </form>
 
       <Typography variant="caption" sx={{ mt: 2, display: "block" }}>
-        ID Usuario: {userId ?? "no autenticado"}
+        {t("userCreatorId")}: {userId ?? t("notAuthenticated")}
       </Typography>
     </Container>
   );

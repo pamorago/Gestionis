@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import TicketService from "../../services/TicketService";
 import { UserContext } from "../../context/UserContext";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Typography,
@@ -14,6 +15,7 @@ import {
 } from "@mui/material";
 
 export default function ListTickets() {
+  const { t } = useTranslation();
   const { decodeToken } = useContext(UserContext);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const userData = decodeToken() || {};
@@ -124,10 +126,10 @@ export default function ListTickets() {
     <Container sx={{ p: 2 }}>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" gutterBottom>
-          Tickets
+          {t("tickets")}
         </Typography>
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          Conectado como: <strong>{roleSel}</strong>
+          {t("connectedAs")}: <strong>{roleSel}</strong>
         </Typography>
       </Box>
 
@@ -153,7 +155,7 @@ export default function ListTickets() {
                       #{t.id_ticket}
                     </Typography>
                     <Chip
-                      label={t.nombre_estado || "Sin estado"}
+                      label={t.nombre_estado || t("noStatus")}
                       color={getStatusColor(t.nombre_estado)}
                       size="small"
                     />
@@ -183,32 +185,33 @@ export default function ListTickets() {
                   >
                     {t.mascota && (
                       <Typography variant="body2" color="text.secondary">
-                        🐾 Mascota: <strong>{t.mascota}</strong>
+                        🐾 {t("pet")}: <strong>{t.mascota}</strong>
                       </Typography>
                     )}
                     {t.nombre_categoria && (
                       <Typography variant="caption" color="text.secondary">
-                        📁 Categoría: <strong>{t.nombre_categoria}</strong>
+                        📁 {t("category")}:{" "}
+                        <strong>{t.nombre_categoria}</strong>
                       </Typography>
                     )}
                     {t.cliente && (
                       <Typography variant="caption" color="text.secondary">
-                        👤 Cliente: <strong>{t.cliente}</strong>
+                        👤 {t("client")}: <strong>{t.cliente}</strong>
                       </Typography>
                     )}
                     {t.asignado_a && (
                       <Typography variant="caption" color="text.secondary">
-                        👨‍⚕️ Asignado a: <strong>{t.asignado_a}</strong>
+                        👨‍⚕️ {t("assignedTo")}: <strong>{t.asignado_a}</strong>
                       </Typography>
                     )}
                     {t.prioridad && (
                       <Typography variant="caption" color="text.secondary">
-                        ⚡ Prioridad: <strong>{t.prioridad}</strong>
+                        ⚡ {t("priority")}: <strong>{t.prioridad}</strong>
                       </Typography>
                     )}
                     {t.fecha_cita && (
                       <Typography variant="caption" color="text.secondary">
-                        📅 Fecha cita:{" "}
+                        📅 {t("appointmentDate")}:{" "}
                         <strong>
                           {new Date(t.fecha_cita).toLocaleDateString()}
                         </strong>
@@ -216,7 +219,7 @@ export default function ListTickets() {
                     )}
                     {t.fecha_creacion && (
                       <Typography variant="caption" color="text.secondary">
-                        🕐 Creado:{" "}
+                        🕐 {t("created")}:{" "}
                         <strong>
                           {new Date(t.fecha_creacion).toLocaleDateString()}
                         </strong>
@@ -233,7 +236,7 @@ export default function ListTickets() {
       {loading && (
         <Box sx={{ textAlign: "center", py: 4 }}>
           <Typography variant="h6" color="text.secondary">
-            Cargando tickets...
+            {t("loadingTickets")}...
           </Typography>
         </Box>
       )}
@@ -241,12 +244,12 @@ export default function ListTickets() {
       {!loading && tickets.length === 0 && (
         <Box sx={{ textAlign: "center", py: 4 }}>
           <Typography variant="h6" color="text.secondary">
-            No se encontraron tickets para mostrar.
+            {t("noTicketsFound")}.
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             {userId
-              ? `Rol: ${roleSel} | Usuario ID: ${userId}`
-              : "No hay usuario autenticado"}
+              ? `${t("role")}: ${roleSel} | ${t("userId")}: ${userId}`
+              : t("noUserAuthenticated")}
           </Typography>
         </Box>
       )}

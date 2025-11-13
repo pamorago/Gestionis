@@ -19,8 +19,11 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useCart } from "../../hooks/useCart";
 import { UserContext } from "../../context/UserContext";
 import CopyVetService from "../../services/CopyVetService";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 
 export default function Header() {
+  const { t } = useTranslation();
   //Obtener usuario
   const { user, decodeToken, autorize } = useContext(UserContext);
   const [userData, setUserData] = useState(decodeToken());
@@ -107,15 +110,15 @@ export default function Header() {
   ];
   //Lista enlaces menu principal
   const navItems = [
-    { name: "Crear Ticket", link: "/ticket/create", roles: ["Cliente"] }, // Solo visible para clientes
+    { name: t("createTicket"), link: "/ticket/create", roles: ["Cliente"] },
     { name: "Calendario", link: "/calendar", roles: null },
   ];
 
   //Lista enlaces menu Listas (dropdown)
   const listasItems = [
-    { name: "Tickets", link: "/tickets", roles: null },
-    { name: "Veterinarios", link: "/veterinarians", roles: null },
-    { name: "Categorías", link: "/categories", roles: null },
+    { name: t("tickets"), link: "/tickets", roles: null },
+    { name: t("veterinarians"), link: "/veterinarians", roles: null },
+    { name: t("categories"), link: "/categories", roles: null },
     {
       name: "Tablero Asignaciones",
       link: "/assignments",
@@ -125,8 +128,8 @@ export default function Header() {
 
   //Lista enlaces menu Mantenimientos (dropdown)
   const mantenimientosItems = [
-    { name: "Tickets", link: "/maintenance/tickets", roles: null },
-    { name: "Categorías", link: "/maintenance/categories", roles: null },
+    { name: t("tickets"), link: "/maintenance/tickets", roles: null },
+    { name: t("categories"), link: "/maintenance/categories", roles: null },
     { name: "Técnicos", link: "/maintenance/veterinarians", roles: null },
   ];
   //Identificador menu principal
@@ -475,6 +478,9 @@ export default function Header() {
       open={isMobileOpcionesMenuOpen}
       onClose={handleOpcionesMenuClose}
     >
+      <MenuItem sx={{ justifyContent: "center" }}>
+        <LanguageSwitcher />
+      </MenuItem>
       <MenuItem>
         <IconButton size="large" color="inherit">
           <Badge
@@ -551,7 +557,10 @@ export default function Header() {
           {/* Enlace página inicio */}
           {menuPrincipal}
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
+          >
+            <LanguageSwitcher />
             <IconButton size="large" color="inherit">
               <Badge
                 badgeContent={getCountItems(cart)}
