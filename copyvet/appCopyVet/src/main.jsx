@@ -31,7 +31,10 @@ import DetailCategory from "./components/Category/DetailCategory";
 import ListTickets from "./components/Ticket/ListTickets";
 import DetailTicket from "./components/Ticket/DetailTicket";
 import CreateTicket from "./components/Ticket/CreateTicket";
+import MaintenanceTicket from "./components/Ticket/MaintenanceTicket";
 import AssignmentsBoard from "./components/Assignment/AssignmentsBoard";
+import MaintenanceVeterinarian from "./components/Technician/MaintenanceVeterinarian";
+import MaintenanceCategory from "./components/Category/MaintenanceCategory";
 
 const rutas = createBrowserRouter([
   {
@@ -154,6 +157,19 @@ const rutas = createBrowserRouter([
       {
         path: "/calendar",
         element: <Calendar />,
+      },
+      // Rutas de Mantenimiento
+      {
+        path: "/maintenance/tickets",
+        element: <MaintenanceTicket />,
+      },
+      {
+        path: "/maintenance/veterinarians",
+        element: <MaintenanceVeterinarian />,
+      },
+      {
+        path: "/maintenance/categories",
+        element: <MaintenanceCategory />,
       },
     ],
   },

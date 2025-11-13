@@ -15,6 +15,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import Tooltip from "@mui/material/Tooltip";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useCart } from "../../hooks/useCart";
 import { UserContext } from "../../context/UserContext";
 import CopyVetService from "../../services/CopyVetService";
@@ -51,6 +52,12 @@ export default function Header() {
   const isMobileOpcionesMenuOpen = Boolean(mobileOpcionesAnchorEl);
   //Gestión menu principal
   const [anchorElPrincipal, setAnchorElPrincipal] = useState(null);
+  //Gestión menu Listas (dropdown)
+  const [anchorElListas, setAnchorElListas] = useState(null);
+  const isListasMenuOpen = Boolean(anchorElListas);
+  //Gestión menu Mantenimientos (dropdown)
+  const [anchorElMantenimientos, setAnchorElMantenimientos] = useState(null);
+  const isMantenimientosMenuOpen = Boolean(anchorElMantenimientos);
   //Abierto menu usuario
   const handleUserMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -76,6 +83,22 @@ export default function Header() {
   const handleOpcionesMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
+  //Abierto menu Listas
+  const handleListasMenuOpen = (event) => {
+    setAnchorElListas(event.currentTarget);
+  };
+  //Cerrado menu Listas
+  const handleListasMenuClose = () => {
+    setAnchorElListas(null);
+  };
+  //Abierto menu Mantenimientos
+  const handleMantenimientosMenuOpen = (event) => {
+    setAnchorElMantenimientos(event.currentTarget);
+  };
+  //Cerrado menu Mantenimientos
+  const handleMantenimientosMenuClose = () => {
+    setAnchorElMantenimientos(null);
+  };
   //Lista enlaces menu usuario
   const userItems = [
     { name: "Login", link: "/user/login", login: false },
@@ -84,22 +107,144 @@ export default function Header() {
   ];
   //Lista enlaces menu principal
   const navItems = [
-    { name: "Tickets", link: "/tickets", roles: null },
     { name: "Crear Ticket", link: "/ticket/create", roles: ["Cliente"] }, // Solo visible para clientes
+    { name: "Calendario", link: "/calendar", roles: null },
+  ];
+
+  //Lista enlaces menu Listas (dropdown)
+  const listasItems = [
+    { name: "Tickets", link: "/tickets", roles: null },
     { name: "Veterinarios", link: "/veterinarians", roles: null },
     { name: "Categorías", link: "/categories", roles: null },
-    { name: "Calendario", link: "/calendar", roles: null },
     {
       name: "Tablero Asignaciones",
       link: "/assignments",
       roles: ["Administrador", "Veterinario"],
     },
   ];
+
+  //Lista enlaces menu Mantenimientos (dropdown)
+  const mantenimientosItems = [
+    { name: "Tickets", link: "/maintenance/tickets", roles: null },
+    { name: "Categorías", link: "/maintenance/categories", roles: null },
+    { name: "Técnicos", link: "/maintenance/veterinarians", roles: null },
+  ];
   //Identificador menu principal
   const menuIdPrincipal = "menu-appbar";
   //Menu Principal
   const menuPrincipal = (
     <Box sx={{ display: { xs: "none", sm: "block" } }}>
+      {/* Dropdown de Listas */}
+      <Button
+        color="secondary"
+        onClick={handleListasMenuOpen}
+        endIcon={<ArrowDropDownIcon />}
+      >
+        <Typography textAlign="center">Listas</Typography>
+      </Button>
+      <Menu
+        id="listas-menu"
+        anchorEl={anchorElListas}
+        open={isListasMenuOpen}
+        onClose={handleListasMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        {listasItems.map((item, index) => {
+          if (userData && item.roles) {
+            if (autorize({ requiredRoles: item.roles })) {
+              return (
+                <MenuItem
+                  key={index}
+                  component={Link}
+                  to={item.link}
+                  onClick={handleListasMenuClose}
+                >
+                  {item.name}
+                </MenuItem>
+              );
+            }
+            return null;
+          } else {
+            if (item.roles == null) {
+              return (
+                <MenuItem
+                  key={index}
+                  component={Link}
+                  to={item.link}
+                  onClick={handleListasMenuClose}
+                >
+                  {item.name}
+                </MenuItem>
+              );
+            }
+            return null;
+          }
+        })}
+      </Menu>
+
+      {/* Dropdown de Mantenimientos */}
+      <Button
+        color="secondary"
+        onClick={handleMantenimientosMenuOpen}
+        endIcon={<ArrowDropDownIcon />}
+      >
+        <Typography textAlign="center">Mantenimientos</Typography>
+      </Button>
+      <Menu
+        id="mantenimientos-menu"
+        anchorEl={anchorElMantenimientos}
+        open={isMantenimientosMenuOpen}
+        onClose={handleMantenimientosMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        {mantenimientosItems.map((item, index) => {
+          if (userData && item.roles) {
+            if (autorize({ requiredRoles: item.roles })) {
+              return (
+                <MenuItem
+                  key={index}
+                  component={Link}
+                  to={item.link}
+                  onClick={handleMantenimientosMenuClose}
+                >
+                  {item.name}
+                </MenuItem>
+              );
+            }
+            return null;
+          } else {
+            if (item.roles == null) {
+              return (
+                <MenuItem
+                  key={index}
+                  component={Link}
+                  to={item.link}
+                  onClick={handleMantenimientosMenuClose}
+                >
+                  {item.name}
+                </MenuItem>
+              );
+            }
+            return null;
+          }
+        })}
+      </Menu>
+
+      {/* Otros botones del menú principal */}
       {navItems &&
         navItems.map((item, index) => {
           //if(autorize(requiredRoles:['Administrador']))
@@ -137,11 +282,116 @@ export default function Header() {
     </Box>
   );
   //Menu Principal responsivo
-  const menuPrincipalMobile = navItems.map((page, index) => (
-    <MenuItem key={index} component={Link} to={page.link}>
-      <Typography sx={{ textAlign: "center" }}>{page.name}</Typography>
-    </MenuItem>
-  ));
+  const menuPrincipalMobile = (
+    <>
+      {/* Items del dropdown Listas en versión móvil */}
+      <MenuItem disabled>
+        <Typography sx={{ fontWeight: "bold", color: "primary.main" }}>
+          Listas
+        </Typography>
+      </MenuItem>
+      {listasItems.map((item, index) => {
+        if (userData && item.roles) {
+          if (autorize({ requiredRoles: item.roles })) {
+            return (
+              <MenuItem
+                key={`listas-${index}`}
+                component={Link}
+                to={item.link}
+                sx={{ pl: 4 }}
+              >
+                <Typography sx={{ textAlign: "center" }}>
+                  {item.name}
+                </Typography>
+              </MenuItem>
+            );
+          }
+        } else {
+          if (item.roles == null) {
+            return (
+              <MenuItem
+                key={`listas-${index}`}
+                component={Link}
+                to={item.link}
+                sx={{ pl: 4 }}
+              >
+                <Typography sx={{ textAlign: "center" }}>
+                  {item.name}
+                </Typography>
+              </MenuItem>
+            );
+          }
+        }
+      })}
+      {/* Separador */}
+      <MenuItem disabled sx={{ height: 8 }} />
+      {/* Items del dropdown Mantenimientos en versión móvil */}
+      <MenuItem disabled>
+        <Typography sx={{ fontWeight: "bold", color: "primary.main" }}>
+          Mantenimientos
+        </Typography>
+      </MenuItem>
+      {mantenimientosItems.map((item, index) => {
+        if (userData && item.roles) {
+          if (autorize({ requiredRoles: item.roles })) {
+            return (
+              <MenuItem
+                key={`mantenimientos-${index}`}
+                component={Link}
+                to={item.link}
+                sx={{ pl: 4 }}
+              >
+                <Typography sx={{ textAlign: "center" }}>
+                  {item.name}
+                </Typography>
+              </MenuItem>
+            );
+          }
+        } else {
+          if (item.roles == null) {
+            return (
+              <MenuItem
+                key={`mantenimientos-${index}`}
+                component={Link}
+                to={item.link}
+                sx={{ pl: 4 }}
+              >
+                <Typography sx={{ textAlign: "center" }}>
+                  {item.name}
+                </Typography>
+              </MenuItem>
+            );
+          }
+        }
+      })}
+      {/* Separador */}
+      <MenuItem disabled sx={{ height: 8 }} />
+      {/* Otros items del menú */}
+      {navItems.map((page, index) => {
+        if (userData && page.roles) {
+          if (autorize({ requiredRoles: page.roles })) {
+            return (
+              <MenuItem key={index} component={Link} to={page.link}>
+                <Typography sx={{ textAlign: "center" }}>
+                  {page.name}
+                </Typography>
+              </MenuItem>
+            );
+          }
+        } else {
+          if (page.roles == null) {
+            return (
+              <MenuItem key={index} component={Link} to={page.link}>
+                <Typography sx={{ textAlign: "center" }}>
+                  {page.name}
+                </Typography>
+              </MenuItem>
+            );
+          }
+        }
+      })}
+    </>
+  );
   //Identificador menu usuario
   const userMenuId = "user-menu";
   //Menu Usuario
