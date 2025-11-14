@@ -134,10 +134,13 @@ export default function ListTickets() {
       </Box>
 
       <Grid container spacing={2}>
-        {sortedTickets.map((t) => (
-          <Grid item xs={12} sm={6} md={4} key={t.id_ticket}>
+        {sortedTickets.map((ticket) => (
+          <Grid item xs={12} sm={6} md={4} key={ticket.id_ticket}>
             <Card elevation={2}>
-              <CardActionArea component={Link} to={`/ticket/${t.id_ticket}`}>
+              <CardActionArea
+                component={Link}
+                to={`/ticket/${ticket.id_ticket}`}
+              >
                 <CardContent>
                   <Box
                     sx={{
@@ -152,17 +155,17 @@ export default function ListTickets() {
                       component="div"
                       sx={{ fontWeight: "bold" }}
                     >
-                      #{t.id_ticket}
+                      #{ticket.id_ticket}
                     </Typography>
                     <Chip
-                      label={t.nombre_estado || t("noStatus")}
-                      color={getStatusColor(t.nombre_estado)}
+                      label={ticket.nombre_estado || t("noStatus")}
+                      color={getStatusColor(ticket.nombre_estado)}
                       size="small"
                     />
                   </Box>
 
                   <Typography variant="body1" sx={{ fontWeight: 500, mb: 1 }}>
-                    {t.titulo}
+                    {ticket.titulo}
                   </Typography>
 
                   <Typography
@@ -177,51 +180,52 @@ export default function ListTickets() {
                       WebkitBoxOrient: "vertical",
                     }}
                   >
-                    {t.descripcion}
+                    {ticket.descripcion}
                   </Typography>
 
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
                   >
-                    {t.mascota && (
+                    {ticket.mascota && (
                       <Typography variant="body2" color="text.secondary">
-                        🐾 {t("pet")}: <strong>{t.mascota}</strong>
+                        🐾 {t("pet")}: <strong>{ticket.mascota}</strong>
                       </Typography>
                     )}
-                    {t.nombre_categoria && (
+                    {ticket.nombre_categoria && (
                       <Typography variant="caption" color="text.secondary">
                         📁 {t("category")}:{" "}
-                        <strong>{t.nombre_categoria}</strong>
+                        <strong>{ticket.nombre_categoria}</strong>
                       </Typography>
                     )}
-                    {t.cliente && (
+                    {ticket.cliente && (
                       <Typography variant="caption" color="text.secondary">
-                        👤 {t("client")}: <strong>{t.cliente}</strong>
+                        👤 {t("client")}: <strong>{ticket.cliente}</strong>
                       </Typography>
                     )}
-                    {t.asignado_a && (
+                    {ticket.asignado_a && (
                       <Typography variant="caption" color="text.secondary">
-                        👨‍⚕️ {t("assignedTo")}: <strong>{t.asignado_a}</strong>
+                        👨‍⚕️ {t("assignedTo")}:{" "}
+                        <strong>{ticket.asignado_a}</strong>
                       </Typography>
                     )}
-                    {t.prioridad && (
+                    {ticket.prioridad && (
                       <Typography variant="caption" color="text.secondary">
-                        ⚡ {t("priority")}: <strong>{t.prioridad}</strong>
+                        ⚡ {t("priority")}: <strong>{ticket.prioridad}</strong>
                       </Typography>
                     )}
-                    {t.fecha_cita && (
+                    {ticket.fecha_cita && (
                       <Typography variant="caption" color="text.secondary">
                         📅 {t("appointmentDate")}:{" "}
                         <strong>
-                          {new Date(t.fecha_cita).toLocaleDateString()}
+                          {new Date(ticket.fecha_cita).toLocaleDateString()}
                         </strong>
                       </Typography>
                     )}
-                    {t.fecha_creacion && (
+                    {ticket.fecha_creacion && (
                       <Typography variant="caption" color="text.secondary">
                         🕐 {t("created")}:{" "}
                         <strong>
-                          {new Date(t.fecha_creacion).toLocaleDateString()}
+                          {new Date(ticket.fecha_creacion).toLocaleDateString()}
                         </strong>
                       </Typography>
                     )}
