@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import TicketService from "../../services/TicketService";
 import UserService from "../../services/UserService";
-import CategoriaService from "../../services/CategoriaService";
+import CategoryService from "../../services/CategoryService";
 import CopyVetService from "../../services/CopyVetService";
 import { UserContext } from "../../context/UserContext";
 import { useTranslation } from "react-i18next";
@@ -44,7 +44,7 @@ export default function CreateTicket() {
     // Cargar datos necesarios para el formulario
     Promise.all([
       UserService.getUsers(),
-      CategoriaService.list(),
+      CategoryService.list(),
       CopyVetService.getMascotas(),
     ])
       .then(([vetsRes, catsRes, mascsRes]) => {

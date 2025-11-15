@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CategoriaService from "../../services/CategoriaService";
+import CategoryService from "../../services/CategoryService";
 import {
   Container,
   Typography,
@@ -19,7 +19,7 @@ export default function ListCategories() {
 
   useEffect(() => {
     setLoading(true);
-    CategoriaService.list()
+    CategoryService.list()
       .then((r) => setItems(Array.isArray(r.data) ? r.data : []))
       .catch((err) => {
         console.error("Error fetching categories:", err);

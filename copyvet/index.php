@@ -40,6 +40,8 @@ require_once "controllers/EstadoTicketController.php";
 require_once "controllers/SlaController.php";
 require_once "controllers/VeterinarioController.php";
 require_once "controllers/AsignacionController.php";
+require_once "controllers/EtiquetaController.php";
+require_once "controllers/EspecialidadController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

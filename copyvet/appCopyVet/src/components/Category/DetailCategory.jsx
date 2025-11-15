@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import CategoriaService from "../../services/CategoriaService";
+import CategoryService from "../../services/CategoryService";
 import {
   Container,
   Typography,
@@ -19,7 +19,7 @@ export default function DetailCategory() {
 
   useEffect(() => {
     if (!id) return;
-    CategoriaService.get(id)
+    CategoryService.get(id)
       .then((r) => setCat(r.data || null))
       .catch((err) => {
         console.error("Error loading category:", err);

@@ -14,6 +14,14 @@ DROP TABLE IF EXISTS tickets;
 
 DROP TABLE IF EXISTS mascotas;
 
+DROP TABLE IF EXISTS categoria_especialidades;
+
+DROP TABLE IF EXISTS categoria_etiquetas;
+
+DROP TABLE IF EXISTS especialidades;
+
+DROP TABLE IF EXISTS etiquetas;
+
 DROP TABLE IF EXISTS categorias;
 
 DROP TABLE IF EXISTS sla;
@@ -377,6 +385,131 @@ VALUES
     ('Dermatología', 3),
     ('Traumatología', 2),
     ('Control rutinario', 4);
+
+-- ======================================================
+-- TABLA: etiquetas
+-- ======================================================
+CREATE TABLE
+    etiquetas (
+        id_etiqueta INT (11) PRIMARY KEY AUTO_INCREMENT,
+        nombre_etiqueta VARCHAR(50) NOT NULL UNIQUE
+    ) ENGINE = InnoDB;
+
+INSERT INTO
+    etiquetas (nombre_etiqueta)
+VALUES
+    ('Urgente'),
+    ('Programable'),
+    ('Preventivo'),
+    ('Tratamiento'),
+    ('Seguimiento'),
+    ('Emergencia');
+
+-- ======================================================
+-- TABLA: especialidades
+-- ======================================================
+CREATE TABLE
+    especialidades (
+        id_especialidad INT (11) PRIMARY KEY AUTO_INCREMENT,
+        nombre_especialidad VARCHAR(50) NOT NULL UNIQUE
+    ) ENGINE = InnoDB;
+
+INSERT INTO
+    especialidades (nombre_especialidad)
+VALUES
+    ('Cirugía General'),
+    ('Medicina Interna'),
+    ('Dermatología'),
+    ('Traumatología'),
+    ('Especies Exóticas'),
+    ('Oncología'),
+    ('Cardiología');
+
+-- ======================================================
+-- TABLA: categoria_etiquetas (relación muchos a muchos)
+-- ======================================================
+CREATE TABLE
+    categoria_etiquetas (
+        id_categoria INT (11),
+        id_etiqueta INT (11),
+        PRIMARY KEY (id_categoria, id_etiqueta),
+        FOREIGN KEY (id_categoria) REFERENCES categorias (id_categoria) ON DELETE CASCADE,
+        FOREIGN KEY (id_etiqueta) REFERENCES etiquetas (id_etiqueta) ON DELETE CASCADE
+    ) ENGINE = InnoDB;
+
+-- Datos de ejemplo para categoria_etiquetas
+INSERT INTO
+    categoria_etiquetas (id_categoria, id_etiqueta)
+VALUES
+    -- Vacunación: Preventivo, Programable
+    (1, 3),
+    (1, 2),
+    -- Cirugía menor: Tratamiento, Programable
+    (2, 4),
+    (2, 2),
+    -- Desparasitación: Preventivo, Programable
+    (3, 3),
+    (3, 2),
+    -- Consulta general: Programable, Seguimiento
+    (4, 2),
+    (4, 5),
+    -- Emergencia: Urgente, Emergencia
+    (5, 1),
+    (5, 6),
+    -- Cirugía mayor: Urgente, Tratamiento
+    (6, 1),
+    (6, 4),
+    -- Especies Exóticas: Tratamiento, Programable
+    (7, 4),
+    (7, 2),
+    -- Dermatología: Tratamiento, Seguimiento
+    (8, 4),
+    (8, 5),
+    -- Traumatología: Urgente, Tratamiento
+    (9, 1),
+    (9, 4),
+    -- Control rutinario: Preventivo, Programable
+    (10, 3),
+    (10, 2);
+
+-- ======================================================
+-- TABLA: categoria_especialidades (relación muchos a muchos)
+-- ======================================================
+CREATE TABLE
+    categoria_especialidades (
+        id_categoria INT (11),
+        id_especialidad INT (11),
+        PRIMARY KEY (id_categoria, id_especialidad),
+        FOREIGN KEY (id_categoria) REFERENCES categorias (id_categoria) ON DELETE CASCADE,
+        FOREIGN KEY (id_especialidad) REFERENCES especialidades (id_especialidad) ON DELETE CASCADE
+    ) ENGINE = InnoDB;
+
+-- Datos de ejemplo para categoria_especialidades
+INSERT INTO
+    categoria_especialidades (id_categoria, id_especialidad)
+VALUES
+    -- Vacunación: Medicina Interna
+    (1, 2),
+    -- Cirugía menor: Cirugía General
+    (2, 1),
+    -- Desparasitación: Medicina Interna
+    (3, 2),
+    -- Consulta general: Medicina Interna
+    (4, 2),
+    -- Emergencia: Medicina Interna, Cirugía General
+    (5, 2),
+    (5, 1),
+    -- Cirugía mayor: Cirugía General
+    (6, 1),
+    -- Especies Exóticas: Especies Exóticas
+    (7, 5),
+    -- Dermatología: Dermatología
+    (8, 3),
+    -- Traumatología: Traumatología, Cirugía General
+    (9, 4),
+    (9, 1),
+    -- Control rutinario: Medicina Interna
+    (10, 2);
 
 -- ======================================================
 -- TABLA: estadosticket

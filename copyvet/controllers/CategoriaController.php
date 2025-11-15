@@ -30,7 +30,7 @@ class categoria
         try {
             $response = new Response();
             $request = new Request();
-            $data = $request->getBody();
+            $data = $request->getJSON();
 
             $model = new CategoriaModel();
             $result = $model->create($data);
@@ -40,15 +40,15 @@ class categoria
         }
     }
 
-    public function update($id)
+    public function update()
     {
         try {
             $response = new Response();
             $request = new Request();
-            $data = $request->getBody();
+            $data = $request->getJSON();
 
             $model = new CategoriaModel();
-            $result = $model->update($id, $data);
+            $result = $model->update($data);
             $response->toJSON($result);
         } catch (Exception $e) {
             handleException($e);

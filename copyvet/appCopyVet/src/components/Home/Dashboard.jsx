@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import CopyVetService from "../../services/CopyVetService";
 import VeterinarioService from "../../services/VeterinarioService";
-import CategoriaService from "../../services/CategoriaService";
+import CategoryService from "../../services/CategoryService";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
 
@@ -46,7 +46,7 @@ export default function Dashboard() {
         : CopyVetService.getTickets().catch(() => ({ data: [] })),
       CopyVetService.getMascotas().catch(() => ({ data: [] })),
       VeterinarioService.list().catch(() => ({ data: [] })),
-      CategoriaService.list().catch(() => ({ data: [] })),
+      CategoryService.list().catch(() => ({ data: [] })),
     ])
       .then(([usersRes, ticketsRes, mascotasRes, vetsRes, catsRes]) => {
         if (!mounted) return;
