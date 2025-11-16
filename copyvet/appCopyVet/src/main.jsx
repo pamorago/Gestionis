@@ -24,9 +24,9 @@ import { Login } from "./components/User/Login";
 import { Logout } from "./components/User/Logout";
 import { Signup } from "./components/User/Signup";
 import { Auth } from "./components/User/Auth";
-import ListVeterinarians from "./components/Technician/ListVeterinarians";
-import DetailVeterinarian from "./components/Technician/DetailVeterinarian";
-import Calendar from "./components/Technician/Calendar";
+import ListVeterinarians from "./components/Veterinarian/ListVeterinarians";
+import DetailVeterinarian from "./components/Veterinarian/DetailVeterinarian";
+import Calendar from "./components/Veterinarian/Calendar";
 import ListCategories from "./components/Category/ListCategories";
 import DetailCategory from "./components/Category/DetailCategory";
 import ListTickets from "./components/Ticket/ListTickets";
@@ -34,7 +34,7 @@ import DetailTicket from "./components/Ticket/DetailTicket";
 import CreateTicket from "./components/Ticket/CreateTicket";
 import MaintenanceTicket from "./components/Ticket/MaintenanceTicket";
 import AssignmentsBoard from "./components/Assignment/AssignmentsBoard";
-import MaintenanceVeterinarian from "./components/Technician/MaintenanceVeterinarian";
+import MaintenanceVeterinarian from "./components/Veterinarian/MaintenanceVeterinarian";
 import MaintenanceCategory from "./components/Category/MaintenanceCategory";
 
 const rutas = createBrowserRouter([

@@ -55,17 +55,18 @@ export default function MaintenanceVeterinarian() {
     especialidades: [],
     cedula: "",
     activo: true,
-    carga_maxima: 24,
   });
 
   // Estados para formulario de Actualizar
   const [updateForm, setUpdateForm] = useState({
     id_veterinario: "",
     nombre_veterinario: "",
+    email: "",
+    telefono: "",
     especialidades: [],
     cedula: "",
     activo: true,
-    carga_maxima: 24,
+    carga_actual: 0,
   });
 
   // Estados para catálogos
@@ -304,12 +305,10 @@ export default function MaintenanceVeterinarian() {
       }
     }
 
-    // Validar teléfono (opcional)
-    if (
-      form.telefono &&
-      form.telefono.trim() &&
-      !/^\d{8,15}$/.test(form.telefono.trim())
-    ) {
+    // Validar teléfono (ahora obligatorio)
+    if (!form.telefono || form.telefono.trim() === "") {
+      newErrors.telefono = "El teléfono es obligatorio";
+    } else if (!/^\d{8,15}$/.test(form.telefono.trim())) {
       newErrors.telefono = "El teléfono debe tener entre 8 y 15 dígitos";
     }
 
@@ -404,7 +403,6 @@ export default function MaintenanceVeterinarian() {
         telefono: createForm.telefono.trim(),
         especialidades: createForm.especialidades,
         activo: createForm.activo,
-        carga_maxima: createForm.carga_maxima,
       };
 
       console.log("Enviando datos al servidor:", veterinarioData);
@@ -422,7 +420,6 @@ export default function MaintenanceVeterinarian() {
         especialidades: [],
         cedula: "",
         activo: true,
-        carga_maxima: 10,
       });
 
       // Limpiar errores
@@ -463,8 +460,8 @@ export default function MaintenanceVeterinarian() {
         telefono: veterinario.telefono || "",
         cedula: veterinario.cedula || "",
         especialidades: veterinario.especialidades || [],
-        activo: veterinario.activo !== undefined ? veterinario.activo : true,
-        carga_maxima: veterinario.carga_maxima || 10,
+        activo: veterinario.activo == 1 || veterinario.activo === true,
+        carga_actual: parseInt(veterinario.carga_actual) || 0,
         tickets_asignados: veterinario.tickets_asignados || [],
       });
     } catch (error) {
@@ -480,18 +477,6 @@ export default function MaintenanceVeterinarian() {
       return;
     }
 
-    // Validar si se está intentando cambiar carga_maxima cuando tiene tickets asignados
-    if (
-      updateForm.tickets_asignados &&
-      updateForm.tickets_asignados.length > 0
-    ) {
-      showSnackbar(
-        "No se puede modificar un veterinario que tiene tickets asignados",
-        "error"
-      );
-      return;
-    }
-
     try {
       // Crear un nuevo objeto con los datos actualizados
       const updatedVeterinario = {
@@ -502,7 +487,6 @@ export default function MaintenanceVeterinarian() {
         cedula: updateForm.cedula,
         especialidades: updateForm.especialidades,
         activo: updateForm.activo,
-        carga_maxima: updateForm.carga_maxima,
       };
 
       await VeterinarioService.update(updatedVeterinario);
@@ -644,21 +628,15 @@ export default function MaintenanceVeterinarian() {
               </FormControl>
             </Grid>
 
-            {/* Carga máxima */}
+            {/* Carga actual (siempre 0 al crear) */}
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Carga Máxima de Horas"
+                label="Carga Actual de Horas"
                 type="number"
-                value={createForm.carga_maxima}
-                onChange={(e) =>
-                  handleCreateChange(
-                    "carga_maxima",
-                    Math.max(1, parseInt(e.target.value) || 1)
-                  )
-                }
-                inputProps={{ min: 1, max: 24 }}
-                helperText="Horas máximas diarias de trabajo (máximo 24 horas)"
+                value={0}
+                disabled
+                helperText="Suma de horas de tickets asignados (inicia en 0)"
               />
             </Grid>
 
@@ -767,6 +745,7 @@ export default function MaintenanceVeterinarian() {
                     onChange={(e) =>
                       handleUpdateChange("email", e.target.value)
                     }
+                    required
                     error={!!errors.email}
                     helperText={
                       errors.email || "Email único para el veterinario"
@@ -778,13 +757,16 @@ export default function MaintenanceVeterinarian() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Teléfono"
+                    label="Teléfono *"
                     value={updateForm.telefono}
                     onChange={(e) =>
                       handleUpdateChange("telefono", e.target.value)
                     }
+                    required
                     error={!!errors.telefono}
-                    helperText={errors.telefono || "Teléfono de contacto"}
+                    helperText={
+                      errors.telefono || "Teléfono de contacto (8-15 dígitos)"
+                    }
                   />
                 </Grid>
 
@@ -849,30 +831,15 @@ export default function MaintenanceVeterinarian() {
                   </FormControl>
                 </Grid>
 
-                {/* Carga máxima */}
+                {/* Carga actual (solo lectura) */}
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Carga Máxima de Horas"
+                    label="Carga Actual de Horas"
                     type="number"
-                    value={updateForm.carga_maxima}
-                    onChange={(e) =>
-                      handleUpdateChange(
-                        "carga_maxima",
-                        Math.max(1, parseInt(e.target.value) || 1)
-                      )
-                    }
-                    inputProps={{ min: 1, max: 100 }}
-                    disabled={
-                      updateForm.tickets_asignados &&
-                      updateForm.tickets_asignados.length > 0
-                    }
-                    helperText={
-                      updateForm.tickets_asignados &&
-                      updateForm.tickets_asignados.length > 0
-                        ? "No se puede modificar la carga máxima de un veterinario con tickets asignados"
-                        : "Número máximo de horas que puede manejar el veterinario"
-                    }
+                    value={updateForm.carga_actual || 0}
+                    disabled
+                    helperText="Suma de horas de tickets activos asignados (calculado automáticamente)"
                   />
                 </Grid>
 

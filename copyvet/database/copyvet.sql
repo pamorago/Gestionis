@@ -6,7 +6,8 @@ CREATE DATABASE IF NOT EXISTS copyvet;
 USE copyvet;
 
 -- Desactivar verificaciones de claves foráneas
-SET FOREIGN_KEY_CHECKS = 0;
+SET
+    FOREIGN_KEY_CHECKS = 0;
 
 -- Eliminar tablas existentes en orden inverso (debido a las relaciones)
 DROP TABLE IF EXISTS historico;
@@ -16,6 +17,8 @@ DROP TABLE IF EXISTS ticketimage;
 DROP TABLE IF EXISTS tickets;
 
 DROP TABLE IF EXISTS mascotas;
+
+DROP TABLE IF EXISTS veterinario_especialidades;
 
 DROP TABLE IF EXISTS categoria_especialidades;
 
@@ -58,14 +61,12 @@ VALUES
 CREATE TABLE
     usuarios (
         id_usuario INT (11) PRIMARY KEY AUTO_INCREMENT,
-        nombre_completo VARCHAR(100),
-        email VARCHAR(100) UNIQUE,
-        password VARCHAR(255),
-        telefono VARCHAR(20),
+        nombre_completo VARCHAR(100) NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        telefono VARCHAR(20) NOT NULL,
         id_rol INT (11),
-        especialidad VARCHAR(100) NULL,
         estado BOOLEAN DEFAULT TRUE,
-        carga_maxima INT(11) DEFAULT 24,
         FOREIGN KEY (id_rol) REFERENCES roles (id_rol)
     ) ENGINE = InnoDB;
 
@@ -76,9 +77,7 @@ INSERT INTO
         password,
         telefono,
         id_rol,
-        especialidad,
-        estado,
-        carga_maxima
+        estado
     )
 VALUES
     (
@@ -87,9 +86,7 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '2456-7891',
         1,
-        NULL,
-        TRUE,
-        0
+        TRUE
     ), -- Admin - password: 123456
     (
         'Carlos Méndez',
@@ -97,163 +94,130 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8712-3456',
         2,
-        'Cirugía General',
-        TRUE,
-        24
-    ), -- Veterinario - password: 123456
+        TRUE
+    ), -- Veterinario Carlos - password: 123456
     (
         'Ana Gómez',
         'ana.gomez@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7234-5678',
         2,
-        'Medicina Interna',
-        TRUE,
-        24
-    ), -- Veterinario - password: 123456
+        TRUE
+    ), -- Veterinario Ana - password: 123456
     (
         'Ricardo Soto',
         'ricardo.soto@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6345-2891',
         2,
-        'Dermatología',
-        TRUE,
-        24
-    ), -- Veterinario - password: 123456
+        TRUE
+    ), -- Veterinario Ricardo - password: 123456
     (
         'Sofia Torres',
         'sofia.torres@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8923-4567',
         2,
-        'Especies Exóticas',
-        TRUE,
-        24
-    ), -- Veterinario - password: 123456
+        TRUE
+    ), -- Veterinario Sofia - password: 123456
     (
         'Mario Castro',
         'mario.castro@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7156-8923',
         2,
-        'Traumatología',
-        TRUE,
-        24
-    ), -- Veterinario - password: 123456
+        TRUE
+    ), -- Veterinario Mario - password: 123456
     (
         'Luis Pérez',
         'luis.perez@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6478-1234',
         3,
-        NULL,
-        TRUE,
-        0
-    ), -- Asistente - password: 123456
+        TRUE
+    ), -- Asistente Luis - password: 123456
     (
         'Patricia Morales',
         'patricia.morales@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8234-5679',
         3,
-        NULL,
-        TRUE,
-        0
-    ), -- Asistente - password: 123456
+        TRUE
+    ), -- Asistente Patricia - password: 123456
     (
         'Jorge Fernández',
         'jorge.fernandez@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7891-2345',
         3,
-        NULL,
-        TRUE,
-        0
-    ), -- Asistente - password: 123456
+        TRUE
+    ), -- Asistente Jorge - password: 123456
     (
         'Daniela Ruiz',
         'daniela.ruiz@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6123-8945',
         3,
-        NULL,
-        TRUE,
-        0
-    ), -- Asistente - password: 123456
+        TRUE
+    ), -- Asistente Daniela - password: 123456
     (
         'Miguel Ángel Cruz',
         'miguel.cruz@copyvet.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8567-3421',
         3,
-        NULL,
-        TRUE,
-        0
-    ), -- Asistente - password: 123456
+        TRUE
+    ), -- Asistente Miguel - password: 123456
     (
         'María López',
         'maria.lopez@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7345-6789',
         4,
-        NULL,
-        TRUE,
-        0
-    ), -- Cliente - password: 123456
+        TRUE
+    ), -- Cliente María - password: 123456
     (
         'Pedro Jiménez',
         'pedro.jimenez@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6891-2347',
         4,
-        NULL,
-        TRUE,
-        0
-    ), -- Cliente - password: 123456
+        TRUE
+    ), -- Cliente Pedro - password: 123456
     (
         'Carmen Rojas',
         'carmen.rojas@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8912-4568',
         4,
-        NULL,
-        TRUE,
-        0
-    ), -- Cliente - password: 123456
+        TRUE
+    ), -- Cliente Carmen - password: 123456
     (
         'Juan Vargas',
         'juan.vargas@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7234-8916',
         4,
-        NULL,
-        TRUE,
-        0
-    ), -- Cliente - password: 123456
+        TRUE
+    ), -- Cliente Juan - password: 123456
     (
         'Ana Martinez',
         'ana.martinez@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6456-1237',
         4,
-        NULL,
-        TRUE,
-        0
-    ), -- Cliente - password: 123456
+        TRUE
+    ), -- Cliente Ana Martinez - password: 123456
     (
         'Roberto Sánchez',
         'roberto.sanchez@gmail.com',
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8678-9123',
         4,
-        NULL,
-        TRUE,
-        0
+        TRUE
     );
 
--- Cliente - password: 123456
--- Cliente
+-- Cliente Roberto - password: 123456
 -- ======================================================
 -- TABLA: mascotas
 -- ======================================================
@@ -466,6 +430,34 @@ VALUES
     ('Oncología'),
     ('Cardiología');
 
+-- ======================================================
+-- TABLA: veterinario_especialidades (relación muchos a muchos)
+-- ======================================================
+CREATE TABLE
+    veterinario_especialidades (
+        id_veterinario INT (11),
+        id_especialidad INT (11),
+        PRIMARY KEY (id_veterinario, id_especialidad),
+        FOREIGN KEY (id_veterinario) REFERENCES usuarios (id_usuario) ON DELETE CASCADE,
+        FOREIGN KEY (id_especialidad) REFERENCES especialidades (id_especialidad) ON DELETE CASCADE
+    ) ENGINE = InnoDB;
+
+-- Asignar especialidades a veterinarios
+-- Carlos Méndez (id=2): Cirugía General
+-- Ana Gómez (id=3): Medicina Interna
+-- Ricardo Soto (id=4): Dermatología
+-- Sofia Torres (id=5): Especies Exóticas
+-- Mario Castro (id=6): Traumatología
+INSERT INTO
+    veterinario_especialidades (id_veterinario, id_especialidad)
+VALUES
+    (2, 1), -- Carlos: Cirugía General
+    (3, 2), -- Ana: Medicina Interna
+    (4, 3), -- Ricardo: Dermatología
+    (5, 5), -- Sofia: Especies Exóticas
+    (6, 4);
+
+-- Mario: Traumatología
 -- ======================================================
 -- TABLA: categoria_etiquetas (relación muchos a muchos)
 -- ======================================================
@@ -1003,4 +995,5 @@ VALUES
 -- ======================================================
 -- REACTIVAR VERIFICACIONES DE CLAVES FORÁNEAS
 -- ======================================================
-SET FOREIGN_KEY_CHECKS = 1;
+SET
+    FOREIGN_KEY_CHECKS = 1;

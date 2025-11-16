@@ -30,7 +30,7 @@ class veterinario
         try {
             $response = new Response();
             $model = new VeterinarioModel();
-            $result = $model->getTickets($id);
+            $result = $model->getTicketsAsignados($id);
             $response->toJSON($result);
         } catch (Exception $e) {
             handleException($e);

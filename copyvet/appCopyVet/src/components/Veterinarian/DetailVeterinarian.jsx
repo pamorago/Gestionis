@@ -115,7 +115,10 @@ export default function DetailVeterinarian() {
   if (!tech)
     return <Container sx={{ p: 2 }}>Cargando veterinario...</Container>;
 
-  const tiempo = calcularTiempoDisponible(tech.carga_actual, tech.carga_maxima);
+  const tiempo = calcularTiempoDisponible(
+    tech.carga_actual,
+    tech.carga_maxima
+  );
   const disponibilidadColor = getDisponibilidadColor(
     tiempo.disponible,
     tiempo.total
@@ -227,13 +230,21 @@ export default function DetailVeterinarian() {
           {/* Especialidades */}
           <Grid item xs={12}>
             <Stack direction="row" spacing={1} flexWrap="wrap">
-              {Array.isArray(tech.especialidades) &&
-              tech.especialidades.length > 0 ? (
+              {Array.isArray(tech.especialidades) && tech.especialidades.length > 0 ? (
                 tech.especialidades.map((esp, idx) => (
-                  <Chip key={idx} label={esp} color="primary" size="medium" />
+                  <Chip
+                    key={idx}
+                    label={esp}
+                    color="primary"
+                    size="medium"
+                  />
                 ))
               ) : (
-                <Chip label="Sin especialidad" color="default" size="medium" />
+                <Chip
+                  label="Sin especialidad"
+                  color="default"
+                  size="medium"
+                />
               )}
             </Stack>
           </Grid>

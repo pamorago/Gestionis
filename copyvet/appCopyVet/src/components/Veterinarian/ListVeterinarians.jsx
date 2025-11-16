@@ -112,12 +112,7 @@ export default function ListVeterinarians() {
 
                     {/* Especialidad */}
                     <Chip
-                      label={
-                        Array.isArray(v.especialidades) &&
-                        v.especialidades.length > 0
-                          ? v.especialidades.join(", ")
-                          : "Sin especialidad"
-                      }
+                      label={Array.isArray(v.especialidades) && v.especialidades.length > 0 ? v.especialidades.join(", ") : "Sin especialidad"}
                       color="primary"
                       size="small"
                       sx={{ mb: 2 }}
