@@ -5,6 +5,9 @@ CREATE DATABASE IF NOT EXISTS copyvet;
 
 USE copyvet;
 
+-- Desactivar verificaciones de claves foráneas
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- Eliminar tablas existentes en orden inverso (debido a las relaciones)
 DROP TABLE IF EXISTS historico;
 
@@ -61,6 +64,8 @@ CREATE TABLE
         telefono VARCHAR(20),
         id_rol INT (11),
         especialidad VARCHAR(100) NULL,
+        estado BOOLEAN DEFAULT TRUE,
+        carga_maxima INT(11) DEFAULT 24,
         FOREIGN KEY (id_rol) REFERENCES roles (id_rol)
     ) ENGINE = InnoDB;
 
@@ -71,7 +76,9 @@ INSERT INTO
         password,
         telefono,
         id_rol,
-        especialidad
+        especialidad,
+        estado,
+        carga_maxima
     )
 VALUES
     (
@@ -80,7 +87,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '2456-7891',
         1,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Admin - password: 123456
     (
         'Carlos Méndez',
@@ -88,7 +97,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8712-3456',
         2,
-        'Cirugía General'
+        'Cirugía General',
+        TRUE,
+        24
     ), -- Veterinario - password: 123456
     (
         'Ana Gómez',
@@ -96,7 +107,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7234-5678',
         2,
-        'Medicina Interna'
+        'Medicina Interna',
+        TRUE,
+        24
     ), -- Veterinario - password: 123456
     (
         'Ricardo Soto',
@@ -104,7 +117,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6345-2891',
         2,
-        'Dermatología'
+        'Dermatología',
+        TRUE,
+        24
     ), -- Veterinario - password: 123456
     (
         'Sofia Torres',
@@ -112,7 +127,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8923-4567',
         2,
-        'Especies Exóticas'
+        'Especies Exóticas',
+        TRUE,
+        24
     ), -- Veterinario - password: 123456
     (
         'Mario Castro',
@@ -120,7 +137,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7156-8923',
         2,
-        'Traumatología'
+        'Traumatología',
+        TRUE,
+        24
     ), -- Veterinario - password: 123456
     (
         'Luis Pérez',
@@ -128,7 +147,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6478-1234',
         3,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Asistente - password: 123456
     (
         'Patricia Morales',
@@ -136,7 +157,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8234-5679',
         3,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Asistente - password: 123456
     (
         'Jorge Fernández',
@@ -144,7 +167,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7891-2345',
         3,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Asistente - password: 123456
     (
         'Daniela Ruiz',
@@ -152,7 +177,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6123-8945',
         3,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Asistente - password: 123456
     (
         'Miguel Ángel Cruz',
@@ -160,7 +187,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8567-3421',
         3,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Asistente - password: 123456
     (
         'María López',
@@ -168,7 +197,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7345-6789',
         4,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Cliente - password: 123456
     (
         'Pedro Jiménez',
@@ -176,7 +207,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6891-2347',
         4,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Cliente - password: 123456
     (
         'Carmen Rojas',
@@ -184,7 +217,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8912-4568',
         4,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Cliente - password: 123456
     (
         'Juan Vargas',
@@ -192,7 +227,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '7234-8916',
         4,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Cliente - password: 123456
     (
         'Ana Martinez',
@@ -200,7 +237,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '6456-1237',
         4,
-        NULL
+        NULL,
+        TRUE,
+        0
     ), -- Cliente - password: 123456
     (
         'Roberto Sánchez',
@@ -208,7 +247,9 @@ VALUES
         '$2y$10$sOpWtrplKHktfSrEsBhYDOCrDH.mS3jkVh8odd6qRGI0NxIEU/EwO',
         '8678-9123',
         4,
-        NULL
+        NULL,
+        TRUE,
+        0
     );
 
 -- Cliente - password: 123456
@@ -958,3 +999,8 @@ VALUES
         'Cancelado',
         5
     );
+
+-- ======================================================
+-- REACTIVAR VERIFICACIONES DE CLAVES FORÁNEAS
+-- ======================================================
+SET FOREIGN_KEY_CHECKS = 1;
