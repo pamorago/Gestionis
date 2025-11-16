@@ -22,6 +22,7 @@ require_once "middleware/AuthMiddleware.php";
 require_once "models/RolModel.php";
 require_once "models/UserModel.php";
 require_once "models/TicketModel.php";
+require_once "models/ImageModel.php";
 require_once "models/CategoriaModel.php";
 require_once "models/HistoricoModel.php";
 require_once "models/MascotaModel.php";
@@ -33,6 +34,7 @@ require_once "models/AsignacionModel.php";
 /***--- Agregar todos los controladores*/
 require_once "controllers/UserController.php";
 require_once "controllers/TicketController.php";
+require_once "controllers/TicketimagenController.php";
 require_once "controllers/CategoriaController.php";
 require_once "controllers/HistoricoController.php";
 require_once "controllers/MascotaController.php";

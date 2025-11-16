@@ -31,7 +31,7 @@ class TicketModel
                     JOIN sla s ON s.id_sla = c.id_sla
                     JOIN mascotas m ON m.id_mascota = t.id_mascota
                     JOIN usuarios u1 ON u1.id_usuario = t.id_creado_por_usuario
-                    JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario
+                    LEFT JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario
                     ORDER BY t.fecha_creacion DESC;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
@@ -69,10 +69,10 @@ class TicketModel
                     JOIN sla s ON s.id_sla = c.id_sla
                     JOIN mascotas m ON m.id_mascota = t.id_mascota
                     JOIN usuarios u1 ON u1.id_usuario = t.id_creado_por_usuario
-                    JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario
+                    LEFT JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario
                     WHERE t.id_ticket = $id;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            return $vResultado[0];
+            return !empty($vResultado) ? $vResultado[0] : null;
         } catch (Exception $e) {
             handleException($e);
         }
@@ -103,7 +103,7 @@ class TicketModel
                     JOIN sla s ON s.id_sla = c.id_sla
                     JOIN mascotas m ON m.id_mascota = t.id_mascota
                     JOIN usuarios u1 ON u1.id_usuario = t.id_creado_por_usuario
-                    JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario";
+                    LEFT JOIN usuarios u2 ON u2.id_usuario = t.id_asignado_a_usuario";
 
             switch ($rol) {
                 case 'Administrador':
@@ -142,11 +142,19 @@ class TicketModel
     public function create($ticket)
     {
         try {
+            $id_asignado = isset($ticket->id_asignado_a_usuario) && $ticket->id_asignado_a_usuario !== null
+                ? $ticket->id_asignado_a_usuario
+                : 'NULL';
+
+            $fecha_cita = isset($ticket->fecha_cita) && $ticket->fecha_cita !== null
+                ? "'$ticket->fecha_cita'"
+                : 'NULL';
+
             $vSql = "INSERT INTO tickets (titulo, descripcion, fecha_creacion, fecha_cita, 
                     id_estado, id_categoria, id_mascota, id_creado_por_usuario, id_asignado_a_usuario) 
                     VALUES ('$ticket->titulo', '$ticket->descripcion', NOW(), 
-                    '$ticket->fecha_cita', $ticket->id_estado, $ticket->id_categoria, 
-                    $ticket->id_mascota, $ticket->id_creado_por_usuario, $ticket->id_asignado_a_usuario);";
+                    $fecha_cita, $ticket->id_estado, $ticket->id_categoria, 
+                    $ticket->id_mascota, $ticket->id_creado_por_usuario, $id_asignado);";
 
             $vResultado = $this->enlace->ExecuteSQL_DML_last($vSql);
 
@@ -161,7 +169,7 @@ class TicketModel
                 $historicoModel->create($historico);
             }
 
-            return $this->get($vResultado);
+            return ['id' => $vResultado, 'success' => true];
         } catch (Exception $e) {
             handleException($e);
         }
@@ -170,32 +178,72 @@ class TicketModel
     public function update($id, $ticket)
     {
         try {
+            // Obtener ticket anterior para comparar cambios
+            $ticketAnterior = $this->get($id);
+
+            // Verificar que el ticket existe
+            if (!$ticketAnterior) {
+                return ['success' => false, 'error' => 'Ticket no encontrado'];
+            }
+
+            // Construir query de actualización
+            $id_asignado = isset($ticket->id_asignado_a_usuario) && $ticket->id_asignado_a_usuario !== null
+                ? $ticket->id_asignado_a_usuario
+                : 'NULL';
+
+            $fecha_cita = isset($ticket->fecha_cita) && $ticket->fecha_cita !== null
+                ? "'$ticket->fecha_cita'"
+                : 'NULL';
+
             $vSql = "UPDATE tickets SET 
                     titulo = '$ticket->titulo',
                     descripcion = '$ticket->descripcion',
-                    fecha_cita = '$ticket->fecha_cita',
+                    fecha_cita = $fecha_cita,
                     id_estado = $ticket->id_estado,
                     id_categoria = $ticket->id_categoria,
                     id_mascota = $ticket->id_mascota,
-                    id_asignado_a_usuario = $ticket->id_asignado_a_usuario
+                    id_asignado_a_usuario = $id_asignado
                     WHERE id_ticket = $id;";
 
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            $vResultado = $this->enlace->ExecuteSQL_DML($vSql);
 
-            // Agregar entrada al histórico usando HistoricoModel
-            if ($vResultado && isset($ticket->comentario)) {
-                $estado = $this->getEstadoNombre($ticket->id_estado);
+            // Crear entrada en el histórico - SIEMPRE se crea (incluso si no hubo cambios)
+            // $vResultado puede ser 0 si no hubo cambios en los datos
+            $historicoModel = new HistoricoModel();
+            $historico = new stdClass();
+            $historico->id_ticket = $id;
 
-                $historicoModel = new HistoricoModel();
-                $historico = new stdClass();
-                $historico->id_ticket = $id;
-                $historico->comentario = $ticket->comentario;
-                $historico->estado = $estado;
-                $historico->id_usuario = $ticket->id_usuario;
-                $historicoModel->create($historico);
+            // Determinar qué cambió para el comentario
+            $cambios = [];
+            if ($ticketAnterior->id_estado != $ticket->id_estado) {
+                $estadoNuevo = $this->getEstadoNombre($ticket->id_estado);
+                $cambios[] = "Estado cambiado a: $estadoNuevo";
+            }
+            if ($ticketAnterior->titulo != $ticket->titulo) {
+                $cambios[] = "Título actualizado";
+            }
+            if ($ticketAnterior->descripcion != $ticket->descripcion) {
+                $cambios[] = "Descripción actualizada";
+            }
+            if ($ticketAnterior->id_asignado_a_usuario != $ticket->id_asignado_a_usuario) {
+                $cambios[] = "Veterinario asignado actualizado";
             }
 
-            return $this->get($id);
+            // Si hay comentario personalizado, usarlo; sino, usar resumen de cambios
+            if (isset($ticket->comentario) && !empty($ticket->comentario)) {
+                $historico->comentario = $ticket->comentario;
+            } else {
+                $historico->comentario = count($cambios) > 0
+                    ? 'Ticket actualizado: ' . implode(', ', $cambios)
+                    : 'Ticket actualizado';
+            }
+
+            $historico->estado = $this->getEstadoNombre($ticket->id_estado);
+            $historico->id_usuario = $ticket->id_usuario;
+
+            $historicoModel->create($historico);
+
+            return ['id' => $id, 'success' => true];
         } catch (Exception $e) {
             handleException($e);
         }
@@ -205,7 +253,7 @@ class TicketModel
     {
         $vSql = "SELECT nombre_estado FROM estadosticket WHERE id_estado = $id_estado;";
         $resultado = $this->enlace->ExecuteSQL($vSql);
-        return $resultado[0]['nombre_estado'];
+        return $resultado[0]->nombre_estado;
     }
 
     public function delete($id)
@@ -245,6 +293,25 @@ class TicketModel
             $vSql = "SELECT * FROM ticketimage WHERE id_ticket = $id_ticket ORDER BY created_at DESC;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function createImage($id_ticket, $nombreArchivo)
+    {
+        try {
+            $vSql = "INSERT INTO ticketimage (id_ticket, imagen, created_at) 
+                     VALUES ($id_ticket, '$nombreArchivo', NOW());";
+            $this->enlace->ExecuteSQL_DML($vSql);
+
+            // Retornar el ID insertado
+            $lastId = $this->enlace->getLastInsertId();
+            return [
+                'id_imagen' => $lastId,
+                'id_ticket' => $id_ticket,
+                'imagen' => $nombreArchivo
+            ];
         } catch (Exception $e) {
             handleException($e);
         }

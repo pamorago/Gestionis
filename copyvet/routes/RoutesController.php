@@ -89,6 +89,7 @@ class RoutesController
                 $action = $routesArray[3] ?? null;
                 $param1 = $routesArray[4] ?? null;
                 $param2 = $routesArray[5] ?? null;
+
                 if ($controller) {
                     try {
                         if (class_exists($controller)) {
@@ -100,7 +101,14 @@ class RoutesController
                                     } elseif ($param1 && !isset($action)) {
                                         $response->get($param1);
                                     } elseif ($param1 && isset($action)) {
-                                        $response->$action($param1);
+                                        // Detectar si es /controller/{id}/{action} en lugar de /controller/{action}/{param}
+                                        if (is_numeric($action) && method_exists($controller, $param1)) {
+                                            // Caso: /categoria/123/etiquetas -> etiquetas(123)
+                                            $response->$param1($action);
+                                        } else {
+                                            // Caso normal: /categoria/action/param -> action(param)
+                                            $response->$action($param1);
+                                        }
                                     } elseif (!isset($action)) {
                                         $response->index();
                                     } elseif ($action) {
@@ -139,10 +147,11 @@ class RoutesController
 
                                 case 'PUT':
                                 case 'PATCH':
-                                    if ($param1) {
-                                        $response->update($param1);
-                                    } elseif ($action) {
-                                        if (method_exists($controller, $action)) {
+                                    if ($action) {
+                                        // Si action es un número, es el ID para update
+                                        if (is_numeric($action)) {
+                                            $response->update($action);
+                                        } elseif (method_exists($controller, $action)) {
                                             $response->$action();
                                         } else {
                                             $json = array(

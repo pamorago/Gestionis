@@ -233,7 +233,7 @@ export default function AssignmentsBoard() {
                 }
                 title={
                   <Typography variant="h6" fontWeight={600}>
-                    {v.nombre_veterinario || v.nombre_completo}
+                    {v.nombre_completo}
                   </Typography>
                 }
                 subheader={

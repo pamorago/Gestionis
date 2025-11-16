@@ -45,6 +45,12 @@ class CategoryService {
   delete(id) {
     return axios.delete(BASE_URL + 'categoria/delete/' + id);
   }
+
+  // Obtener etiquetas de una categoría
+  // GET: /copyvet/categoria/:id/etiquetas
+  getEtiquetas(id) {
+    return axios.get(BASE_URL + 'categoria/' + id + '/etiquetas');
+  }
 }
 
 export default new CategoryService();

@@ -10,6 +10,7 @@ class TicketService {
   getHistorico(id) { return axios.get(BASE_URL + 'ticket/getHistorico/' + id); }
   getImagenes(id) { return axios.get(BASE_URL + 'ticket/getImagenes/' + id); }
   create(payload) { return axios.post(BASE_URL + 'ticket', payload); }
+  update(id, payload) { return axios.put(BASE_URL + 'ticket/' + id, payload); }
 }
 
 export default new TicketService();

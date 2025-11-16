@@ -66,4 +66,16 @@ class categoria
             handleException($e);
         }
     }
+
+    public function etiquetas($id)
+    {
+        try {
+            $response = new Response();
+            $model = new CategoriaModel();
+            $result = $model->getEtiquetas($id);
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }

@@ -604,9 +604,9 @@ VALUES
         2,
         1,
         1,
-        5,
-        2
-    ),
+        12,
+        3
+    ), -- Categoría Vacunación → Ana (Medicina Interna)
     (
         'Revisión quirúrgica de Luna',
         'Revisar sutura tras operación reciente',
@@ -615,9 +615,9 @@ VALUES
         2,
         2,
         2,
-        10,
-        3
-    ),
+        13,
+        2
+    ), -- Categoría Cirugía menor → Carlos (Cirugía General)
     (
         'Emergencia - Accidente Zeus',
         'Fractura en pata trasera, requiere atención inmediata',
@@ -626,9 +626,9 @@ VALUES
         2,
         5,
         8,
-        11,
-        7
-    ),
+        14,
+        2
+    ), -- Categoría Emergencia → Carlos (Cirugía General para fractura)
     (
         'Consulta Dermatológica Nina',
         'Presenta manchas en la piel y pérdida de pelo',
@@ -637,9 +637,9 @@ VALUES
         1,
         8,
         5,
-        12,
+        15,
         4
-    ),
+    ), -- Categoría Dermatología → Ricardo (Dermatología)
     (
         'Revisión Coco - Especies Exóticas',
         'Control rutinario y revisión de pico',
@@ -648,9 +648,9 @@ VALUES
         2,
         7,
         10,
-        13,
+        16,
         5
-    ),
+    ), -- Categoría Especies Exóticas → Sofia (Especies Exóticas)
     (
         'Cirugía Mayor - Bella',
         'Extracción de tumor en abdomen',
@@ -659,9 +659,9 @@ VALUES
         2,
         6,
         7,
-        10,
+        13,
         2
-    ),
+    ), -- Categoría Cirugía mayor → Carlos (Cirugía General)
     (
         'Control rutinario Lucas',
         'Chequeo general y vacunas pendientes',
@@ -670,9 +670,9 @@ VALUES
         1,
         10,
         9,
-        12,
+        15,
         3
-    ),
+    ), -- Categoría Control rutinario → Ana (Medicina Interna)
     (
         'Emergencia - Toby intoxicación',
         'Ingesta de sustancia tóxica, vómitos frecuentes',
@@ -681,9 +681,9 @@ VALUES
         2,
         5,
         6,
-        13,
-        2
-    ),
+        14,
+        3
+    ), -- Categoría Emergencia → Ana (Medicina Interna)
     (
         'Control Dermatológico Luna',
         'Revisión por alergia en piel',
@@ -692,9 +692,9 @@ VALUES
         3,
         8,
         2,
-        10,
+        13,
         4
-    ),
+    ), -- Categoría Dermatología → Ricardo (Dermatología)
     (
         'Cirugía Milo - Esterilización',
         'Procedimiento de esterilización programado',
@@ -703,9 +703,9 @@ VALUES
         4,
         2,
         4,
-        6,
+        12,
         2
-    ),
+    ), -- Categoría Cirugía menor → Carlos (Cirugía General)
     (
         'Vacunación Rocky',
         'Vacuna contra rabia',
@@ -714,9 +714,9 @@ VALUES
         3,
         1,
         3,
-        11,
+        15,
         3
-    ),
+    ), -- Categoría Vacunación → Ana (Medicina Interna)
     (
         'Emergencia Nina - Accidente',
         'Caída desde altura',
@@ -725,9 +725,9 @@ VALUES
         3,
         5,
         5,
-        12,
-        7
-    ),
+        15,
+        3
+    ), -- Categoría Emergencia → Ana (Medicina Interna para caída)
     (
         'Control Coco - Pruebas sangre',
         'Exámenes de rutina',
@@ -736,10 +736,11 @@ VALUES
         4,
         7,
         10,
-        13,
+        16,
         5
     );
 
+-- Categoría Especies Exóticas → Sofia (Especies Exóticas)
 -- ======================================================
 -- TABLA: ticketimage
 -- ======================================================

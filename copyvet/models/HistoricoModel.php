@@ -63,7 +63,7 @@ class HistoricoModel
                     '$historico->comentario', '$historico->estado', 
                     $historico->id_usuario);";
 
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            $vResultado = $this->enlace->ExecuteSQL_DML($vSql);
             return $vResultado;
         } catch (Exception $e) {
             handleException($e);
@@ -74,7 +74,7 @@ class HistoricoModel
     {
         try {
             $vSql = "DELETE FROM historico WHERE id_historico = $id;";
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            $vResultado = $this->enlace->ExecuteSQL_DML($vSql);
             return $vResultado;
         } catch (Exception $e) {
             handleException($e);

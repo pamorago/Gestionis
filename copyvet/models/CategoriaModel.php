@@ -51,24 +51,16 @@ class CategoriaModel
         }
     }
 
-    private function getEtiquetas($id_categoria)
+    public function getEtiquetas($id_categoria)
     {
         try {
-            $vSql = "SELECT e.nombre_etiqueta 
+            $vSql = "SELECT e.id_etiqueta, e.nombre_etiqueta 
                     FROM etiquetas e
                     INNER JOIN categoria_etiquetas ce ON e.id_etiqueta = ce.id_etiqueta
-                    WHERE ce.id_categoria = $id_categoria;";
+                    WHERE ce.id_categoria = $id_categoria
+                    ORDER BY e.nombre_etiqueta;";
             $resultado = $this->enlace->ExecuteSQL($vSql);
-
-            // Convertir objetos a arrays y extraer nombres
-            $etiquetas = [];
-            if (is_array($resultado)) {
-                foreach ($resultado as $row) {
-                    $row_array = (array)$row;
-                    $etiquetas[] = $row_array['nombre_etiqueta'];
-                }
-            }
-            return $etiquetas;
+            return $resultado ?: [];
         } catch (Exception $e) {
             return [];
         }

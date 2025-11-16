@@ -700,7 +700,7 @@ export default function MaintenanceVeterinarian() {
                       key={vet.id_veterinario}
                       value={vet.id_veterinario}
                     >
-                      {vet.nombre_veterinario} - {vet.email}
+                      {vet.nombre_completo} - {vet.email}
                     </MenuItem>
                   ))}
                 </Select>

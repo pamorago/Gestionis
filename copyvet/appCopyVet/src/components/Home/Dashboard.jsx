@@ -241,7 +241,7 @@ export default function Dashboard() {
                             key={v.id_veterinario || v.id}
                             value={v.id_veterinario || v.id}
                           >
-                            {v.nombre_veterinario || v.nombre_completo}
+                            {v.nombre_completo}
                           </MenuItem>
                         ))}
                       </TextField>
@@ -286,7 +286,7 @@ export default function Dashboard() {
                       <Grid item xs={12} sm={6} key={v.id_veterinario || v.id}>
                         <Box sx={{ p: 1 }}>
                           <Typography variant="subtitle2">
-                            {v.nombre_veterinario || v.nombre_completo}
+                            {v.nombre_completo}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
                             {v.correo || "-"} • {v.telefono || "-"} • Activos:{" "}

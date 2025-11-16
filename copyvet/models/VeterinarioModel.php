@@ -14,7 +14,7 @@ class VeterinarioModel
         try {
             $vSql = "SELECT 
                         u.id_usuario AS id_veterinario,
-                        u.nombre_completo AS nombre_veterinario,
+                        u.nombre_completo,
                         u.email,
                         u.telefono,
                         u.estado as activo,

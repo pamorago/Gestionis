@@ -306,8 +306,16 @@ export default function MaintenanceCategory() {
         id_categoria: categoria.id_categoria,
         nombre_categoria: categoria.nombre_categoria || "",
         id_sla: categoria.id_sla || "",
-        etiquetas: categoria.etiquetas || [],
-        especialidades: categoria.especialidades || [],
+        etiquetas: Array.isArray(categoria.etiquetas)
+          ? categoria.etiquetas.map((e) =>
+              typeof e === "string" ? e : e.nombre_etiqueta
+            )
+          : [],
+        especialidades: Array.isArray(categoria.especialidades)
+          ? categoria.especialidades.map((e) =>
+              typeof e === "string" ? e : e.nombre_especialidad
+            )
+          : [],
       });
     } catch (error) {
       console.error("Error al cargar categoría:", error);
