@@ -144,10 +144,12 @@ class UserModel
             // Hash de la contraseña
             $password_hash = password_hash($objeto->password, PASSWORD_BCRYPT);
 
-            //Consulta sql            
-            $vSql = "INSERT INTO usuarios (nombre_completo, email, password, telefono, id_rol, especialidad) 
-                     VALUES ('$objeto->nombre_completo', '$objeto->email', '$password_hash', '$objeto->telefono', 
-                             $objeto->id_rol, " . ($objeto->especialidad ? "'$objeto->especialidad'" : "NULL") . ")";
+            // Manejar teléfono vacío - poner cadena vacía si es null
+            $telefono = (!empty($objeto->telefono)) ? $objeto->telefono : "";
+
+            //Consulta sql - sin especialidad que está en tabla veterinarios          
+            $vSql = "INSERT INTO usuarios (nombre_completo, email, password, telefono, id_rol) 
+                     VALUES ('$objeto->nombre_completo', '$objeto->email', '$password_hash', '$telefono', $objeto->id_rol)";
 
             //Ejecutar la consulta
             $vResultado = $this->enlace->executeSQL_DML_last($vSql);

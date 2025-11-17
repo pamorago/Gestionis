@@ -5,18 +5,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import { Menu, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
-import Badge from "@mui/material/Badge";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MoreIcon from "@mui/icons-material/MoreVert";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import Tooltip from "@mui/material/Tooltip";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { useCart } from "../../hooks/useCart";
 import { UserContext } from "../../context/UserContext";
 import CopyVetService from "../../services/CopyVetService";
 import { useTranslation } from "react-i18next";
@@ -31,30 +25,8 @@ export default function Header() {
     setUserData(decodeToken());
   }, [user, decodeToken]);
 
-  const { cart, getCountItems } = useCart();
-  const [ticketsCount, setTicketsCount] = useState(0);
-  // Obtener total de tickets desde CopyVet para mostrar en la notificación
-  useEffect(() => {
-    let mounted = true;
-    CopyVetService.getTickets()
-      .then((res) => {
-        const data = res.data;
-        const count = Array.isArray(data) ? data.length : 0;
-        if (mounted) setTicketsCount(count);
-      })
-      .catch(() => {
-        if (mounted) setTicketsCount(0);
-      });
-    return () => (mounted = false);
-  }, []);
   //Gestión menu usuario
   const [anchorElUser, setAnchorEl] = useState(null);
-  //Gestión menu opciones
-  const [mobileOpcionesAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  //Booleano Menu opciones responsivo
-  const isMobileOpcionesMenuOpen = Boolean(mobileOpcionesAnchorEl);
-  //Gestión menu principal
-  const [anchorElPrincipal, setAnchorElPrincipal] = useState(null);
   //Gestión menu Listas (dropdown)
   const [anchorElListas, setAnchorElListas] = useState(null);
   const isListasMenuOpen = Boolean(anchorElListas);
@@ -68,23 +40,6 @@ export default function Header() {
   //Cerrado menu usuario
   const handleUserMenuClose = () => {
     setAnchorEl(null);
-    handleOpcionesMenuClose();
-  };
-  //Abierto menu principal
-  const handleOpenPrincipalMenu = (event) => {
-    setAnchorElPrincipal(event.currentTarget);
-  };
-  //Cerrado menu principal
-  const handleClosePrincipalMenu = () => {
-    setAnchorElPrincipal(null);
-  };
-  //Abierto menu opciones
-  const handleOpcionesMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-  //Cerrado menu opciones
-  const handleOpcionesMenuClose = () => {
-    setMobileMoreAnchorEl(null);
   };
   //Abierto menu Listas
   const handleListasMenuOpen = (event) => {
@@ -110,15 +65,35 @@ export default function Header() {
   ];
   //Lista enlaces menu principal
   const navItems = [
-    { name: t("createTicket"), link: "/ticket/create", roles: ["Cliente"] },
-    { name: "Calendario", link: "/calendar", roles: null },
+    {
+      name: t("createTicket"),
+      link: "/ticket/create",
+      roles: ["Cliente", "Veterinario", "Administrador"],
+    },
+    {
+      name: "Calendario",
+      link: "/calendar",
+      roles: ["Veterinario", "Administrador"],
+    },
   ];
 
   //Lista enlaces menu Listas (dropdown)
   const listasItems = [
-    { name: t("tickets"), link: "/tickets", roles: null },
-    { name: t("veterinarians"), link: "/veterinarians", roles: null },
-    { name: t("categories"), link: "/categories", roles: null },
+    {
+      name: t("tickets"),
+      link: "/tickets",
+      roles: ["Cliente", "Veterinario", "Administrador"],
+    },
+    {
+      name: t("veterinarians"),
+      link: "/veterinarians",
+      roles: ["Administrador"],
+    },
+    {
+      name: t("categories"),
+      link: "/categories",
+      roles: ["Administrador"],
+    },
     {
       name: "Tablero Asignaciones",
       link: "/assignments",
@@ -128,124 +103,144 @@ export default function Header() {
 
   //Lista enlaces menu Mantenimientos (dropdown)
   const mantenimientosItems = [
-    { name: t("tickets"), link: "/maintenance/tickets", roles: null },
-    { name: t("categories"), link: "/maintenance/categories", roles: null },
-    { name: "Técnicos", link: "/maintenance/veterinarians", roles: null },
+    {
+      name: t("tickets"),
+      link: "/maintenance/tickets",
+      roles: ["Administrador"],
+    },
+    {
+      name: t("categories"),
+      link: "/maintenance/categories",
+      roles: ["Administrador"],
+    },
+    {
+      name: "Técnicos",
+      link: "/maintenance/veterinarians",
+      roles: ["Administrador"],
+    },
   ];
   //Identificador menu principal
   const menuIdPrincipal = "menu-appbar";
   //Menu Principal
   const menuPrincipal = (
     <Box sx={{ display: { xs: "none", sm: "block" } }}>
-      {/* Dropdown de Listas */}
-      <Button
-        color="secondary"
-        onClick={handleListasMenuOpen}
-        endIcon={<ArrowDropDownIcon />}
-      >
-        <Typography textAlign="center">Listas</Typography>
-      </Button>
-      <Menu
-        id="listas-menu"
-        anchorEl={anchorElListas}
-        open={isListasMenuOpen}
-        onClose={handleListasMenuClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-      >
-        {listasItems.map((item, index) => {
-          if (userData && item.roles) {
-            if (autorize({ requiredRoles: item.roles })) {
-              return (
-                <MenuItem
-                  key={index}
-                  component={Link}
-                  to={item.link}
-                  onClick={handleListasMenuClose}
-                >
-                  {item.name}
-                </MenuItem>
-              );
-            }
-            return null;
-          } else {
-            if (item.roles == null) {
-              return (
-                <MenuItem
-                  key={index}
-                  component={Link}
-                  to={item.link}
-                  onClick={handleListasMenuClose}
-                >
-                  {item.name}
-                </MenuItem>
-              );
-            }
-            return null;
-          }
-        })}
-      </Menu>
+      {/* Dropdown de Listas - Solo visible para usuarios autenticados */}
+      {userData && Object.keys(userData).length > 0 && (
+        <>
+          <Button
+            color="secondary"
+            onClick={handleListasMenuOpen}
+            endIcon={<ArrowDropDownIcon />}
+          >
+            <Typography textAlign="center">Listas</Typography>
+          </Button>
+          <Menu
+            id="listas-menu"
+            anchorEl={anchorElListas}
+            open={isListasMenuOpen}
+            onClose={handleListasMenuClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            {listasItems.map((item, index) => {
+              if (userData && item.roles) {
+                if (autorize({ requiredRoles: item.roles })) {
+                  return (
+                    <MenuItem
+                      key={index}
+                      component={Link}
+                      to={item.link}
+                      onClick={handleListasMenuClose}
+                    >
+                      {item.name}
+                    </MenuItem>
+                  );
+                }
+                return null;
+              } else {
+                if (item.roles == null) {
+                  return (
+                    <MenuItem
+                      key={index}
+                      component={Link}
+                      to={item.link}
+                      onClick={handleListasMenuClose}
+                    >
+                      {item.name}
+                    </MenuItem>
+                  );
+                }
+                return null;
+              }
+            })}
+          </Menu>
+        </>
+      )}
 
-      {/* Dropdown de Mantenimientos */}
-      <Button
-        color="secondary"
-        onClick={handleMantenimientosMenuOpen}
-        endIcon={<ArrowDropDownIcon />}
-      >
-        <Typography textAlign="center">Mantenimientos</Typography>
-      </Button>
-      <Menu
-        id="mantenimientos-menu"
-        anchorEl={anchorElMantenimientos}
-        open={isMantenimientosMenuOpen}
-        onClose={handleMantenimientosMenuClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-      >
-        {mantenimientosItems.map((item, index) => {
-          if (userData && item.roles) {
-            if (autorize({ requiredRoles: item.roles })) {
-              return (
-                <MenuItem
-                  key={index}
-                  component={Link}
-                  to={item.link}
-                  onClick={handleMantenimientosMenuClose}
-                >
-                  {item.name}
-                </MenuItem>
-              );
-            }
-            return null;
-          } else {
-            if (item.roles == null) {
-              return (
-                <MenuItem
-                  key={index}
-                  component={Link}
-                  to={item.link}
-                  onClick={handleMantenimientosMenuClose}
-                >
-                  {item.name}
-                </MenuItem>
-              );
-            }
-            return null;
-          }
-        })}
-      </Menu>
+      {/* Dropdown de Mantenimientos - Solo visible para Administrador */}
+      {userData && autorize({ requiredRoles: ["Administrador"] }) && (
+        <>
+          <Button
+            color="secondary"
+            onClick={handleMantenimientosMenuOpen}
+            endIcon={<ArrowDropDownIcon />}
+          >
+            <Typography textAlign="center">Mantenimientos</Typography>
+          </Button>
+          <Menu
+            id="mantenimientos-menu"
+            anchorEl={anchorElMantenimientos}
+            open={isMantenimientosMenuOpen}
+            onClose={handleMantenimientosMenuClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            {mantenimientosItems.map((item, index) => {
+              if (userData && item.roles) {
+                if (autorize({ requiredRoles: item.roles })) {
+                  return (
+                    <MenuItem
+                      key={index}
+                      component={Link}
+                      to={item.link}
+                      onClick={handleMantenimientosMenuClose}
+                    >
+                      {item.name}
+                    </MenuItem>
+                  );
+                }
+                return null;
+              } else {
+                if (item.roles == null) {
+                  return (
+                    <MenuItem
+                      key={index}
+                      component={Link}
+                      to={item.link}
+                      onClick={handleMantenimientosMenuClose}
+                    >
+                      {item.name}
+                    </MenuItem>
+                  );
+                }
+                return null;
+              }
+            })}
+          </Menu>
+        </>
+      )}
 
       {/* Otros botones del menú principal */}
       {navItems &&
@@ -287,88 +282,98 @@ export default function Header() {
   //Menu Principal responsivo
   const menuPrincipalMobile = (
     <>
-      {/* Items del dropdown Listas en versión móvil */}
-      <MenuItem disabled>
-        <Typography sx={{ fontWeight: "bold", color: "primary.main" }}>
-          Listas
-        </Typography>
-      </MenuItem>
-      {listasItems.map((item, index) => {
-        if (userData && item.roles) {
-          if (autorize({ requiredRoles: item.roles })) {
-            return (
-              <MenuItem
-                key={`listas-${index}`}
-                component={Link}
-                to={item.link}
-                sx={{ pl: 4 }}
-              >
-                <Typography sx={{ textAlign: "center" }}>
-                  {item.name}
-                </Typography>
-              </MenuItem>
-            );
-          }
-        } else {
-          if (item.roles == null) {
-            return (
-              <MenuItem
-                key={`listas-${index}`}
-                component={Link}
-                to={item.link}
-                sx={{ pl: 4 }}
-              >
-                <Typography sx={{ textAlign: "center" }}>
-                  {item.name}
-                </Typography>
-              </MenuItem>
-            );
-          }
-        }
-      })}
-      {/* Separador */}
-      <MenuItem disabled sx={{ height: 8 }} />
-      {/* Items del dropdown Mantenimientos en versión móvil */}
-      <MenuItem disabled>
-        <Typography sx={{ fontWeight: "bold", color: "primary.main" }}>
-          Mantenimientos
-        </Typography>
-      </MenuItem>
-      {mantenimientosItems.map((item, index) => {
-        if (userData && item.roles) {
-          if (autorize({ requiredRoles: item.roles })) {
-            return (
-              <MenuItem
-                key={`mantenimientos-${index}`}
-                component={Link}
-                to={item.link}
-                sx={{ pl: 4 }}
-              >
-                <Typography sx={{ textAlign: "center" }}>
-                  {item.name}
-                </Typography>
-              </MenuItem>
-            );
-          }
-        } else {
-          if (item.roles == null) {
-            return (
-              <MenuItem
-                key={`mantenimientos-${index}`}
-                component={Link}
-                to={item.link}
-                sx={{ pl: 4 }}
-              >
-                <Typography sx={{ textAlign: "center" }}>
-                  {item.name}
-                </Typography>
-              </MenuItem>
-            );
-          }
-        }
-      })}
-      {/* Separador */}
-      <MenuItem disabled sx={{ height: 8 }} />
+      {/* Items del dropdown Listas en versión móvil - Solo para usuarios autenticados */}
+      {userData && Object.keys(userData).length > 0 && (
+        <>
+          <MenuItem disabled>
+            <Typography sx={{ fontWeight: "bold", color: "primary.main" }}>
+              Listas
+            </Typography>
+          </MenuItem>
+          {listasItems.map((item, index) => {
+            if (userData && item.roles) {
+              if (autorize({ requiredRoles: item.roles })) {
+                return (
+                  <MenuItem
+                    key={`listas-${index}`}
+                    component={Link}
+                    to={item.link}
+                    sx={{ pl: 4 }}
+                  >
+                    <Typography sx={{ textAlign: "center" }}>
+                      {item.name}
+                    </Typography>
+                  </MenuItem>
+                );
+              }
+            } else {
+              if (item.roles == null) {
+                return (
+                  <MenuItem
+                    key={`listas-${index}`}
+                    component={Link}
+                    to={item.link}
+                    sx={{ pl: 4 }}
+                  >
+                    <Typography sx={{ textAlign: "center" }}>
+                      {item.name}
+                    </Typography>
+                  </MenuItem>
+                );
+              }
+            }
+          })}
+          {/* Separador */}
+          <MenuItem disabled sx={{ height: 8 }} />
+        </>
+      )}
+
+      {/* Items del dropdown Mantenimientos en versión móvil - Solo para Administrador */}
+      {userData && autorize({ requiredRoles: ["Administrador"] }) && (
+        <>
+          <MenuItem disabled>
+            <Typography sx={{ fontWeight: "bold", color: "primary.main" }}>
+              Mantenimientos
+            </Typography>
+          </MenuItem>
+          {mantenimientosItems.map((item, index) => {
+            if (userData && item.roles) {
+              if (autorize({ requiredRoles: item.roles })) {
+                return (
+                  <MenuItem
+                    key={`mantenimientos-${index}`}
+                    component={Link}
+                    to={item.link}
+                    sx={{ pl: 4 }}
+                  >
+                    <Typography sx={{ textAlign: "center" }}>
+                      {item.name}
+                    </Typography>
+                  </MenuItem>
+                );
+              }
+            } else {
+              if (item.roles == null) {
+                return (
+                  <MenuItem
+                    key={`mantenimientos-${index}`}
+                    component={Link}
+                    to={item.link}
+                    sx={{ pl: 4 }}
+                  >
+                    <Typography sx={{ textAlign: "center" }}>
+                      {item.name}
+                    </Typography>
+                  </MenuItem>
+                );
+              }
+            }
+          })}
+          {/* Separador */}
+          <MenuItem disabled sx={{ height: 8 }} />
+        </>
+      )}
+
       {/* Otros items del menú */}
       {navItems.map((page, index) => {
         if (userData && page.roles) {
@@ -459,51 +464,6 @@ export default function Header() {
       </Menu>
     </Box>
   );
-  //Identificador menu opciones
-  const menuOpcionesId = "badge-menu-mobile";
-  //Menu opciones responsivo
-  const menuOpcionesMobile = (
-    <Menu
-      anchorEl={mobileOpcionesAnchorEl}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "right",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuOpcionesId}
-      keepMounted
-      open={isMobileOpcionesMenuOpen}
-      onClose={handleOpcionesMenuClose}
-    >
-      <MenuItem sx={{ justifyContent: "center" }}>
-        <LanguageSwitcher />
-      </MenuItem>
-      <MenuItem>
-        <IconButton size="large" color="inherit">
-          <Badge
-            badgeContent={getCountItems(cart)}
-            color="primary"
-            component={Link}
-            to="/rental/crear/"
-          >
-            <ShoppingCartIcon />
-          </Badge>
-        </IconButton>
-        <p>Compras</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton size="large" color="inherit">
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notificaciones</p>
-      </MenuItem>
-    </Menu>
-  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -513,34 +473,6 @@ export default function Header() {
         sx={{ backgroundColor: "primaryLight.main" }}
       >
         <Toolbar>
-          <IconButton
-            size="large"
-            color="inherit"
-            aria-controls={menuIdPrincipal}
-            aria-haspopup="true"
-            sx={{ mr: 2 }}
-            onClick={handleOpenPrincipalMenu}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Menu
-            id={menuIdPrincipal}
-            anchorEl={anchorElPrincipal}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "left",
-            }}
-            open={Boolean(anchorElPrincipal)}
-            onClose={handleClosePrincipalMenu}
-            sx={{ display: { xs: "block", md: "none" } }}
-          >
-            {menuPrincipalMobile}
-          </Menu>
           {/* Enlace página inicio */}
           <Tooltip title="Casos CopyVet">
             <IconButton
@@ -561,38 +493,10 @@ export default function Header() {
             sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
           >
             <LanguageSwitcher />
-            <IconButton size="large" color="inherit">
-              <Badge
-                badgeContent={getCountItems(cart)}
-                color="primary"
-                component={Link}
-                to="/rental/crear/"
-              >
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-            <IconButton size="large" color="inherit">
-              <Badge badgeContent={ticketsCount} color="primary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
           </Box>
           <div>{userMenu}</div>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={menuOpcionesId}
-              aria-haspopup="true"
-              onClick={handleOpcionesMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
         </Toolbar>
       </AppBar>
-      {menuOpcionesMobile}
     </Box>
   );
 }

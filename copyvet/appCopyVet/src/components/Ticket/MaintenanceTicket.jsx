@@ -30,9 +30,6 @@ import MascotaService from "../../services/MascotaService";
 import ImageService from "../../services/ImageService";
 import { UserContext } from "../../context/UserContext";
 
-// ID temporal para pruebas (Admin: 1, Veterinario: 6, Cliente: 12)
-const USUARIO_TEMP_ID = 1; // Cambiar según prueba
-
 // eslint-disable-next-line react/prop-types
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -52,7 +49,7 @@ export default function MaintenanceTicket() {
   const userContext = useContext(UserContext);
   const userDecoded = userContext?.decodeToken() || {};
   const userRole = userDecoded?.rol || "Cliente";
-  const userId = userDecoded?.id_usuario || USUARIO_TEMP_ID;
+  const userId = userDecoded?.id_usuario || userDecoded?.sub || userDecoded?.id;
 
   const [currentTab, setCurrentTab] = useState(0);
   const [catalogosLoaded, setCatalogosLoaded] = useState(false);
@@ -664,7 +661,9 @@ export default function MaintenanceTicket() {
             aria-label="Tabs de mantenimiento de tickets"
           >
             <Tab label="Crear" id="maintenance-tab-0" />
-            <Tab label="Actualizar" id="maintenance-tab-1" />
+            {userRole !== "Cliente" && (
+              <Tab label="Actualizar" id="maintenance-tab-1" />
+            )}
           </Tabs>
         </Box>
 

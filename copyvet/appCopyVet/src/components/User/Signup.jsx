@@ -24,8 +24,6 @@ export function Signup() {
       .email("Formato email"),
     password: yup.string().required("El password es requerido"),
     telefono: yup.string().nullable(),
-    id_rol: yup.number().required("El rol es requerido"),
-    especialidad: yup.string().nullable(),
   });
   const {
     control,
@@ -39,8 +37,6 @@ export function Signup() {
       email: "",
       password: "",
       telefono: "",
-      id_rol: 4,
-      especialidad: "",
     },
     // Asignación de validaciones
     resolver: yupResolver(loginSchema),
@@ -56,11 +52,14 @@ export function Signup() {
   const onSubmit = (DataForm) => {
     try {
       console.log(DataForm);
-      //Registrar usuario
-      // Asegurar que el id_rol sea 4
+      //Registrar usuario - Cliente siempre sin especialidad
       const userData = {
         ...DataForm,
         id_rol: 4,
+        telefono:
+          DataForm.telefono && DataForm.telefono.trim() !== ""
+            ? DataForm.telefono
+            : "",
       };
       console.log("Datos a enviar:", userData);
       UserService.createUser(userData)
@@ -70,14 +69,26 @@ export function Signup() {
           return navigate("/user/login/");
         })
         .catch((error) => {
-          if (error instanceof SyntaxError) {
+          console.error("Error al crear usuario:", error);
+          if (error.response) {
+            // Error de respuesta del servidor
+            setError(
+              new Error(
+                error.response.data?.message || "Error al crear usuario"
+              )
+            );
+          } else if (error instanceof SyntaxError) {
             console.log(error);
             setError(error);
             throw new Error("Respuesta no válida del servidor");
+          } else {
+            setError(new Error("Error al crear usuario"));
           }
         });
     } catch (e) {
       // handle your error
+      console.error("Error en onSubmit:", e);
+      setError(e);
     }
   };
 
@@ -141,7 +152,7 @@ export function Signup() {
                   <TextField
                     {...field}
                     id="telefono"
-                    label="Teléfono (opcional)"
+                    label="Teléfono"
                     error={Boolean(errors.telefono)}
                     helperText={errors.telefono ? errors.telefono.message : " "}
                   />
@@ -174,7 +185,7 @@ export function Signup() {
               color="secondary"
               sx={{ m: 1 }}
             >
-              Login
+              Registrar
             </Button>
           </Grid>
         </Grid>

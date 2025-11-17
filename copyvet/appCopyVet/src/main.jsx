@@ -31,7 +31,6 @@ import ListCategories from "./components/Category/ListCategories";
 import DetailCategory from "./components/Category/DetailCategory";
 import ListTickets from "./components/Ticket/ListTickets";
 import DetailTicket from "./components/Ticket/DetailTicket";
-import CreateTicket from "./components/Ticket/CreateTicket";
 import MaintenanceTicket from "./components/Ticket/MaintenanceTicket";
 import AssignmentsBoard from "./components/Assignment/AssignmentsBoard";
 import MaintenanceVeterinarian from "./components/Veterinarian/MaintenanceVeterinarian";
@@ -122,55 +121,80 @@ const rutas = createBrowserRouter([
         path: "/user/create",
         element: <Signup />,
       },
-      // Rutas CopyVet
+      // Rutas CopyVet - Acceso según roles
+
+      // Rutas para todos los usuarios autenticados
       {
-        path: "/veterinarians",
-        element: <ListVeterinarians />,
+        path: "/",
+        element: (
+          <Auth requiredRoles={["Administrador", "Veterinario", "Cliente"]} />
+        ),
+        children: [
+          {
+            path: "/tickets",
+            element: <ListTickets />,
+          },
+          {
+            path: "/ticket/:id",
+            element: <DetailTicket />,
+          },
+          {
+            path: "/ticket/create",
+            element: <MaintenanceTicket />,
+          },
+        ],
       },
+
+      // Rutas solo para Administrador y Veterinario
       {
-        path: "/veterinarian/:id",
-        element: <DetailVeterinarian />,
+        path: "/",
+        element: <Auth requiredRoles={["Administrador", "Veterinario"]} />,
+        children: [
+          {
+            path: "/calendar",
+            element: <Calendar />,
+          },
+          {
+            path: "/assignments",
+            element: <AssignmentsBoard />,
+          },
+        ],
       },
+
+      // Rutas solo para Administrador
       {
-        path: "/categories",
-        element: <ListCategories />,
-      },
-      {
-        path: "/category/:id",
-        element: <DetailCategory />,
-      },
-      {
-        path: "/tickets",
-        element: <ListTickets />,
-      },
-      {
-        path: "/ticket/:id",
-        element: <DetailTicket />,
-      },
-      {
-        path: "/ticket/create",
-        element: <CreateTicket />,
-      },
-      {
-        path: "/assignments",
-        element: <AssignmentsBoard />,
-      },
-      {
-        path: "/calendar",
-        element: <Calendar />,
-      },
-      // Rutas de Mantenimiento
-      {
-        path: "/maintenance/tickets",
-        element: <MaintenanceTicket />,
-      },
-      {
-        path: "/maintenance/veterinarians",
-        element: <MaintenanceVeterinarian />,
-      },
-      {
-        path: "/maintenance/categories",
-        element: <MaintenanceCategory />,
+        path: "/",
+        element: <Auth requiredRoles={["Administrador"]} />,
+        children: [
+          {
+            path: "/veterinarians",
+            element: <ListVeterinarians />,
+          },
+          {
+            path: "/veterinarian/:id",
+            element: <DetailVeterinarian />,
+          },
+          {
+            path: "/categories",
+            element: <ListCategories />,
+          },
+          {
+            path: "/category/:id",
+            element: <DetailCategory />,
+          },
+          {
+            path: "/maintenance/tickets",
+            element: <MaintenanceTicket />,
+          },
+          {
+            path: "/maintenance/veterinarians",
+            element: <MaintenanceVeterinarian />,
+          },
+          {
+            path: "/maintenance/categories",
+            element: <MaintenanceCategory />,
+          },
+        ],
       },
     ],
   },
