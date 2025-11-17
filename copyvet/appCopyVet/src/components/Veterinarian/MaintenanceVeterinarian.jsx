@@ -27,7 +27,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonIcon from "@mui/icons-material/Person";
 import VeterinarioService from "../../services/VeterinarioService";
-import CategoryService from "../../services/CategoryService";
+import SpecialtyService from "../../services/SpecialtyService";
 
 // eslint-disable-next-line react/prop-types
 function TabPanel({ children, value, index, ...other }) {
@@ -74,8 +74,6 @@ export default function MaintenanceVeterinarian() {
   const [especialidadesDisponibles, setEspecialidadesDisponibles] = useState(
     []
   );
-  const [, setEtiquetasDisponibles] = useState([]);
-  const [, setCategorias] = useState([]);
   const [loadingCatalogos, setLoadingCatalogos] = useState(true);
 
   // Estados para notificaciones
@@ -98,11 +96,7 @@ export default function MaintenanceVeterinarian() {
     try {
       setLoadingCatalogos(true);
 
-      const baseUrl =
-        import.meta.env.VITE_BASE_URL || window.location.origin + "/copyvet/";
-
       console.log("Iniciando carga de catálogos...");
-      console.log("Base URL configurada:", baseUrl);
 
       // Cargar veterinarios existentes
       try {
@@ -120,10 +114,6 @@ export default function MaintenanceVeterinarian() {
         }
       } catch (vetError) {
         console.error("Error cargando veterinarios:", vetError);
-        console.error(
-          "Detalle del error:",
-          vetError.response || vetError.message
-        );
         setVeterinarios([]);
         showSnackbar(
           `Error cargando veterinarios: ${vetError.message}`,
@@ -131,115 +121,30 @@ export default function MaintenanceVeterinarian() {
         );
       }
 
-      // Cargar categorías existentes para extraer especialidades
-      let categoriasData = [];
+      // Cargar especialidades desde el servicio
       try {
-        console.log("Cargando categorías...");
-        const catResponse = await CategoryService.list();
-        console.log("Respuesta categorías:", catResponse);
-        if (catResponse && catResponse.data) {
-          categoriasData = Array.isArray(catResponse.data)
-            ? catResponse.data
+        console.log("Cargando especialidades...");
+        const espResponse = await SpecialtyService.list();
+        if (espResponse && espResponse.data) {
+          const especialidades = Array.isArray(espResponse.data)
+            ? espResponse.data
             : [];
-          setCategorias(categoriasData);
-          console.log("Categorías cargadas:", categoriasData.length);
+          setEspecialidadesDisponibles(especialidades);
+          console.log("Especialidades cargadas:", especialidades.length);
         } else {
-          console.warn("Respuesta de categorías no tiene data:", catResponse);
-          setCategorias([]);
-        }
-      } catch (catError) {
-        console.error("Error cargando categorías:", catError);
-        console.error(
-          "Detalle del error:",
-          catError.response || catError.message
-        );
-        setCategorias([]);
-        showSnackbar(
-          `Error cargando categorías: ${catError.message}`,
-          "warning"
-        );
-      }
-
-      // Cargar especialidades directamente desde el endpoint
-      let especialidadesDirectas = [];
-      try {
-        const espResponse = await fetch(baseUrl + "especialidad");
-        console.log("Status especialidades:", espResponse.status);
-        if (espResponse.ok) {
-          const espData = await espResponse.json();
-          console.log("Datos especialidades:", espData);
-          especialidadesDirectas = Array.isArray(espData)
-            ? espData.map((e) => e.nombre_especialidad).filter((esp) => esp)
-            : [];
+          console.warn(
+            "Respuesta de especialidades no tiene data:",
+            espResponse
+          );
+          setEspecialidadesDisponibles([]);
         }
       } catch (espError) {
         console.error("Error cargando especialidades:", espError);
-      }
-
-      // Extraer especialidades de las categorías existentes
-      const especialidadesDeCategorias = [];
-      categoriasData.forEach((categoria) => {
-        if (
-          categoria.especialidades &&
-          Array.isArray(categoria.especialidades)
-        ) {
-          especialidadesDeCategorias.push(...categoria.especialidades);
-        }
-      });
-
-      // Combinar todas las especialidades y eliminar duplicados
-      const todasEspecialidades = [
-        ...especialidadesDirectas,
-        ...especialidadesDeCategorias,
-      ];
-      const especialidadesUnicas = [...new Set(todasEspecialidades)]
-        .filter((esp) => esp && esp.trim() !== "")
-        .sort();
-
-      console.log("Especialidades directas:", especialidadesDirectas);
-      console.log("Especialidades de categorías:", especialidadesDeCategorias);
-      console.log("Especialidades finales:", especialidadesUnicas);
-
-      // Si no se pudieron cargar especialidades de ninguna fuente, usar especialidades por defecto
-      if (especialidadesUnicas.length === 0) {
-        const especialidadesPorDefecto = [
-          "Medicina General",
-          "Cirugía",
-          "Dermatología",
-          "Cardiología",
-          "Oftalmología",
-          "Oncología",
-          "Neurología",
-          "Traumatología",
-          "Medicina Interna",
-          "Urgencias",
-        ];
-        setEspecialidadesDisponibles(especialidadesPorDefecto);
-        console.log(
-          "Usando especialidades por defecto:",
-          especialidadesPorDefecto
+        setEspecialidadesDisponibles([]);
+        showSnackbar(
+          `Error cargando especialidades: ${espError.message}`,
+          "warning"
         );
-        showSnackbar("Se cargaron especialidades por defecto", "info");
-      } else {
-        setEspecialidadesDisponibles(especialidadesUnicas);
-      }
-
-      // Cargar etiquetas disponibles
-      try {
-        const etiqResponse = await fetch(baseUrl + "etiqueta");
-        console.log("Status etiquetas:", etiqResponse.status);
-        if (etiqResponse.ok) {
-          const etiqData = await etiqResponse.json();
-          console.log("Datos etiquetas:", etiqData);
-          setEtiquetasDisponibles(
-            Array.isArray(etiqData)
-              ? etiqData.map((e) => e.nombre_etiqueta).filter((etq) => etq)
-              : []
-          );
-        }
-      } catch (etiqError) {
-        console.error("Error cargando etiquetas:", etiqError);
-        setEtiquetasDisponibles([]);
       }
 
       console.log("Carga de catálogos completada");
@@ -358,6 +263,14 @@ export default function MaintenanceVeterinarian() {
 
   // Manejo de cambios en formulario Actualizar
   const handleUpdateChange = (field, value) => {
+    if (field === "especialidades") {
+      console.log("handleUpdateChange - especialidades:", value);
+      console.log(
+        "Tipos:",
+        value.map((v) => typeof v)
+      );
+      console.log("Estado actual:", updateForm.especialidades);
+    }
     setUpdateForm({ ...updateForm, [field]: value });
 
     // Validación en tiempo real para email duplicado (excluyendo el veterinario actual)
@@ -401,7 +314,8 @@ export default function MaintenanceVeterinarian() {
         nombre_veterinario: createForm.nombre_veterinario.trim(),
         email: createForm.email.trim(),
         telefono: createForm.telefono.trim(),
-        especialidades: createForm.especialidades,
+        // Convertir especialidades a números para el backend
+        especialidades: createForm.especialidades.map((id) => parseInt(id)),
         activo: createForm.activo,
       };
 
@@ -453,13 +367,18 @@ export default function MaintenanceVeterinarian() {
       const response = await VeterinarioService.get(id);
       const veterinario = response.data;
 
+      // Normalizar especialidades_ids a strings para que coincidan con los valores del select
+      const especialidadesNormalizadas = (
+        veterinario.especialidades_ids || []
+      ).map((id) => String(id));
+
       setUpdateForm({
         id_veterinario: veterinario.id_veterinario,
         nombre_veterinario: veterinario.nombre_veterinario || "",
         email: veterinario.email || "",
         telefono: veterinario.telefono || "",
         cedula: veterinario.cedula || "",
-        especialidades: veterinario.especialidades || [],
+        especialidades: especialidadesNormalizadas,
         activo: veterinario.activo == 1 || veterinario.activo === true,
         carga_actual: parseInt(veterinario.carga_actual) || 0,
         tickets_asignados: veterinario.tickets_asignados || [],
@@ -485,7 +404,8 @@ export default function MaintenanceVeterinarian() {
         email: updateForm.email,
         telefono: updateForm.telefono,
         cedula: updateForm.cedula,
-        especialidades: updateForm.especialidades,
+        // Convertir especialidades a números para el backend
+        especialidades: updateForm.especialidades.map((id) => parseInt(id)),
         activo: updateForm.activo,
       };
 
@@ -584,22 +504,30 @@ export default function MaintenanceVeterinarian() {
                   input={<OutlinedInput label="Especialidades *" />}
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip
-                          key={value}
-                          label={value}
-                          size="small"
-                          color="primary"
-                        />
-                      ))}
+                      {selected.map((value) => {
+                        const esp = especialidadesDisponibles.find(
+                          (e) => String(e.id_especialidad) === String(value)
+                        );
+                        return (
+                          <Chip
+                            key={value}
+                            label={esp?.nombre_especialidad || value}
+                            size="small"
+                            color="primary"
+                          />
+                        );
+                      })}
                     </Box>
                   )}
                 >
-                  {especialidadesDisponibles.map((esp) => (
-                    <MenuItem key={esp} value={esp}>
-                      {esp}
-                    </MenuItem>
-                  ))}
+                  {especialidadesDisponibles.map((esp) => {
+                    const valueString = String(esp.id_especialidad);
+                    return (
+                      <MenuItem key={esp.id_especialidad} value={valueString}>
+                        {esp.nombre_especialidad}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
                 {errors.especialidades && (
                   <Typography
@@ -785,22 +713,33 @@ export default function MaintenanceVeterinarian() {
                         <Box
                           sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
                         >
-                          {selected.map((value) => (
-                            <Chip
-                              key={value}
-                              label={value}
-                              size="small"
-                              color="primary"
-                            />
-                          ))}
+                          {selected.map((value) => {
+                            const esp = especialidadesDisponibles.find(
+                              (e) => String(e.id_especialidad) === String(value)
+                            );
+                            return (
+                              <Chip
+                                key={value}
+                                label={esp?.nombre_especialidad || value}
+                                size="small"
+                                color="primary"
+                              />
+                            );
+                          })}
                         </Box>
                       )}
                     >
-                      {especialidadesDisponibles.map((esp) => (
-                        <MenuItem key={esp} value={esp}>
-                          {esp}
-                        </MenuItem>
-                      ))}
+                      {especialidadesDisponibles.map((esp) => {
+                        const valueString = String(esp.id_especialidad);
+                        return (
+                          <MenuItem
+                            key={esp.id_especialidad}
+                            value={valueString}
+                          >
+                            {esp.nombre_especialidad}
+                          </MenuItem>
+                        );
+                      })}
                     </Select>
                     {errors.especialidades && (
                       <Typography

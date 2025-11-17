@@ -77,6 +77,9 @@ class VeterinarioModel
                 // Cargar especialidades desde la tabla de relación
                 $veterinario->especialidades = $this->getEspecialidades($id);
 
+                // Cargar IDs de especialidades para el formulario de edición
+                $veterinario->especialidades_ids = $this->getEspecialidadesIds($id);
+
                 // Obtener tickets asignados
                 $veterinario->tickets_asignados = $this->getTicketsAsignados($id);
 
@@ -89,7 +92,7 @@ class VeterinarioModel
         }
     }
 
-    // Obtener especialidades de un veterinario
+    // Obtener especialidades de un veterinario (nombres para mostrar)
     private function getEspecialidades($id_veterinario)
     {
         try {
@@ -107,6 +110,29 @@ class VeterinarioModel
                 }
             }
             return $especialidades;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
+    // Obtener IDs de especialidades de un veterinario (para formulario de edición)
+    private function getEspecialidadesIds($id_veterinario)
+    {
+        try {
+            $vSql = "SELECT e.id_especialidad, e.nombre_especialidad 
+                    FROM especialidades e
+                    INNER JOIN veterinario_especialidades ve ON e.id_especialidad = ve.id_especialidad
+                    WHERE ve.id_veterinario = $id_veterinario
+                    ORDER BY e.nombre_especialidad;";
+            $resultado = $this->enlace->ExecuteSQL($vSql);
+
+            $ids = [];
+            if (is_array($resultado)) {
+                foreach ($resultado as $row) {
+                    $ids[] = (int)$row->id_especialidad;
+                }
+            }
+            return $ids;
         } catch (Exception $e) {
             return [];
         }
@@ -159,14 +185,6 @@ class VeterinarioModel
                 throw new Exception("Ya existe un usuario con este email");
             }
 
-            // Convertir array de especialidades a string
-            $especialidades_str = '';
-            if (isset($data->especialidades) && is_array($data->especialidades)) {
-                $especialidades_str = implode(', ', $data->especialidades);
-            } elseif (isset($data->especialidades)) {
-                $especialidades_str = $data->especialidades;
-            }
-
             // Generar contraseña temporal (email sin dominio)
             $password_temp = explode('@', $data->email)[0] . '123';
             $password_hash = password_hash($password_temp, PASSWORD_BCRYPT);
@@ -176,13 +194,18 @@ class VeterinarioModel
             $estado = isset($data->activo) ? ($data->activo ? 'TRUE' : 'FALSE') : 'TRUE';
             $carga_maxima = isset($data->carga_maxima) ? (int)$data->carga_maxima : 24;
 
-            // Insertar veterinario (usuario con rol 2)
-            $vSql = "INSERT INTO usuarios (nombre_completo, email, password, telefono, id_rol, especialidad, estado, carga_maxima) 
-                     VALUES ('$data->nombre_veterinario', '$data->email', '$password_hash', '$telefono', 2, '$especialidades_str', $estado, $carga_maxima)";
+            // Insertar veterinario (usuario con rol 2) - sin columna especialidad
+            $vSql = "INSERT INTO usuarios (nombre_completo, email, password, telefono, id_rol, estado) 
+                     VALUES ('$data->nombre_veterinario', '$data->email', '$password_hash', '$telefono', 2, $estado)";
 
             $id_veterinario = $this->enlace->executeSQL_DML_last($vSql);
 
             if ($id_veterinario) {
+                // Insertar especialidades en tabla de relación
+                if (isset($data->especialidades) && is_array($data->especialidades) && count($data->especialidades) > 0) {
+                    $this->guardarEspecialidades($id_veterinario, $data->especialidades);
+                }
+
                 return [
                     'id' => $id_veterinario,
                     'success' => true,
@@ -221,27 +244,27 @@ class VeterinarioModel
                 throw new Exception("Ya existe otro usuario con este email");
             }
 
-            // Convertir array de especialidades a string
-            $especialidades_str = '';
-            if (isset($data->especialidades) && is_array($data->especialidades)) {
-                $especialidades_str = implode(', ', $data->especialidades);
-            } elseif (isset($data->especialidades)) {
-                $especialidades_str = $data->especialidades;
-            }
-
-            // Actualizar veterinario
+            // Actualizar veterinario - sin columna especialidad
             $vSql = "UPDATE usuarios SET 
                         nombre_completo = '$data->nombre_veterinario',
                         email = '$data->email',
                         telefono = '$telefono',
-                        especialidad = '$especialidades_str',
-                        estado = $estado,
-                        carga_maxima = $carga_maxima
+                        estado = $estado
                      WHERE id_usuario = $id_veterinario AND id_rol = 2";
 
             $vResultado = $this->enlace->executeSQL_DML($vSql);
 
             if ($vResultado !== false) {
+                // Actualizar especialidades en tabla de relación
+                if (isset($data->especialidades) && is_array($data->especialidades)) {
+                    // Primero eliminar las especialidades existentes
+                    $this->enlace->executeSQL_DML("DELETE FROM veterinario_especialidades WHERE id_veterinario = $id_veterinario");
+                    // Luego insertar las nuevas
+                    if (count($data->especialidades) > 0) {
+                        $this->guardarEspecialidades($id_veterinario, $data->especialidades);
+                    }
+                }
+
                 return ['success' => true, 'message' => 'Veterinario actualizado exitosamente'];
             } else {
                 throw new Exception("Error al actualizar el veterinario o el veterinario no existe");
@@ -249,6 +272,22 @@ class VeterinarioModel
         } catch (Exception $e) {
             error_log("Error en VeterinarioModel::update: " . $e->getMessage());
             throw new Exception("Error al actualizar veterinario: " . $e->getMessage());
+        }
+    }
+
+    // Guardar especialidades en tabla de relación
+    private function guardarEspecialidades($id_veterinario, $especialidades)
+    {
+        try {
+            foreach ($especialidades as $id_especialidad) {
+                $id_esp = (int)$id_especialidad;
+                $vSql = "INSERT INTO veterinario_especialidades (id_veterinario, id_especialidad) 
+                         VALUES ($id_veterinario, $id_esp)";
+                $this->enlace->executeSQL_DML($vSql);
+            }
+        } catch (Exception $e) {
+            error_log("Error al guardar especialidades: " . $e->getMessage());
+            throw $e;
         }
     }
 

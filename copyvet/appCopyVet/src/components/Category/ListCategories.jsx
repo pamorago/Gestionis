@@ -45,20 +45,14 @@ export default function ListCategories() {
     return "🏥";
   };
 
-  // Etiquetas según categoría (Tipo de servicio + Urgencia)
-  const getServiceTags = (categoria) => {
-    const cat = categoria?.toLowerCase();
-    if (cat?.includes("vacun")) return ["Preventivo", "Programable"];
-    if (cat?.includes("cirugía mayor")) return ["Quirúrgico", "Urgente"];
-    if (cat?.includes("cirugía menor")) return ["Quirúrgico", "Programable"];
-    if (cat?.includes("desparasit")) return ["Preventivo", "Programable"];
-    if (cat?.includes("consulta")) return ["Diagnóstico", "Programable"];
-    if (cat?.includes("emergencia")) return ["Urgente", "Inmediato"];
-    if (cat?.includes("exótica")) return ["Especializado", "Programable"];
-    if (cat?.includes("dermatolog")) return ["Especializado", "Programable"];
-    if (cat?.includes("traumatolog")) return ["Especializado", "Urgente"];
-    if (cat?.includes("control")) return ["Preventivo", "Programable"];
-    return ["General", "Programable"];
+  // Obtener color de etiqueta
+  const getTagColor = (etiqueta) => {
+    const tag = etiqueta?.toLowerCase();
+    if (tag?.includes("urgente") || tag?.includes("emergencia")) return "error";
+    if (tag?.includes("preventivo")) return "success";
+    if (tag?.includes("tratamiento")) return "warning";
+    if (tag?.includes("seguimiento")) return "info";
+    return "primary";
   };
 
   // Convertir minutos a formato legible
@@ -113,28 +107,24 @@ export default function ListCategories() {
                     </Typography>
                   </Box>
 
-                  {/* Etiquetas */}
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{ mb: 2, flexWrap: "wrap", gap: 0.5 }}
-                  >
-                    {getServiceTags(c.nombre_categoria).map((tag, index) => (
-                      <Chip
-                        key={index}
-                        label={tag}
-                        size="small"
-                        color={
-                          tag.includes("Urgente") || tag.includes("Inmediato")
-                            ? "error"
-                            : tag.includes("Especializado")
-                              ? "secondary"
-                              : "primary"
-                        }
-                        variant="outlined"
-                      />
-                    ))}
-                  </Stack>
+                  {/* Etiquetas reales desde el backend */}
+                  {c.etiquetas && c.etiquetas.length > 0 && (
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{ mb: 2, flexWrap: "wrap", gap: 0.5 }}
+                    >
+                      {c.etiquetas.map((etiqueta) => (
+                        <Chip
+                          key={etiqueta.id_etiqueta}
+                          label={etiqueta.nombre_etiqueta}
+                          size="small"
+                          color={getTagColor(etiqueta.nombre_etiqueta)}
+                          variant="outlined"
+                        />
+                      ))}
+                    </Stack>
+                  )}
 
                   {/* SLA Info */}
                   <Box

@@ -55,20 +55,14 @@ export default function DetailCategory() {
     return "🏥";
   };
 
-  // Etiquetas sugeridas (Tipo de servicio + Urgencia)
-  const getServiceTags = (categoria) => {
-    const cat = categoria?.toLowerCase();
-    if (cat?.includes("vacun")) return ["Preventivo", "Programable"];
-    if (cat?.includes("cirugía mayor")) return ["Quirúrgico", "Urgente"];
-    if (cat?.includes("cirugía menor")) return ["Quirúrgico", "Programable"];
-    if (cat?.includes("desparasit")) return ["Preventivo", "Programable"];
-    if (cat?.includes("consulta")) return ["Diagnóstico", "Programable"];
-    if (cat?.includes("emergencia")) return ["Urgente", "Inmediato"];
-    if (cat?.includes("exótica")) return ["Especializado", "Programable"];
-    if (cat?.includes("dermatolog")) return ["Especializado", "Programable"];
-    if (cat?.includes("traumatolog")) return ["Especializado", "Urgente"];
-    if (cat?.includes("control")) return ["Preventivo", "Programable"];
-    return ["General"];
+  // Obtener color de etiqueta
+  const getTagColor = (etiqueta) => {
+    const tag = etiqueta?.toLowerCase();
+    if (tag?.includes("urgente") || tag?.includes("emergencia")) return "error";
+    if (tag?.includes("preventivo")) return "success";
+    if (tag?.includes("tratamiento")) return "warning";
+    if (tag?.includes("seguimiento")) return "info";
+    return "primary";
   };
 
   return (
@@ -98,20 +92,45 @@ export default function DetailCategory() {
         </Typography>
       </Box>
 
-      {/* Etiquetas */}
-      <Box sx={{ mb: 3 }}>
-        <Stack direction="row" spacing={1}>
-          {getServiceTags(cat.nombre_categoria).map((tag, index) => (
-            <Chip
-              key={index}
-              label={tag}
-              color="primary"
-              variant="outlined"
-              size="medium"
-            />
-          ))}
-        </Stack>
-      </Box>
+      {/* Etiquetas reales desde el backend */}
+      {cat.etiquetas && cat.etiquetas.length > 0 && (
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+            🏷️ Etiquetas
+          </Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            {cat.etiquetas.map((etiqueta) => (
+              <Chip
+                key={etiqueta.id_etiqueta}
+                label={etiqueta.nombre_etiqueta}
+                color={getTagColor(etiqueta.nombre_etiqueta)}
+                variant="outlined"
+                size="medium"
+              />
+            ))}
+          </Stack>
+        </Box>
+      )}
+
+      {/* Especialidades reales desde el backend */}
+      {cat.especialidades && cat.especialidades.length > 0 && (
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+            ⚕️ Especialidades Requeridas
+          </Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            {cat.especialidades.map((especialidad, index) => (
+              <Chip
+                key={index}
+                label={especialidad}
+                color="secondary"
+                variant="filled"
+                size="medium"
+              />
+            ))}
+          </Stack>
+        </Box>
+      )}
 
       {/* Información en formato de párrafos */}
       <Paper sx={{ p: 3 }}>
