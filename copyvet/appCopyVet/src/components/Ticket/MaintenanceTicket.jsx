@@ -674,7 +674,8 @@ export default function MaintenanceTicket() {
 
         <TabPanel value={currentTab} index={0}>
           <Typography variant="h5" gutterBottom>
-            🎫 {t("ticket:maintenance.tabs.create")} {t("ticket:title")}
+            🎫 {t("ticket:maintenance.tabs.create")}{" "}
+            {t("ticket:maintenance.ticketNoun")}
           </Typography>
           <Grid container spacing={3} sx={{ mt: 1 }}>
             {/* Título */}
@@ -686,8 +687,7 @@ export default function MaintenanceTicket() {
                 onChange={(e) => handleCreateChange("titulo", e.target.value)}
                 error={!!errors.titulo}
                 helperText={
-                  errors.titulo ||
-                  "Breve descripción del problema (10-100 caracteres)"
+                  errors.titulo || t("ticket:maintenance.labels.titleHelper")
                 }
                 required
               />
@@ -707,7 +707,7 @@ export default function MaintenanceTicket() {
                 error={!!errors.descripcion}
                 helperText={
                   errors.descripcion ||
-                  "Describa detalladamente el problema o necesidad"
+                  t("ticket:maintenance.labels.descriptionHelper")
                 }
                 required
               />
@@ -791,9 +791,11 @@ export default function MaintenanceTicket() {
                   <TextField
                     fullWidth
                     label={t("ticket:appointmentDate")}
-                    value="Inmediato (Emergencia)"
+                    value={t("ticket:maintenance.labels.immediateEmergency")}
                     disabled
-                    helperText="Esta categoría requiere atención inmediata"
+                    helperText={t(
+                      "ticket:maintenance.labels.requiresImmediateAttention"
+                    )}
                   />
                 ) : (
                   <TextField
@@ -804,7 +806,7 @@ export default function MaintenanceTicket() {
                     onChange={(e) =>
                       handleCreateChange("fecha_cita", e.target.value)
                     }
-                    helperText="Seleccione fecha para la cita (hoy hasta 7 días)"
+                    helperText={t("ticket:maintenance.labels.selectDateHelper")}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -826,7 +828,7 @@ export default function MaintenanceTicket() {
                 color="text.secondary"
                 gutterBottom
               >
-                Etiquetas Asociadas
+                {t("ticket:maintenance.labels.associatedTags")}
               </Typography>
               <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                 {etiquetasDeCategoria.length > 0 ? (
@@ -842,7 +844,7 @@ export default function MaintenanceTicket() {
                   <Typography variant="body2" color="text.secondary">
                     {createForm.id_categoria
                       ? t("common:messages.loading")
-                      : "Seleccione una categoría para ver las etiquetas"}
+                      : t("ticket:maintenance.labels.selectCategoryToSeeTags")}
                   </Typography>
                 )}
               </Stack>
@@ -852,7 +854,9 @@ export default function MaintenanceTicket() {
             {(userRole === "Administrador" || userRole === "Veterinario") && (
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel>Asignar a Veterinario</InputLabel>
+                  <InputLabel>
+                    {t("ticket:maintenance.labels.assignVeterinarian")}
+                  </InputLabel>
                   <Select
                     value={
                       veterinariosDisponibles.length > 0
@@ -865,11 +869,11 @@ export default function MaintenanceTicket() {
                         e.target.value
                       )
                     }
-                    label="Asignar a Veterinario"
+                    label={t("ticket:maintenance.labels.assignVeterinarian")}
                     disabled={!createForm.id_categoria}
                   >
                     <MenuItem value="">
-                      <em>Sin asignar (se asignará automáticamente)</em>
+                      <em>{t("ticket:maintenance.labels.unassigned")}</em>
                     </MenuItem>
                     {veterinariosDisponibles.map((vet) => {
                       const especialidades = Array.isArray(vet.especialidades)
@@ -886,7 +890,8 @@ export default function MaintenanceTicket() {
                           key={vet.id_veterinario}
                           value={vet.id_veterinario}
                         >
-                          {vet.nombre_completo} - {especialidades} - Disponible:{" "}
+                          {vet.nombre_completo} - {especialidades} -{" "}
+                          {t("ticket:maintenance.labels.available")}:{" "}
                           {disponible}h
                         </MenuItem>
                       );
@@ -898,8 +903,7 @@ export default function MaintenanceTicket() {
                       color="text.secondary"
                       sx={{ mt: 0.5, ml: 2 }}
                     >
-                      Seleccione una categoría primero para filtrar veterinarios
-                      por especialidad
+                      {t("ticket:maintenance.labels.selectCategoryFirst")}
                     </Typography>
                   )}
                 </FormControl>
@@ -911,8 +915,8 @@ export default function MaintenanceTicket() {
               <Alert severity="info" sx={{ mb: 2 }}>
                 <Typography variant="subtitle2" gutterBottom>
                   {userRole === "Cliente"
-                    ? "Información del Solicitante (su usuario)"
-                    : "Seleccione el cliente que solicita el ticket"}
+                    ? t("ticket:maintenance.labels.requesterInfo")
+                    : t("ticket:maintenance.labels.selectClient")}
                 </Typography>
               </Alert>
             </Grid>
@@ -922,7 +926,9 @@ export default function MaintenanceTicket() {
               !loadingCatalogos && (
                 <Grid item xs={12}>
                   <FormControl fullWidth required>
-                    <InputLabel>Cliente Solicitante *</InputLabel>
+                    <InputLabel>
+                      {t("ticket:maintenance.labels.requesterClient")} *
+                    </InputLabel>
                     <Select
                       value={
                         clientes.length > 0
@@ -935,10 +941,12 @@ export default function MaintenanceTicket() {
                           e.target.value
                         )
                       }
-                      label="Cliente Solicitante *"
+                      label={`${t("ticket:maintenance.labels.requesterClient")} *`}
                     >
                       <MenuItem value="">
-                        <em>Seleccione un cliente</em>
+                        <em>
+                          {t("ticket:maintenance.labels.selectClientOption")}
+                        </em>
                       </MenuItem>
                       {clientes.map((cliente) => (
                         <MenuItem
@@ -958,20 +966,22 @@ export default function MaintenanceTicket() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Nombre Completo"
+                label={t("ticket:maintenance.labels.fullName")}
                 value={createForm.nombre_solicitante}
                 disabled
-                helperText="Solicitante asignado automáticamente"
+                helperText={t(
+                  "ticket:maintenance.labels.requesterAutoAssigned"
+                )}
               />
             </Grid>
 
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Correo Electrónico"
+                label={t("ticket:maintenance.labels.email")}
                 value={createForm.email_solicitante}
                 disabled
-                helperText="Contacto del solicitante"
+                helperText={t("ticket:maintenance.labels.requesterContact")}
               />
             </Grid>
 
@@ -979,10 +989,10 @@ export default function MaintenanceTicket() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Fecha de Creación"
+                label={t("ticket:maintenance.labels.creationDate")}
                 value={new Date().toLocaleString("es-ES")}
                 disabled
-                helperText="Se registra automáticamente al crear el ticket"
+                helperText={t("ticket:maintenance.labels.autoRegistered")}
               />
             </Grid>
 
@@ -990,42 +1000,30 @@ export default function MaintenanceTicket() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Estado Inicial"
-                value="Pendiente"
+                label={t("ticket:maintenance.labels.initialState")}
+                value={t("ticket:maintenance.labels.pending")}
                 disabled
-                helperText="El ticket inicia en estado Pendiente"
+                helperText={t("ticket:maintenance.labels.startsAsPending")}
               />
             </Grid>
 
             {/* Información de validaciones */}
             <Grid item xs={12}>
               <Alert severity="info">
-                <strong>Información importante:</strong>
+                <strong>{t("ticket:validation.importantInfo")}</strong>
                 <ul style={{ marginBottom: 0 }}>
-                  <li>Los campos marcados con (*) son obligatorios</li>
-                  <li>El título debe tener entre 10 y 100 caracteres</li>
-                  <li>La descripción es obligatoria y debe ser detallada</li>
-                  <li>
-                    Las etiquetas se asignan automáticamente según la categoría
-                    seleccionada
-                  </li>
+                  <li>{t("ticket:validation.requiredFields")}</li>
+                  <li>{t("ticket:validation.titleLength")}</li>
+                  <li>{t("ticket:validation.descriptionRequired")}</li>
+                  <li>{t("ticket:validation.tagsAutoAssigned")}</li>
                   {(userRole === "Administrador" ||
                     userRole === "Veterinario") && (
                     <>
-                      <li>
-                        Los veterinarios se filtran automáticamente por
-                        especialidad de la categoría
-                      </li>
-                      <li>
-                        Si no asigna veterinario, el sistema lo asignará al de
-                        menor carga
-                      </li>
+                      <li>{t("ticket:validation.vetsFiltered")}</li>
+                      <li>{t("ticket:validation.autoAssignVet")}</li>
                     </>
                   )}
-                  <li>
-                    El SLA de respuesta y resolución se calcularán
-                    automáticamente
-                  </li>
+                  <li>{t("ticket:validation.slaAutoCalculated")}</li>
                 </ul>
               </Alert>
             </Grid>
@@ -1033,7 +1031,7 @@ export default function MaintenanceTicket() {
             {/* Sección de Imágenes */}
             <Grid item xs={12}>
               <Typography variant="subtitle1" gutterBottom>
-                📷 Imágenes (Opcional - Máximo 5)
+                📷 {t("ticket:maintenance.labels.imagesOptional")}
               </Typography>
               <Button
                 variant="outlined"
@@ -1106,14 +1104,15 @@ export default function MaintenanceTicket() {
 
         <TabPanel value={currentTab} index={1}>
           <Typography variant="h5" gutterBottom>
-            ✏️ Actualizar Ticket
+            ✏️ {t("ticket:maintenance.tabs.update")}{" "}
+            {t("ticket:maintenance.ticketNoun")}
           </Typography>
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
             {/* Selector de Ticket */}
             <Grid item xs={12}>
               <FormControl fullWidth required>
-                <InputLabel>Seleccione un Ticket *</InputLabel>
+                <InputLabel>{t("ticket:fields.selectTicket")} *</InputLabel>
                 <Select
                   value={updateForm.id_ticket}
                   onChange={(e) => {
@@ -1123,10 +1122,10 @@ export default function MaintenanceTicket() {
                       cargarTicketParaEditar(ticketId);
                     }
                   }}
-                  label="Seleccione un Ticket *"
+                  label={`${t("ticket:fields.selectTicket")} *`}
                 >
                   <MenuItem value="">
-                    <em>Seleccione un ticket</em>
+                    <em>{t("ticket:fields.selectTicket")}</em>
                   </MenuItem>
                   {tickets.map((ticket) => (
                     <MenuItem key={ticket.id_ticket} value={ticket.id_ticket}>
@@ -1145,13 +1144,16 @@ export default function MaintenanceTicket() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Título *"
+                    label={`${t("ticket:title")} *`}
                     value={updateForm.titulo}
                     onChange={(e) =>
                       handleUpdateChange("titulo", e.target.value)
                     }
                     error={!!errors.titulo}
-                    helperText={errors.titulo || "10-100 caracteres"}
+                    helperText={
+                      errors.titulo ||
+                      t("ticket:maintenance.labels.titleHelper")
+                    }
                     required
                   />
                 </Grid>
@@ -1162,13 +1164,16 @@ export default function MaintenanceTicket() {
                     fullWidth
                     multiline
                     rows={4}
-                    label="Descripción *"
+                    label={`${t("ticket:description")} *`}
                     value={updateForm.descripcion}
                     onChange={(e) =>
                       handleUpdateChange("descripcion", e.target.value)
                     }
                     error={!!errors.descripcion}
-                    helperText={errors.descripcion || "Detalle del problema"}
+                    helperText={
+                      errors.descripcion ||
+                      t("ticket:maintenance.labels.descriptionHelper")
+                    }
                     required
                   />
                 </Grid>
@@ -1176,8 +1181,11 @@ export default function MaintenanceTicket() {
                 {/* Categoría */}
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth required disabled>
-                    <InputLabel>Categoría *</InputLabel>
-                    <Select value={updateForm.id_categoria} label="Categoría *">
+                    <InputLabel>{t("ticket:category")} *</InputLabel>
+                    <Select
+                      value={updateForm.id_categoria}
+                      label={`${t("ticket:category")} *`}
+                    >
                       {categorias.map((cat) => (
                         <MenuItem
                           key={cat.id_categoria}
@@ -1192,7 +1200,7 @@ export default function MaintenanceTicket() {
                       color="text.secondary"
                       sx={{ mt: 0.5, ml: 2 }}
                     >
-                      La categoría no se puede cambiar
+                      {t("ticket:maintenance.validation.categoryNoChange")}
                     </Typography>
                   </FormControl>
                 </Grid>
@@ -1200,13 +1208,13 @@ export default function MaintenanceTicket() {
                 {/* Estado */}
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth required>
-                    <InputLabel>Estado *</InputLabel>
+                    <InputLabel>{t("ticket:fields.state")} *</InputLabel>
                     <Select
                       value={updateForm.id_estado}
                       onChange={(e) =>
                         handleUpdateChange("id_estado", e.target.value)
                       }
-                      label="Estado *"
+                      label={`${t("ticket:fields.state")} *`}
                     >
                       {estados.map((est) => (
                         <MenuItem key={est.id_estado} value={est.id_estado}>
@@ -1220,8 +1228,11 @@ export default function MaintenanceTicket() {
                 {/* Mascota */}
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth required disabled>
-                    <InputLabel>Mascota *</InputLabel>
-                    <Select value={updateForm.id_mascota} label="Mascota *">
+                    <InputLabel>{t("ticket:pet")} *</InputLabel>
+                    <Select
+                      value={updateForm.id_mascota}
+                      label={`${t("ticket:pet")} *`}
+                    >
                       {mascotas.map((mascota) => (
                         <MenuItem
                           key={mascota.id_mascota}
@@ -1237,7 +1248,7 @@ export default function MaintenanceTicket() {
                       color="text.secondary"
                       sx={{ mt: 0.5, ml: 2 }}
                     >
-                      La mascota no se puede cambiar
+                      {t("ticket:maintenance.validation.petNoChange")}
                     </Typography>
                   </FormControl>
                 </Grid>
@@ -1245,7 +1256,7 @@ export default function MaintenanceTicket() {
                 {/* Veterinario Asignado */}
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth>
-                    <InputLabel>Veterinario Asignado</InputLabel>
+                    <InputLabel>{t("ticket:assignedVeterinarian")}</InputLabel>
                     <Select
                       value={updateForm.id_asignado_a_usuario}
                       onChange={(e) =>
@@ -1254,10 +1265,10 @@ export default function MaintenanceTicket() {
                           e.target.value
                         )
                       }
-                      label="Veterinario Asignado"
+                      label={t("ticket:assignedVeterinarian")}
                     >
                       <MenuItem value="">
-                        <em>Sin asignar</em>
+                        <em>{t("ticket:maintenance.labels.unassigned")}</em>
                       </MenuItem>
                       {veterinariosDisponibles.map((vet) => {
                         const especialidades = Array.isArray(vet.especialidades)
@@ -1277,7 +1288,8 @@ export default function MaintenanceTicket() {
                             value={vet.id_veterinario || vet.id_usuario}
                           >
                             {vet.nombre_completo} - {especialidades} -
-                            Disponible: {disponible}h
+                            {t("ticket:maintenance.labels.available")}:{" "}
+                            {disponible}h
                           </MenuItem>
                         );
                       })}
@@ -1290,7 +1302,7 @@ export default function MaintenanceTicket() {
                   <TextField
                     fullWidth
                     type="date"
-                    label="Fecha de Cita"
+                    label={t("ticket:appointmentDate")}
                     value={updateForm.fecha_cita}
                     onChange={(e) =>
                       handleUpdateChange("fecha_cita", e.target.value)
@@ -1312,7 +1324,7 @@ export default function MaintenanceTicket() {
                     color="text.secondary"
                     gutterBottom
                   >
-                    Etiquetas Asociadas
+                    {t("ticket:maintenance.labels.associatedTags")}
                   </Typography>
                   <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                     {etiquetasDeCategoria.length > 0 ? (

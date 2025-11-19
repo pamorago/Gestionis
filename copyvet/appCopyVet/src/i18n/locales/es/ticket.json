@@ -54,6 +54,7 @@
   },
   "maintenance": {
     "title": "Mantenimiento de Tickets",
+    "ticketNoun": "Ticket",
     "tabs": {
       "create": "Crear",
       "update": "Actualizar"
@@ -61,7 +62,44 @@
     "labels": {
       "uploadImages": "Subir Imágenes",
       "imagePreviews": "Vista Previa de Imágenes",
-      "noImages": "No hay imágenes seleccionadas"
+      "noImages": "No hay imágenes seleccionadas",
+      "assignVeterinarian": "Asignar a Veterinario",
+      "unassigned": "Sin asignar (se asignará automáticamente)",
+      "selectCategoryFirst": "Seleccione una categoría primero para filtrar veterinarios por especialidad",
+      "available": "Disponible",
+      "requesterInfo": "Información del Solicitante (su usuario)",
+      "selectClient": "Seleccione el cliente que solicita el ticket",
+      "requesterClient": "Cliente Solicitante",
+      "selectClientOption": "Seleccione un cliente",
+      "fullName": "Nombre Completo",
+      "requesterAutoAssigned": "Solicitante asignado automáticamente",
+      "email": "Correo Electrónico",
+      "requesterContact": "Contacto del solicitante",
+      "creationDate": "Fecha de Creación",
+      "autoRegistered": "Se registra automáticamente al crear el ticket",
+      "initialState": "Estado Inicial",
+      "pending": "Pendiente",
+      "startsAsPending": "El ticket inicia en estado Pendiente",
+      "imagesOptional": "Imágenes (Opcional - Máximo 5)",
+      "associatedTags": "Etiquetas Asociadas",
+      "selectCategoryToSeeTags": "Seleccione una categoría para ver las etiquetas",
+      "immediateEmergency": "Inmediato (Emergencia)",
+      "requiresImmediateAttention": "Esta categoría requiere atención inmediata",
+      "selectDateHelper": "Seleccione fecha para la cita (hoy hasta 7 días)",
+      "titleHelper": "Breve descripción del problema (10-100 caracteres)",
+      "descriptionHelper": "Describa detalladamente el problema o necesidad"
+    },
+    "validation": {
+      "importantInfo": "Información importante:",
+      "requiredFields": "Los campos marcados con (*) son obligatorios",
+      "titleLength": "El título debe tener entre 10 y 100 caracteres",
+      "descriptionRequired": "La descripción es obligatoria y debe ser detallada",
+      "tagsAutoAssigned": "Las etiquetas se asignan automáticamente según la categoría seleccionada",
+      "vetsFiltered": "Los veterinarios se filtran automáticamente por especialidad de la categoría",
+      "autoAssignVet": "Si no asigna veterinario, el sistema lo asignará al de menor carga",
+      "slaAutoCalculated": "El SLA de respuesta y resolución se calcularán automáticamente",
+      "categoryNoChange": "La categoría no se puede cambiar",
+      "petNoChange": "La mascota no se puede cambiar"
     }
   }
 }

@@ -54,6 +54,7 @@
   },
   "maintenance": {
     "title": "Ticket Maintenance",
+    "ticketNoun": "Ticket",
     "tabs": {
       "create": "Create",
       "update": "Update"
@@ -61,7 +62,44 @@
     "labels": {
       "uploadImages": "Upload Images",
       "imagePreviews": "Image Previews",
-      "noImages": "No images selected"
+      "noImages": "No images selected",
+      "assignVeterinarian": "Assign to Veterinarian",
+      "unassigned": "Unassigned (will be assigned automatically)",
+      "selectCategoryFirst": "Select a category first to filter veterinarians by specialty",
+      "available": "Available",
+      "requesterInfo": "Requester Information (your user)",
+      "selectClient": "Select the client requesting the ticket",
+      "requesterClient": "Requesting Client",
+      "selectClientOption": "Select a client",
+      "fullName": "Full Name",
+      "requesterAutoAssigned": "Requester assigned automatically",
+      "email": "Email",
+      "requesterContact": "Requester contact",
+      "creationDate": "Creation Date",
+      "autoRegistered": "Automatically registered when creating the ticket",
+      "initialState": "Initial State",
+      "pending": "Pending",
+      "startsAsPending": "Ticket starts in Pending state",
+      "imagesOptional": "Images (Optional - Maximum 5)",
+      "associatedTags": "Associated Tags",
+      "selectCategoryToSeeTags": "Select a category to see tags",
+      "immediateEmergency": "Immediate (Emergency)",
+      "requiresImmediateAttention": "This category requires immediate attention",
+      "selectDateHelper": "Select appointment date (today up to 7 days)",
+      "titleHelper": "Brief description of the problem (10-100 characters)",
+      "descriptionHelper": "Describe the problem or need in detail"
+    },
+    "validation": {
+      "importantInfo": "Important information:",
+      "requiredFields": "Fields marked with (*) are required",
+      "titleLength": "Title must be between 10 and 100 characters",
+      "descriptionRequired": "Description is required and must be detailed",
+      "tagsAutoAssigned": "Tags are automatically assigned based on the selected category",
+      "vetsFiltered": "Veterinarians are automatically filtered by category specialty",
+      "autoAssignVet": "If no veterinarian is assigned, the system will assign the one with the lowest workload",
+      "slaAutoCalculated": "Response and resolution SLA will be calculated automatically",
+      "categoryNoChange": "The category cannot be changed",
+      "petNoChange": "The pet cannot be changed"
     }
   }
 }
