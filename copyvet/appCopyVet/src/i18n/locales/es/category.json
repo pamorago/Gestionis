@@ -1,0 +1,26 @@
+{
+  "types": {
+    "vaccination": "Vacunación",
+    "minorSurgery": "Cirugía menor",
+    "deworming": "Desparasitación",
+    "generalConsultation": "Consulta general",
+    "emergency": "Emergencia",
+    "majorSurgery": "Cirugía mayor",
+    "exoticSpecies": "Especies Exóticas",
+    "dermatology": "Dermatología",
+    "traumatology": "Traumatología",
+    "routineControl": "Control rutinario"
+  },
+  "fields": {
+    "name": "Nombre",
+    "description": "Descripción",
+    "status": "Estado",
+    "createdAt": "Fecha de creación"
+  },
+  "messages": {
+    "loadingCategories": "Cargando categorías",
+    "noCategoriesFound": "No se encontraron categorías",
+    "categoryCreatedSuccess": "Categoría creada exitosamente",
+    "categoryUpdatedSuccess": "Categoría actualizada exitosamente"
+  }
+}

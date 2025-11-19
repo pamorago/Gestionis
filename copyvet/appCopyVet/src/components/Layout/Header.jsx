@@ -12,7 +12,6 @@ import LiveTvIcon from "@mui/icons-material/LiveTv";
 import Tooltip from "@mui/material/Tooltip";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { UserContext } from "../../context/UserContext";
-import CopyVetService from "../../services/CopyVetService";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 
@@ -59,19 +58,19 @@ export default function Header() {
   };
   //Lista enlaces menu usuario
   const userItems = [
-    { name: "Login", link: "/user/login", login: false },
-    { name: "Registrarse", link: "/user/create", login: false },
-    { name: "Logout", link: "/user/logout", login: true },
+    { name: t("auth:user.login"), link: "/user/login", login: false },
+    { name: t("auth:user.signup"), link: "/user/create", login: false },
+    { name: t("auth:user.logout"), link: "/user/logout", login: true },
   ];
   //Lista enlaces menu principal
   const navItems = [
     {
-      name: t("createTicket"),
+      name: t("common:navigation.createTicket"),
       link: "/ticket/create",
       roles: ["Cliente", "Veterinario", "Administrador"],
     },
     {
-      name: "Calendario",
+      name: t("common:navigation.calendar"),
       link: "/calendar",
       roles: ["Veterinario", "Administrador"],
     },
@@ -80,22 +79,22 @@ export default function Header() {
   //Lista enlaces menu Listas (dropdown)
   const listasItems = [
     {
-      name: t("tickets"),
+      name: t("common:navigation.tickets"),
       link: "/tickets",
       roles: ["Cliente", "Veterinario", "Administrador"],
     },
     {
-      name: t("veterinarians"),
+      name: t("common:navigation.veterinarians"),
       link: "/veterinarians",
       roles: ["Administrador"],
     },
     {
-      name: t("categories"),
+      name: t("common:navigation.categories"),
       link: "/categories",
       roles: ["Administrador"],
     },
     {
-      name: "Tablero Asignaciones",
+      name: t("common:navigation.assignments"),
       link: "/assignments",
       roles: ["Administrador", "Veterinario"],
     },
@@ -104,23 +103,21 @@ export default function Header() {
   //Lista enlaces menu Mantenimientos (dropdown)
   const mantenimientosItems = [
     {
-      name: t("tickets"),
+      name: t("common:navigation.tickets"),
       link: "/maintenance/tickets",
       roles: ["Administrador"],
     },
     {
-      name: t("categories"),
+      name: t("common:navigation.categories"),
       link: "/maintenance/categories",
       roles: ["Administrador"],
     },
     {
-      name: "Técnicos",
+      name: t("common:navigation.veterinarians"),
       link: "/maintenance/veterinarians",
       roles: ["Administrador"],
     },
   ];
-  //Identificador menu principal
-  const menuIdPrincipal = "menu-appbar";
   //Menu Principal
   const menuPrincipal = (
     <Box sx={{ display: { xs: "none", sm: "block" } }}>
@@ -132,7 +129,9 @@ export default function Header() {
             onClick={handleListasMenuOpen}
             endIcon={<ArrowDropDownIcon />}
           >
-            <Typography textAlign="center">Listas</Typography>
+            <Typography textAlign="center">
+              {t("common:navigation.lists")}
+            </Typography>
           </Button>
           <Menu
             id="listas-menu"
@@ -191,7 +190,9 @@ export default function Header() {
             onClick={handleMantenimientosMenuOpen}
             endIcon={<ArrowDropDownIcon />}
           >
-            <Typography textAlign="center">Mantenimientos</Typography>
+            <Typography textAlign="center">
+              {t("common:navigation.maintenance")}
+            </Typography>
           </Button>
           <Menu
             id="mantenimientos-menu"
@@ -279,127 +280,7 @@ export default function Header() {
         })}
     </Box>
   );
-  //Menu Principal responsivo
-  const menuPrincipalMobile = (
-    <>
-      {/* Items del dropdown Listas en versión móvil - Solo para usuarios autenticados */}
-      {userData && Object.keys(userData).length > 0 && (
-        <>
-          <MenuItem disabled>
-            <Typography sx={{ fontWeight: "bold", color: "primary.main" }}>
-              Listas
-            </Typography>
-          </MenuItem>
-          {listasItems.map((item, index) => {
-            if (userData && item.roles) {
-              if (autorize({ requiredRoles: item.roles })) {
-                return (
-                  <MenuItem
-                    key={`listas-${index}`}
-                    component={Link}
-                    to={item.link}
-                    sx={{ pl: 4 }}
-                  >
-                    <Typography sx={{ textAlign: "center" }}>
-                      {item.name}
-                    </Typography>
-                  </MenuItem>
-                );
-              }
-            } else {
-              if (item.roles == null) {
-                return (
-                  <MenuItem
-                    key={`listas-${index}`}
-                    component={Link}
-                    to={item.link}
-                    sx={{ pl: 4 }}
-                  >
-                    <Typography sx={{ textAlign: "center" }}>
-                      {item.name}
-                    </Typography>
-                  </MenuItem>
-                );
-              }
-            }
-          })}
-          {/* Separador */}
-          <MenuItem disabled sx={{ height: 8 }} />
-        </>
-      )}
 
-      {/* Items del dropdown Mantenimientos en versión móvil - Solo para Administrador */}
-      {userData && autorize({ requiredRoles: ["Administrador"] }) && (
-        <>
-          <MenuItem disabled>
-            <Typography sx={{ fontWeight: "bold", color: "primary.main" }}>
-              Mantenimientos
-            </Typography>
-          </MenuItem>
-          {mantenimientosItems.map((item, index) => {
-            if (userData && item.roles) {
-              if (autorize({ requiredRoles: item.roles })) {
-                return (
-                  <MenuItem
-                    key={`mantenimientos-${index}`}
-                    component={Link}
-                    to={item.link}
-                    sx={{ pl: 4 }}
-                  >
-                    <Typography sx={{ textAlign: "center" }}>
-                      {item.name}
-                    </Typography>
-                  </MenuItem>
-                );
-              }
-            } else {
-              if (item.roles == null) {
-                return (
-                  <MenuItem
-                    key={`mantenimientos-${index}`}
-                    component={Link}
-                    to={item.link}
-                    sx={{ pl: 4 }}
-                  >
-                    <Typography sx={{ textAlign: "center" }}>
-                      {item.name}
-                    </Typography>
-                  </MenuItem>
-                );
-              }
-            }
-          })}
-          {/* Separador */}
-          <MenuItem disabled sx={{ height: 8 }} />
-        </>
-      )}
-
-      {/* Otros items del menú */}
-      {navItems.map((page, index) => {
-        if (userData && page.roles) {
-          if (autorize({ requiredRoles: page.roles })) {
-            return (
-              <MenuItem key={index} component={Link} to={page.link}>
-                <Typography sx={{ textAlign: "center" }}>
-                  {page.name}
-                </Typography>
-              </MenuItem>
-            );
-          }
-        } else {
-          if (page.roles == null) {
-            return (
-              <MenuItem key={index} component={Link} to={page.link}>
-                <Typography sx={{ textAlign: "center" }}>
-                  {page.name}
-                </Typography>
-              </MenuItem>
-            );
-          }
-        }
-      })}
-    </>
-  );
   //Identificador menu usuario
   const userMenuId = "user-menu";
   //Menu Usuario

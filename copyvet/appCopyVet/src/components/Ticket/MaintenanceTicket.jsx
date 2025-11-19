@@ -29,6 +29,7 @@ import VeterinarioService from "../../services/VeterinarioService";
 import MascotaService from "../../services/MascotaService";
 import ImageService from "../../services/ImageService";
 import { UserContext } from "../../context/UserContext";
+import { useTranslation } from "react-i18next";
 
 // eslint-disable-next-line react/prop-types
 function TabPanel({ children, value, index, ...other }) {
@@ -46,6 +47,7 @@ function TabPanel({ children, value, index, ...other }) {
 }
 
 export default function MaintenanceTicket() {
+  const { t } = useTranslation();
   const userContext = useContext(UserContext);
   const userDecoded = userContext?.decodeToken() || {};
   const userRole = userDecoded?.rol || "Cliente";
@@ -603,10 +605,7 @@ export default function MaintenanceTicket() {
           updateImages
         );
         if (uploadSuccess) {
-          showSnackbar(
-            "Ticket e imágenes actualizados exitosamente",
-            "success"
-          );
+          showSnackbar(t("ticket:messages.ticketUpdatedSuccess"), "success");
         } else {
           showSnackbar(
             "Ticket actualizado pero hubo errores al subir algunas imágenes",
@@ -614,7 +613,7 @@ export default function MaintenanceTicket() {
           );
         }
       } else {
-        showSnackbar("Ticket actualizado exitosamente", "success");
+        showSnackbar(t("ticket:messages.ticketUpdatedSuccess"), "success");
       }
 
       // Limpiar formulario y recargar lista
@@ -651,32 +650,38 @@ export default function MaintenanceTicket() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Mantenimiento de Tickets
+          {t("ticket:maintenance.title")}
         </Typography>
 
         <Box sx={{ borderBottom: 1, borderColor: "divider", mt: 3 }}>
           <Tabs
             value={currentTab}
             onChange={handleTabChange}
-            aria-label="Tabs de mantenimiento de tickets"
+            aria-label={t("ticket:maintenance.title")}
           >
-            <Tab label="Crear" id="maintenance-tab-0" />
+            <Tab
+              label={t("ticket:maintenance.tabs.create")}
+              id="maintenance-tab-0"
+            />
             {userRole !== "Cliente" && (
-              <Tab label="Actualizar" id="maintenance-tab-1" />
+              <Tab
+                label={t("ticket:maintenance.tabs.update")}
+                id="maintenance-tab-1"
+              />
             )}
           </Tabs>
         </Box>
 
         <TabPanel value={currentTab} index={0}>
           <Typography variant="h5" gutterBottom>
-            🎫 Crear Nuevo Ticket
+            🎫 {t("ticket:maintenance.tabs.create")} {t("ticket:title")}
           </Typography>
           <Grid container spacing={3} sx={{ mt: 1 }}>
             {/* Título */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Título *"
+                label={`${t("ticket:title")} *`}
                 value={createForm.titulo}
                 onChange={(e) => handleCreateChange("titulo", e.target.value)}
                 error={!!errors.titulo}
@@ -692,7 +697,7 @@ export default function MaintenanceTicket() {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Descripción *"
+                label={`${t("ticket:description")} *`}
                 multiline
                 rows={4}
                 value={createForm.descripcion}
@@ -711,16 +716,16 @@ export default function MaintenanceTicket() {
             {/* Categoría */}
             <Grid item xs={12} md={6}>
               <FormControl fullWidth error={!!errors.id_categoria} required>
-                <InputLabel>Categoría *</InputLabel>
+                <InputLabel>{t("ticket:category")} *</InputLabel>
                 <Select
                   value={categorias.length > 0 ? createForm.id_categoria : ""}
                   onChange={(e) =>
                     handleCreateChange("id_categoria", e.target.value)
                   }
-                  label="Categoría *"
+                  label={`${t("ticket:category")} *`}
                 >
                   <MenuItem value="">
-                    <em>Seleccione una categoría</em>
+                    <em>{t("ticket:selectCategory")}</em>
                   </MenuItem>
                   {categorias.map((cat) => (
                     <MenuItem key={cat.id_categoria} value={cat.id_categoria}>
@@ -743,17 +748,17 @@ export default function MaintenanceTicket() {
             {/* Mascota */}
             <Grid item xs={12} md={6}>
               <FormControl fullWidth required>
-                <InputLabel>Mascota *</InputLabel>
+                <InputLabel>{t("ticket:pet")} *</InputLabel>
                 <Select
                   value={mascotas.length > 0 ? createForm.id_mascota : ""}
                   onChange={(e) =>
                     handleCreateChange("id_mascota", e.target.value)
                   }
-                  label="Mascota *"
+                  label={`${t("ticket:pet")} *`}
                   error={!!errors.id_mascota}
                 >
                   <MenuItem value="">
-                    <em>Seleccione una mascota</em>
+                    <em>{t("ticket:fields.selectPet")}</em>
                   </MenuItem>
                   {mascotas.map((mascota) => (
                     <MenuItem
@@ -785,7 +790,7 @@ export default function MaintenanceTicket() {
                 ) ? (
                   <TextField
                     fullWidth
-                    label="Fecha de Cita"
+                    label={t("ticket:appointmentDate")}
                     value="Inmediato (Emergencia)"
                     disabled
                     helperText="Esta categoría requiere atención inmediata"
@@ -794,7 +799,7 @@ export default function MaintenanceTicket() {
                   <TextField
                     fullWidth
                     type="date"
-                    label="Fecha de Cita"
+                    label={t("ticket:appointmentDate")}
                     value={createForm.fecha_cita}
                     onChange={(e) =>
                       handleCreateChange("fecha_cita", e.target.value)
@@ -836,7 +841,7 @@ export default function MaintenanceTicket() {
                 ) : (
                   <Typography variant="body2" color="text.secondary">
                     {createForm.id_categoria
-                      ? "Cargando etiquetas..."
+                      ? t("common:messages.loading")
                       : "Seleccione una categoría para ver las etiquetas"}
                   </Typography>
                 )}
@@ -1036,7 +1041,7 @@ export default function MaintenanceTicket() {
                 startIcon={<CloudUploadIcon />}
                 sx={{ mb: 2 }}
               >
-                Seleccionar Imágenes
+                {t("ticket:maintenance.labels.uploadImages")}
                 <input
                   type="file"
                   hidden
@@ -1093,7 +1098,7 @@ export default function MaintenanceTicket() {
                 onClick={handleCreate}
                 fullWidth
               >
-                Crear Ticket
+                {t("ticket:createTicketButton")}
               </Button>
             </Grid>
           </Grid>

@@ -1,0 +1,21 @@
+{
+  "fields": {
+    "name": "Nombre",
+    "species": "Especie",
+    "breed": "Raza",
+    "age": "Edad",
+    "weight": "Peso",
+    "owner": "Dueño"
+  },
+  "species": {
+    "dog": "Perro",
+    "cat": "Gato",
+    "rabbit": "Conejo",
+    "bird": "Ave",
+    "noSpecies": "Sin especie"
+  },
+  "messages": {
+    "noBreed": "Sin raza definida",
+    "notRegistered": "No registrado"
+  }
+}

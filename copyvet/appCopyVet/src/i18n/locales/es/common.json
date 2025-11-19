@@ -1,0 +1,61 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "tickets": "Tickets",
+    "createTicket": "Crear Ticket",
+    "veterinarians": "Veterinarios",
+    "categories": "Categorías",
+    "calendar": "Calendario",
+    "assignments": "Tablero Asignaciones",
+    "lists": "Listas",
+    "maintenance": "Mantenimientos"
+  },
+  "buttons": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "upload": "Subir",
+    "download": "Descargar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "viewDetails": "Ver Detalles",
+    "registerNow": "Registrarse Ahora"
+  },
+  "messages": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información",
+    "noData": "No hay datos disponibles",
+    "confirmAction": "¿Estás seguro de realizar esta acción?",
+    "operationSuccess": "Operación realizada con éxito",
+    "operationError": "Error al realizar la operación",
+    "languageChanged": "Idioma cambiado a Español"
+  },
+  "language": {
+    "changeLanguage": "Cambiar idioma",
+    "spanish": "Español",
+    "english": "Inglés",
+    "currentLanguage": "Idioma actual"
+  },
+  "common": {
+    "yes": "Sí",
+    "no": "No",
+    "all": "Todos",
+    "none": "Ninguno",
+    "other": "Otro",
+    "optional": "Opcional",
+    "required": "Requerido",
+    "selectOption": "Seleccionar opción",
+    "noSelection": "Sin selección"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "fields": {
+    "name": "Nombre",
+    "specialty": "Especialidad",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "license": "Licencia",
+    "experience": "Experiencia",
+    "availability": "Disponibilidad"
+  },
+  "messages": {
+    "loadingVeterinarians": "Cargando veterinarios",
+    "noVeterinariansFound": "No se encontraron veterinarios",
+    "veterinarianCreatedSuccess": "Veterinario creado exitosamente",
+    "veterinarianUpdatedSuccess": "Veterinario actualizado exitosamente"
+  },
+  "welcome": {
+    "veterinaryTicketManagement": "Sistema de Gestión de Tickets Veterinarios",
+    "connectPetOwners": "Conectamos a dueños de mascotas con veterinarios profesionales de manera eficiente y organizada",
+    "whoAreWe": "¿Quiénes Somos",
+    "aboutDescription1": "CopyVet es una plataforma innovadora diseñada para facilitar la comunicación y gestión de servicios veterinarios. Nuestro sistema de tickets permite a los dueños de mascotas crear solicitudes de atención médica de manera rápida y sencilla, mientras que los veterinarios pueden gestionar su carga de trabajo de forma eficiente.",
+    "aboutDescription2": "Con más de 5 años de experiencia en el sector, nos hemos consolidado como la solución líder para clínicas veterinarias que buscan modernizar sus procesos.",
+    "veterinarySystemAlt": "Sistema de tickets veterinarios",
+    "ourServices": "Nuestros Servicios",
+    "personalizedCare": "Atención Personalizada",
+    "personalizedCareDescription": "Cada mascota es única. Nuestro sistema permite registrar información detallada de cada paciente, incluyendo historial médico, raza, edad y condiciones especiales.",
+    "certifiedVeterinarians": "Veterinarios Certificados",
+    "certifiedVeterinariansDescription": "Contamos con un equipo de veterinarios altamente calificados y especializados en diversas áreas como medicina interna, cirugía, dermatología y más.",
+    "ticketManagement": "Gestión de Tickets",
+    "ticketManagementDescription": "Sistema inteligente de asignación de tickets que prioriza casos urgentes y distribuye la carga de trabajo equitativamente entre veterinarios.",
+    "support247": "Soporte 24/7",
+    "support247Description": "Nuestro equipo de atención al cliente está disponible las 24 horas del día, los 7 días de la semana para resolver cualquier duda o emergencia.",
+    "ourMission": "Nuestra Misión",
+    "missionDescription": "Proporcionar una plataforma tecnológica que mejore la calidad de atención veterinaria, facilitando la comunicación entre clientes y profesionales, optimizando procesos y garantizando el bienestar de las mascotas.",
+    "ourVision": "Nuestra Visión",
+    "visionDescription": "Ser la plataforma líder en gestión de servicios veterinarios en América Latina, reconocida por nuestra innovación tecnológica, excelencia en el servicio y compromiso con el bienestar animal.",
+    "readyToStart": "¿Listo para comenzar",
+    "joinSatisfiedClients": "Únete a cientos de clientes satisfechos que confían en CopyVet"
+  }
+}

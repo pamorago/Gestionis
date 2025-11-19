@@ -31,10 +31,10 @@ export default function Welcome() {
           🐾 CopyVet
         </Typography>
         <Typography variant="h5" color="text.secondary" paragraph>
-          {t("veterinaryTicketManagement")}
+          {t("veterinary:welcome.veterinaryTicketManagement")}
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
-          {t("connectPetOwners")}
+          {t("veterinary:welcome.connectPetOwners")}
         </Typography>
       </Box>
 
@@ -43,22 +43,20 @@ export default function Welcome() {
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={7}>
             <Typography variant="h4" gutterBottom color="primary">
-              {t("whoWeAre")}?
+              {t("veterinary:welcome.whoAreWe")}?
             </Typography>
             <Typography variant="body1" paragraph>
-              {t("aboutDescription1")}
+              {t("veterinary:welcome.aboutDescription1")}
             </Typography>
             <Typography variant="body1" paragraph>
-              {t("aboutDescription2")}
-              buscan optimizar sus procesos y ofrecer un mejor servicio a sus
-              clientes.
+              {t("veterinary:welcome.aboutDescription2")}
             </Typography>
           </Grid>
           <Grid item xs={12} md={5}>
             <Box
               component="img"
               src={veteImagen}
-              alt={t("veterinarySystemAlt")}
+              alt={t("veterinary:welcome.veterinarySystemAlt")}
               sx={{
                 width: "100%",
                 height: "auto",
@@ -73,17 +71,19 @@ export default function Welcome() {
       {/* Características */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom color="primary" align="center">
-          {t("ourServices")}
+          {t("veterinary:welcome.ourServices")}
         </Typography>
         <Grid container spacing={3} sx={{ mt: 2 }}>
           <Grid item xs={12} md={6}>
             <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <PetsIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
-                <Typography variant="h6">{t("personalizedCare")}</Typography>
+                <Typography variant="h6">
+                  {t("veterinary:welcome.personalizedCare")}
+                </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                {t("personalizedCareDescription")}
+                {t("veterinary:welcome.personalizedCareDescription")}
               </Typography>
             </Paper>
           </Grid>
@@ -96,11 +96,11 @@ export default function Welcome() {
                   sx={{ fontSize: 40, mr: 2 }}
                 />
                 <Typography variant="h6">
-                  {t("certifiedVeterinarians")}
+                  {t("veterinary:welcome.certifiedVeterinarians")}
                 </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                {t("certifiedVeterinariansDescription")}
+                {t("veterinary:welcome.certifiedVeterinariansDescription")}
               </Typography>
             </Paper>
           </Grid>
@@ -109,10 +109,12 @@ export default function Welcome() {
             <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <AssignmentIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
-                <Typography variant="h6">{t("ticketManagement")}</Typography>
+                <Typography variant="h6">
+                  {t("veterinary:welcome.ticketManagement")}
+                </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                {t("ticketManagementDescription")}
+                {t("veterinary:welcome.ticketManagementDescription")}
               </Typography>
             </Paper>
           </Grid>
@@ -124,10 +126,12 @@ export default function Welcome() {
                   color="primary"
                   sx={{ fontSize: 40, mr: 2 }}
                 />
-                <Typography variant="h6">{t("support247")}</Typography>
+                <Typography variant="h6">
+                  {t("veterinary:welcome.support247")}
+                </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                {t("support247Description")}
+                {t("veterinary:welcome.support247Description")}
               </Typography>
             </Paper>
           </Grid>
@@ -139,18 +143,22 @@ export default function Welcome() {
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ p: 3, height: "100%" }}>
             <Typography variant="h5" gutterBottom color="primary">
-              {t("ourMission")}
+              {t("veterinary:welcome.ourMission")}
             </Typography>
-            <Typography variant="body1">{t("missionDescription")}</Typography>
+            <Typography variant="body1">
+              {t("veterinary:welcome.missionDescription")}
+            </Typography>
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ p: 3, height: "100%" }}>
             <Typography variant="h5" gutterBottom color="primary">
-              {t("ourVision")}
+              {t("veterinary:welcome.ourVision")}
             </Typography>
-            <Typography variant="body1">{t("visionDescription")}</Typography>
+            <Typography variant="body1">
+              {t("veterinary:welcome.visionDescription")}
+            </Typography>
           </Paper>
         </Grid>
       </Grid>
@@ -166,10 +174,10 @@ export default function Welcome() {
         }}
       >
         <Typography variant="h5" color="white" gutterBottom>
-          {t("readyToStart")}?
+          {t("veterinary:welcome.readyToStart")}?
         </Typography>
         <Typography variant="body1" color="white" paragraph>
-          {t("joinSatisfiedClients")}
+          {t("veterinary:welcome.joinSatisfiedClients")}
         </Typography>
         <Button
           variant="contained"
@@ -177,7 +185,7 @@ export default function Welcome() {
           size="large"
           onClick={() => navigate("/user/create")}
         >
-          {t("registerNow")}
+          {t("common:buttons.registerNow")}
         </Button>
       </Box>
     </Container>

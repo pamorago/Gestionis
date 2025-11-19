@@ -1,0 +1,67 @@
+{
+  "title": "Title",
+  "description": "Description",
+  "appointmentDate": "Appointment Date",
+  "category": "Category",
+  "pet": "Pet",
+  "assignedVeterinarian": "Assigned Veterinarian",
+  "selectCategory": "-- Select category --",
+  "selectVeterinarian": "-- Select veterinarian --",
+  "createTicketButton": "Create Ticket",
+  "updateTicketButton": "Update Ticket",
+  "status": {
+    "noStatus": "No status",
+    "open": "Open",
+    "inProgress": "In Progress",
+    "closed": "Closed",
+    "cancelled": "Cancelled",
+    "resolved": "Resolved"
+  },
+  "priority": {
+    "priority": "Priority",
+    "urgent": "Urgent",
+    "highPriority": "High Priority",
+    "normal": "Normal",
+    "lowPriority": "Low Priority"
+  },
+  "fields": {
+    "client": "Client",
+    "assignedTo": "Assigned to",
+    "created": "Created",
+    "userCreatorId": "Creator User ID (non-editable)",
+    "comment": "Comment",
+    "images": "Images",
+    "ticketId": "Ticket ID",
+    "requesterName": "Requester name",
+    "requesterEmail": "Requester email",
+    "state": "State",
+    "selectTicket": "Select ticket",
+    "selectState": "Select state",
+    "selectPet": "Select pet"
+  },
+  "messages": {
+    "loadingTickets": "Loading tickets",
+    "noTicketsFound": "No tickets found to display",
+    "errorCreatingTicket": "Error creating ticket. Please try again.",
+    "errorLoadingData": "Error loading data needed for the form",
+    "ticketCreatedSuccess": "Ticket created successfully",
+    "ticketUpdatedSuccess": "Ticket updated successfully",
+    "loadingCatalogs": "Loading catalogs...",
+    "fillRequiredFields": "Please fill all required fields",
+    "selectTicketFirst": "Please select a ticket first",
+    "ticketDeletedSuccess": "Ticket deleted successfully",
+    "errorDeletingTicket": "Error deleting ticket"
+  },
+  "maintenance": {
+    "title": "Ticket Maintenance",
+    "tabs": {
+      "create": "Create",
+      "update": "Update"
+    },
+    "labels": {
+      "uploadImages": "Upload Images",
+      "imagePreviews": "Image Previews",
+      "noImages": "No images selected"
+    }
+  }
+}

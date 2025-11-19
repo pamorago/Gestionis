@@ -1,0 +1,21 @@
+{
+  "fields": {
+    "name": "Name",
+    "species": "Species",
+    "breed": "Breed",
+    "age": "Age",
+    "weight": "Weight",
+    "owner": "Owner"
+  },
+  "species": {
+    "dog": "Dog",
+    "cat": "Cat",
+    "rabbit": "Rabbit",
+    "bird": "Bird",
+    "noSpecies": "No species"
+  },
+  "messages": {
+    "noBreed": "No breed defined",
+    "notRegistered": "Not registered"
+  }
+}

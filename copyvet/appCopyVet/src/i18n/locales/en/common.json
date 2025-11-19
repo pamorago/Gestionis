@@ -1,0 +1,61 @@
+{
+  "navigation": {
+    "home": "Home",
+    "tickets": "Tickets",
+    "createTicket": "Create Ticket",
+    "veterinarians": "Veterinarians",
+    "categories": "Categories",
+    "calendar": "Calendar",
+    "assignments": "Assignments Board",
+    "lists": "Lists",
+    "maintenance": "Maintenance"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "update": "Update",
+    "search": "Search",
+    "filter": "Filter",
+    "upload": "Upload",
+    "download": "Download",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "viewDetails": "View Details",
+    "registerNow": "Register Now"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "noData": "No data available",
+    "confirmAction": "Are you sure you want to perform this action?",
+    "operationSuccess": "Operation completed successfully",
+    "operationError": "Error performing operation",
+    "languageChanged": "Language changed to English"
+  },
+  "language": {
+    "changeLanguage": "Change language",
+    "spanish": "Spanish",
+    "english": "English",
+    "currentLanguage": "Current language"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "none": "None",
+    "other": "Other",
+    "optional": "Optional",
+    "required": "Required",
+    "selectOption": "Select option",
+    "noSelection": "No selection"
+  }
+}

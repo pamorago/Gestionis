@@ -1,0 +1,67 @@
+{
+  "title": "Título",
+  "description": "Descripción",
+  "appointmentDate": "Fecha cita",
+  "category": "Categoría",
+  "pet": "Mascota",
+  "assignedVeterinarian": "Veterinario asignado",
+  "selectCategory": "-- Seleccionar categoría --",
+  "selectVeterinarian": "-- Seleccionar veterinario --",
+  "createTicketButton": "Crear Ticket",
+  "updateTicketButton": "Actualizar Ticket",
+  "status": {
+    "noStatus": "Sin estado",
+    "open": "Abierto",
+    "inProgress": "En Proceso",
+    "closed": "Cerrado",
+    "cancelled": "Cancelado",
+    "resolved": "Resuelto"
+  },
+  "priority": {
+    "priority": "Prioridad",
+    "urgent": "Urgente",
+    "highPriority": "Alta Prioridad",
+    "normal": "Normal",
+    "lowPriority": "Baja Prioridad"
+  },
+  "fields": {
+    "client": "Cliente",
+    "assignedTo": "Asignado a",
+    "created": "Creado",
+    "userCreatorId": "ID Usuario creador (no editable)",
+    "comment": "Comentario",
+    "images": "Imágenes",
+    "ticketId": "ID Ticket",
+    "requesterName": "Nombre solicitante",
+    "requesterEmail": "Email solicitante",
+    "state": "Estado",
+    "selectTicket": "Seleccionar ticket",
+    "selectState": "Seleccionar estado",
+    "selectPet": "Seleccionar mascota"
+  },
+  "messages": {
+    "loadingTickets": "Cargando tickets",
+    "noTicketsFound": "No se encontraron tickets para mostrar",
+    "errorCreatingTicket": "Error al crear el ticket. Por favor intente nuevamente.",
+    "errorLoadingData": "Error cargando datos necesarios para el formulario",
+    "ticketCreatedSuccess": "Ticket creado exitosamente",
+    "ticketUpdatedSuccess": "Ticket actualizado exitosamente",
+    "loadingCatalogs": "Cargando catálogos...",
+    "fillRequiredFields": "Por favor complete todos los campos requeridos",
+    "selectTicketFirst": "Por favor seleccione un ticket primero",
+    "ticketDeletedSuccess": "Ticket eliminado exitosamente",
+    "errorDeletingTicket": "Error al eliminar el ticket"
+  },
+  "maintenance": {
+    "title": "Mantenimiento de Tickets",
+    "tabs": {
+      "create": "Crear",
+      "update": "Actualizar"
+    },
+    "labels": {
+      "uploadImages": "Subir Imágenes",
+      "imagePreviews": "Vista Previa de Imágenes",
+      "noImages": "No hay imágenes seleccionadas"
+    }
+  }
+}
