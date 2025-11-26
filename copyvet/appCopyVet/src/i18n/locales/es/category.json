@@ -22,5 +22,79 @@
     "noCategoriesFound": "No se encontraron categorías",
     "categoryCreatedSuccess": "Categoría creada exitosamente",
     "categoryUpdatedSuccess": "Categoría actualizada exitosamente"
+  },
+  "list": {
+    "title": "Categorías de Servicio",
+    "loading": "Cargando categorías...",
+    "empty": "No hay categorías disponibles.",
+    "sla": "SLA",
+    "responseTime": "Respuesta",
+    "resolutionTime": "Resolución"
+  },
+  "maintenance": {
+    "title": "Mantenimiento de Categorías",
+    "tabs": {
+      "create": "Crear",
+      "update": "Actualizar"
+    },
+    "fields": {
+      "categoryName": "Nombre de Categoría",
+      "sla": "SLA Asociado",
+      "tags": "Etiquetas",
+      "specialties": "Especialidades",
+      "selectCategory": "Seleccionar Categoría"
+    },
+    "placeholders": {
+      "categoryName": "Ej: Vacunación, Cirugía menor"
+    },
+    "helpers": {
+      "uniqueName": "El nombre debe ser único, no se permiten duplicados"
+    },
+    "validation": {
+      "nameRequired": "El nombre de la categoría es obligatorio",
+      "nameMinLength": "El nombre debe tener al menos 3 caracteres",
+      "nameMaxLength": "El nombre no puede exceder 50 caracteres",
+      "nameDuplicate": "Ya existe una categoría con este nombre",
+      "slaRequired": "Debe seleccionar un SLA (obligatorio)",
+      "tagsRequired": "Debe seleccionar al menos una etiqueta",
+      "specialtiesRequired": "Debe seleccionar al menos una especialidad",
+      "categoryRequired": "Debe seleccionar una categoría para actualizar",
+      "completeFields": "Por favor complete todos los campos obligatorios"
+    },
+    "messages": {
+      "loadingError": "Error al cargar los datos necesarios",
+      "createSuccess": "Categoría creada exitosamente",
+      "createError": "Error al crear la categoría",
+      "loadCategoryError": "Error al cargar los datos de la categoría",
+      "updateSuccess": "Categoría actualizada exitosamente",
+      "updateError": "Error al actualizar la categoría"
+    },
+    "buttons": {
+      "create": "Crear Categoría",
+      "update": "Actualizar Categoría"
+    }
+  },
+  "detail": {
+    "loading": "Cargando categoría...",
+    "title": "Categoría",
+    "sections": {
+      "tags": "Etiquetas",
+      "specialties": "Especialidades Requeridas",
+      "priority": "Nivel de Prioridad",
+      "responseTime": "Tiempo de Respuesta",
+      "resolutionTime": "Tiempo de Resolución",
+      "description": "Descripción"
+    },
+    "helpers": {
+      "responseTimeDescription": "Tiempo máximo para dar la primera respuesta al ticket",
+      "resolutionTimeDescription": "Tiempo máximo para resolver completamente el caso",
+      "descriptionTemplate": "Esta categoría agrupa todos los casos relacionados con {categoryName} y se rige por los SLA de prioridad {slaDescription}.",
+      "notSpecified": "No especificado"
+    },
+    "time": {
+      "minutes": "minutos",
+      "hours": "hora | horas",
+      "na": "N/A"
+    }
   }
 }

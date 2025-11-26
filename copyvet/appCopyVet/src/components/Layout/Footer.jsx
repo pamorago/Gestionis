@@ -1,9 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Container, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Toolbar from "@mui/material/Toolbar";
+
 export function Footer() {
+  const { t } = useTranslation();
+
   return (
     <Toolbar
       sx={{
@@ -22,8 +26,7 @@ export function Footer() {
         <Grid container rowSpacing={1}>
           <Grid size={12}>
             <Typography align="center" color="white" variant="subtitle1">
-              CopyVet - Sistema de Gestión para Clínicas Veterinarias • Paula
-              Nicole Mora Gómez / Jazmín Angélica Esquivel Mairena
+              {t("common:footer.title")} • {t("common:footer.authors")}
             </Typography>
           </Grid>
           <Grid size={12}>

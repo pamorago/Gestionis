@@ -36,5 +36,92 @@
     "visionDescription": "To be the leading platform in veterinary services management in Latin America, recognized for our technological innovation, service excellence and commitment to animal welfare.",
     "readyToStart": "Ready to get started",
     "joinSatisfiedClients": "Join hundreds of satisfied customers who trust CopyVet"
+  },
+  "list": {
+    "title": "Veterinarians",
+    "loading": "Loading veterinarians...",
+    "empty": "No veterinarians available.",
+    "specialty": "Specialty",
+    "noSpecialty": "No specialty",
+    "contact": "Contact",
+    "activeTickets": "Active Tickets",
+    "workload": "Workload",
+    "available": "Available",
+    "committed": "Committed",
+    "of": "of",
+    "hours": "hours"
+  },
+  "maintenance": {
+    "title": "Veterinarian Maintenance",
+    "tabs": {
+      "create": "Create",
+      "update": "Update"
+    },
+    "fields": {
+      "name": "Veterinarian Name",
+      "email": "Email",
+      "phone": "Phone",
+      "specialties": "Specialties",
+      "license": "Professional License",
+      "active": "Active",
+      "currentLoad": "Current Load",
+      "selectVeterinarian": "Select Veterinarian"
+    },
+    "placeholders": {
+      "name": "Full name",
+      "email": "email@example.com",
+      "phone": "Contact phone",
+      "license": "License number"
+    },
+    "validation": {
+      "nameRequired": "Veterinarian name is required",
+      "nameMinLength": "Name must be at least 3 characters",
+      "nameMaxLength": "Name cannot exceed 100 characters",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Email format is invalid",
+      "emailDuplicate": "A veterinarian with this email already exists",
+      "phoneRequired": "Phone is required",
+      "phoneInvalid": "Phone must be between 8 and 15 digits",
+      "specialtiesRequired": "You must select at least one specialty",
+      "veterinarianRequired": "You must select a veterinarian to update",
+      "completeFields": "Please complete all required fields"
+    },
+    "messages": {
+      "loadingError": "Error loading required data",
+      "createSuccess": "Veterinarian created successfully",
+      "createError": "Error creating veterinarian",
+      "loadVeterinarianError": "Error loading veterinarian data",
+      "updateSuccess": "Veterinarian updated successfully",
+      "updateError": "Error updating veterinarian"
+    },
+    "buttons": {
+      "create": "Create Veterinarian",
+      "update": "Update Veterinarian"
+    }
+  },
+  "detail": {
+    "loading": "Loading veterinarian...",
+    "title": "Veterinarian",
+    "sections": {
+      "contact": "Contact",
+      "workload": "Workload",
+      "available": "Available",
+      "committed": "committed",
+      "assignedTickets": "Assigned Tickets",
+      "noTickets": "No tickets in this category"
+    },
+    "tabs": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "closed": "Closed"
+    },
+    "workloadSummary": {
+      "activeTickets": "active tickets",
+      "open": "open",
+      "inProgress": "in progress"
+    },
+    "time": {
+      "noDate": "No date"
+    }
   }
 }

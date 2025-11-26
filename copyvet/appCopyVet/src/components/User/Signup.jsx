@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
@@ -14,15 +15,20 @@ import UserService from "../../services/UserService";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 export function Signup() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   // Esquema de validación
   const loginSchema = yup.object({
-    nombre_completo: yup.string().required("El nombre es requerido"),
+    nombre_completo: yup
+      .string()
+      .required(t("auth:signup.validation.nameRequired")),
     email: yup
       .string()
-      .required("El email es requerido")
-      .email("Formato email"),
-    password: yup.string().required("El password es requerido"),
+      .required(t("auth:signup.validation.emailRequired"))
+      .email(t("auth:signup.validation.emailFormat")),
+    password: yup
+      .string()
+      .required(t("auth:signup.validation.passwordRequired")),
     telefono: yup.string().nullable(),
   });
   const {
@@ -44,7 +50,7 @@ export function Signup() {
 
   const [error, setError] = useState(null);
   const notify = () =>
-    toast.success("Usuario registrado", {
+    toast.success(t("auth:signup.messages.userRegistered"), {
       duration: 4000,
       position: "top-center",
     });
@@ -74,15 +80,16 @@ export function Signup() {
             // Error de respuesta del servidor
             setError(
               new Error(
-                error.response.data?.message || "Error al crear usuario"
+                error.response.data?.message ||
+                  t("auth:signup.messages.errorCreatingUser")
               )
             );
           } else if (error instanceof SyntaxError) {
             console.log(error);
             setError(error);
-            throw new Error("Respuesta no válida del servidor");
+            throw new Error(t("auth:signup.messages.invalidResponse"));
           } else {
-            setError(new Error("Error al crear usuario"));
+            setError(new Error(t("auth:signup.messages.errorCreatingUser")));
           }
         });
     } catch (e) {
@@ -102,7 +109,7 @@ export function Signup() {
         <Grid container spacing={1}>
           <Grid size={12} sm={12}>
             <Typography variant="h5" gutterBottom>
-              Registrar Usuario
+              {t("auth:signup.title")}
             </Typography>
           </Grid>
           <Grid size={12} sm={12}>
@@ -114,7 +121,7 @@ export function Signup() {
                   <TextField
                     {...field}
                     id="nombre_completo"
-                    label="Nombre Completo"
+                    label={t("auth:signup.fullName")}
                     error={Boolean(errors.nombre_completo)}
                     helperText={
                       errors.nombre_completo
@@ -135,7 +142,7 @@ export function Signup() {
                   <TextField
                     {...field}
                     id="email"
-                    label="Email"
+                    label={t("auth:signup.email")}
                     error={Boolean(errors.email)}
                     helperText={errors.email ? errors.email.message : " "}
                   />
@@ -152,7 +159,7 @@ export function Signup() {
                   <TextField
                     {...field}
                     id="telefono"
-                    label="Teléfono"
+                    label={t("auth:signup.phone")}
                     error={Boolean(errors.telefono)}
                     helperText={errors.telefono ? errors.telefono.message : " "}
                   />
@@ -169,7 +176,7 @@ export function Signup() {
                   <TextField
                     {...field}
                     id="password"
-                    label="Password"
+                    label={t("auth:signup.password")}
                     type="password"
                     error={Boolean(errors.password)}
                     helperText={errors.password ? errors.password.message : " "}
@@ -185,7 +192,7 @@ export function Signup() {
               color="secondary"
               sx={{ m: 1 }}
             >
-              Registrar
+              {t("auth:signup.signupButton")}
             </Button>
           </Grid>
         </Grid>

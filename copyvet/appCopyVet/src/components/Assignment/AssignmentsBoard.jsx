@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 import VeterinarioService from "../../services/VeterinarioService";
 import {
   Container,
@@ -30,6 +31,7 @@ function slaColor(remainingMinutes) {
 
 // Componente para mostrar tickets de un veterinario
 function VeterinarianTickets({ id }) {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -139,7 +141,7 @@ function VeterinarianTickets({ id }) {
                   icon={<AccessTimeIcon />}
                   size="small"
                   color={slaColor(remaining)}
-                  label={`${remaining} min`}
+                  label={`${remaining} ${t("assignmentsBoard.slaRemaining")}`}
                   sx={{ fontWeight: 600 }}
                 />
               </Stack>
@@ -158,7 +160,7 @@ function VeterinarianTickets({ id }) {
           align="center"
           sx={{ pt: 3, pb: 1, color: "text.secondary", fontStyle: "italic" }}
         >
-          Sin tickets asignados
+          {t("assignmentsBoard.noTickets")}
         </Typography>
       )}
     </Box>
@@ -170,6 +172,7 @@ VeterinarianTickets.propTypes = {
 };
 
 export default function AssignmentsBoard() {
+  const { t } = useTranslation();
   const [vets, setVets] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -190,10 +193,10 @@ export default function AssignmentsBoard() {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Paper elevation={2} sx={{ p: 3, mb: 4, bgcolor: "primary.main" }}>
         <Typography variant="h4" gutterBottom color="white" fontWeight={600}>
-          📋 Tablero de Asignaciones
+          📋 {t("assignmentsBoard.title")}
         </Typography>
         <Typography variant="body2" color="rgba(255,255,255,0.9)">
-          Gestión de tickets asignados a cada veterinario
+          {t("assignmentsBoard.subtitle")}
         </Typography>
       </Paper>
 
@@ -206,7 +209,7 @@ export default function AssignmentsBoard() {
       {!loading && vets.length === 0 && (
         <Paper sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="h6" color="text.secondary">
-            No hay veterinarios disponibles
+            {t("assignmentsBoard.noVeterinarians")}
           </Typography>
         </Paper>
       )}
@@ -238,7 +241,7 @@ export default function AssignmentsBoard() {
                 }
                 subheader={
                   <Typography variant="caption" color="text.secondary">
-                    {v.especialidad || "Veterinario"}
+                    {v.especialidad || t("assignmentsBoard.veterinarian")}
                   </Typography>
                 }
                 sx={{ pb: 1 }}
@@ -251,7 +254,8 @@ export default function AssignmentsBoard() {
                   gutterBottom
                   sx={{ mb: 1 }}
                 >
-                  Tickets Asignados ({v.tickets_activos ?? 0})
+                  {t("assignmentsBoard.assignedTickets")} (
+                  {v.tickets_activos ?? 0})
                 </Typography>
                 <VeterinarianTickets id={v.id_veterinario || v.id} />
               </CardContent>

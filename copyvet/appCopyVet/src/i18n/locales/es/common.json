@@ -1,8 +1,8 @@
 {
   "navigation": {
     "home": "Inicio",
-    "tickets": "Tickets",
-    "createTicket": "Crear Ticket",
+    "tickets": "Tiquetes",
+    "createTicket": "Crear Tiquete",
     "veterinarians": "Veterinarios",
     "categories": "Categorías",
     "calendar": "Calendario",
@@ -57,5 +57,116 @@
     "required": "Requerido",
     "selectOption": "Seleccionar opción",
     "noSelection": "Sin selección"
+  },
+  "status": {
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
+  "footer": {
+    "title": "CopyVet - Sistema de Gestión para Clínicas Veterinarias",
+    "authors": "Paula Nicole Mora Gómez / Jazmín Angélica Esquivel Mairena"
+  },
+  "dashboard": {
+    "title": {
+      "client": "Crear un tiquete",
+      "admin": "Dashboard de tiquetes"
+    },
+    "subtitle": {
+      "client": "Rellena el formulario para crear un nuevo tiquete",
+      "admin": "Administración y monitoreo de tiquetes"
+    },
+    "loading": "Cargando información...",
+    "metrics": {
+      "users": "Usuarios",
+      "tickets": "Tiquetes",
+      "pets": "Mascotas"
+    },
+    "quickCreate": {
+      "title": "Crear un tiquete",
+      "subtitle": "Rellena los campos para crear un nuevo tiquete",
+      "fields": {
+        "pet": "Mascota",
+        "breed": "Raza",
+        "category": "Categoría",
+        "veterinarian": "Veterinario",
+        "detail": "Detalle (opcional)"
+      },
+      "select": "-- Seleccionar --",
+      "allBreeds": "-- Todas las razas --",
+      "none": "-- Ninguno --",
+      "button": "Crear Tiquete"
+    },
+    "veterinarians": {
+      "title": "Veterinarios disponibles",
+      "active": "Activos"
+    }
+  },
+  "calendar": {
+    "title": "Calendario de Citas",
+    "subtitle": "Vacunaciones, Cirugías Menores y Cirugías Mayores programadas",
+    "loading": "Cargando calendario...",
+    "views": {
+      "week": "Vista Semanal",
+      "month": "Vista Mensual"
+    },
+    "navigation": {
+      "today": "Hoy",
+      "goToToday": "Ir a hoy"
+    },
+    "days": {
+      "short": {
+        "sunday": "Dom",
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mié",
+        "thursday": "Jue",
+        "friday": "Vie",
+        "saturday": "Sáb"
+      }
+    },
+    "months": {
+      "january": "Enero",
+      "february": "Febrero",
+      "march": "Marzo",
+      "april": "Abril",
+      "may": "Mayo",
+      "june": "Junio",
+      "july": "Julio",
+      "august": "Agosto",
+      "september": "Septiembre",
+      "october": "Octubre",
+      "november": "Noviembre",
+      "december": "Diciembre"
+    },
+    "categories": {
+      "vaccination": "Vacunación",
+      "minorSurgery": "Cirugía Menor",
+      "majorSurgery": "Cirugía Mayor"
+    },
+    "messages": {
+      "noAppointments": "Sin citas",
+      "unassigned": "Sin asignar",
+      "viewDetails": "Click para ver detalles",
+      "moreAppointments": "más",
+      "noScheduledAppointments": "No hay citas programadas",
+      "noVaccinationsOrSurgeries": "No se encontraron vacunaciones ni cirugías programadas"
+    }
+  },
+  "assignmentsBoard": {
+    "title": "Tablero de Asignaciones",
+    "subtitle": "Gestión de tiquetes asignados a cada veterinario",
+    "loading": "Cargando tablero...",
+    "veterinarian": "Veterinario",
+    "specialty": "Especialidad",
+    "assignedTickets": "Tiquetes Asignados",
+    "activeTickets": "Tiquetes Activos",
+    "noTickets": "Sin tiquetes asignados",
+    "noVeterinarians": "No hay veterinarios disponibles",
+    "slaRemaining": "min restantes",
+    "ticketNumber": "Tiquete"
+  },
+  "unauthorized": {
+    "title": "Autorización",
+    "message": "Usuario no autorizado"
   }
 }

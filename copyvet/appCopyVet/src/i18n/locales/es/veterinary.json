@@ -36,5 +36,92 @@
     "visionDescription": "Ser la plataforma líder en gestión de servicios veterinarios en América Latina, reconocida por nuestra innovación tecnológica, excelencia en el servicio y compromiso con el bienestar animal.",
     "readyToStart": "¿Listo para comenzar",
     "joinSatisfiedClients": "Únete a cientos de clientes satisfechos que confían en CopyVet"
+  },
+  "list": {
+    "title": "Veterinarios",
+    "loading": "Cargando veterinarios...",
+    "empty": "No hay veterinarios disponibles.",
+    "specialty": "Especialidad",
+    "noSpecialty": "Sin especialidad",
+    "contact": "Contacto",
+    "activeTickets": "Tickets Activos",
+    "workload": "Carga de Trabajo",
+    "available": "Disponible",
+    "committed": "Comprometidas",
+    "of": "de",
+    "hours": "horas"
+  },
+  "maintenance": {
+    "title": "Mantenimiento de Veterinarios",
+    "tabs": {
+      "create": "Crear",
+      "update": "Actualizar"
+    },
+    "fields": {
+      "name": "Nombre del Veterinario",
+      "email": "Email",
+      "phone": "Teléfono",
+      "specialties": "Especialidades",
+      "license": "Cédula Profesional",
+      "active": "Activo",
+      "currentLoad": "Carga Actual",
+      "selectVeterinarian": "Seleccionar Veterinario"
+    },
+    "placeholders": {
+      "name": "Nombre completo",
+      "email": "correo@ejemplo.com",
+      "phone": "Teléfono de contacto",
+      "license": "Número de cédula"
+    },
+    "validation": {
+      "nameRequired": "El nombre del veterinario es obligatorio",
+      "nameMinLength": "El nombre debe tener al menos 3 caracteres",
+      "nameMaxLength": "El nombre no puede exceder 100 caracteres",
+      "emailRequired": "El email es obligatorio",
+      "emailInvalid": "El formato del email no es válido",
+      "emailDuplicate": "Ya existe un veterinario con este email",
+      "phoneRequired": "El teléfono es obligatorio",
+      "phoneInvalid": "El teléfono debe tener entre 8 y 15 dígitos",
+      "specialtiesRequired": "Debe seleccionar al menos una especialidad",
+      "veterinarianRequired": "Debe seleccionar un veterinario para actualizar",
+      "completeFields": "Por favor complete todos los campos obligatorios"
+    },
+    "messages": {
+      "loadingError": "Error al cargar los datos necesarios",
+      "createSuccess": "Veterinario creado exitosamente",
+      "createError": "Error al crear el veterinario",
+      "loadVeterinarianError": "Error al cargar los datos del veterinario",
+      "updateSuccess": "Veterinario actualizado exitosamente",
+      "updateError": "Error al actualizar el veterinario"
+    },
+    "buttons": {
+      "create": "Crear Veterinario",
+      "update": "Actualizar Veterinario"
+    }
+  },
+  "detail": {
+    "loading": "Cargando veterinario...",
+    "title": "Veterinario",
+    "sections": {
+      "contact": "Contacto",
+      "workload": "Carga de Trabajo",
+      "available": "Disponible",
+      "committed": "comprometidas",
+      "assignedTickets": "Tickets Asignados",
+      "noTickets": "No hay tickets en esta categoría"
+    },
+    "tabs": {
+      "open": "Abiertos",
+      "inProgress": "En Proceso",
+      "closed": "Cerrados"
+    },
+    "workloadSummary": {
+      "activeTickets": "tickets activos",
+      "open": "abiertos",
+      "inProgress": "en proceso"
+    },
+    "time": {
+      "noDate": "Sin fecha"
+    }
   }
 }

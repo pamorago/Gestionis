@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Typography,
@@ -29,6 +30,7 @@ import {
 import TicketService from "../../services/TicketService";
 
 export default function Calendar() {
+  const { t, i18n } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -160,7 +162,15 @@ export default function Calendar() {
   };
 
   const getShortDayName = (date) => {
-    const days = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+    const days = [
+      t("common:calendar.days.short.sunday"),
+      t("common:calendar.days.short.monday"),
+      t("common:calendar.days.short.tuesday"),
+      t("common:calendar.days.short.wednesday"),
+      t("common:calendar.days.short.thursday"),
+      t("common:calendar.days.short.friday"),
+      t("common:calendar.days.short.saturday"),
+    ];
     return days[date.getDay()];
   };
 
@@ -179,18 +189,18 @@ export default function Calendar() {
 
   const getHeaderTitle = () => {
     const months = [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
+      t("common:calendar.months.january"),
+      t("common:calendar.months.february"),
+      t("common:calendar.months.march"),
+      t("common:calendar.months.april"),
+      t("common:calendar.months.may"),
+      t("common:calendar.months.june"),
+      t("common:calendar.months.july"),
+      t("common:calendar.months.august"),
+      t("common:calendar.months.september"),
+      t("common:calendar.months.october"),
+      t("common:calendar.months.november"),
+      t("common:calendar.months.december"),
     ];
 
     if (view === "week") {
@@ -285,13 +295,13 @@ export default function Calendar() {
                       color="text.secondary"
                       sx={{ py: 2 }}
                     >
-                      Sin citas
+                      {t("common:calendar.messages.noAppointments")}
                     </Typography>
                   ) : (
                     day.tickets.map((t) => (
                       <Tooltip
                         key={t.id_ticket}
-                        title={`Click para ver detalles - ${t.nombre_categoria}`}
+                        title={`${t("common:calendar.messages.viewDetails")} - ${t.nombre_categoria}`}
                         arrow
                       >
                         <Paper
@@ -365,7 +375,8 @@ export default function Calendar() {
                                   whiteSpace: "nowrap",
                                 }}
                               >
-                                {t.asignado_a?.split(" ")[0] || "Sin asignar"}
+                                {t.asignado_a?.split(" ")[0] ||
+                                  t("common:calendar.messages.unassigned")}
                               </Typography>
                             </Box>
                           </Stack>
@@ -385,7 +396,15 @@ export default function Calendar() {
   // Renderizar vista mensual
   const renderMonthView = () => {
     const { days } = monthData;
-    const weekHeaders = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+    const weekHeaders = [
+      t("common:calendar.days.short.monday"),
+      t("common:calendar.days.short.tuesday"),
+      t("common:calendar.days.short.wednesday"),
+      t("common:calendar.days.short.thursday"),
+      t("common:calendar.days.short.friday"),
+      t("common:calendar.days.short.saturday"),
+      t("common:calendar.days.short.sunday"),
+    ];
 
     return (
       <Box>
@@ -463,7 +482,7 @@ export default function Calendar() {
                       {dayTickets.slice(0, 3).map((t) => (
                         <Tooltip
                           key={t.id_ticket}
-                          title={`Click para ver detalles - ${t.mascota}`}
+                          title={`${t("common:calendar.messages.viewDetails")} - ${t.mascota}`}
                           arrow
                         >
                           <Box
@@ -518,7 +537,8 @@ export default function Calendar() {
                           color="text.secondary"
                           sx={{ fontSize: "0.6rem", textAlign: "center" }}
                         >
-                          +{dayTickets.length - 3} más
+                          +{dayTickets.length - 3}{" "}
+                          {t("common:calendar.messages.moreAppointments")}
                         </Typography>
                       )}
                     </Stack>
@@ -537,10 +557,10 @@ export default function Calendar() {
       {/* Header */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" gutterBottom fontWeight="bold">
-          📅 Calendario de Citas
+          📅 {t("common:calendar.title")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Vacunaciones, Cirugías Menores y Cirugías Mayores programadas
+          {t("common:calendar.subtitle")}
         </Typography>
       </Box>
 
@@ -555,13 +575,13 @@ export default function Calendar() {
           <Tab
             icon={<ViewWeek />}
             iconPosition="start"
-            label="Vista Semanal"
+            label={t("common:calendar.views.week")}
             value="week"
           />
           <Tab
             icon={<CalendarMonth />}
             iconPosition="start"
-            label="Vista Mensual"
+            label={t("common:calendar.views.month")}
             value="month"
           />
         </Tabs>
@@ -583,7 +603,7 @@ export default function Calendar() {
             <IconButton onClick={goToNext} color="primary">
               <ChevronRight />
             </IconButton>
-            <Tooltip title="Ir a hoy">
+            <Tooltip title={t("common:calendar.navigation.goToToday")}>
               <Box
                 component="button"
                 onClick={goToToday}
@@ -603,7 +623,7 @@ export default function Calendar() {
                   },
                 }}
               >
-                Hoy
+                {t("common:calendar.navigation.today")}
               </Box>
             </Tooltip>
           </Stack>
@@ -615,15 +635,21 @@ export default function Calendar() {
           <Stack direction="row" spacing={2}>
             <Stack direction="row" spacing={1} alignItems="center">
               <Vaccines fontSize="small" color="primary" />
-              <Typography variant="caption">Vacunación</Typography>
+              <Typography variant="caption">
+                {t("common:calendar.categories.vaccination")}
+              </Typography>
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <MedicalServices fontSize="small" sx={{ color: "#ed6c02" }} />
-              <Typography variant="caption">Cirugía Menor</Typography>
+              <Typography variant="caption">
+                {t("common:calendar.categories.minorSurgery")}
+              </Typography>
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <LocalHospital fontSize="small" color="error" />
-              <Typography variant="caption">Cirugía Mayor</Typography>
+              <Typography variant="caption">
+                {t("common:calendar.categories.majorSurgery")}
+              </Typography>
             </Stack>
           </Stack>
         </Stack>
@@ -634,7 +660,7 @@ export default function Calendar() {
         <Box sx={{ textAlign: "center", py: 8 }}>
           <CircularProgress size={60} />
           <Typography variant="h6" color="text.secondary" sx={{ mt: 2 }}>
-            Cargando calendario...
+            {t("common:calendar.loading")}
           </Typography>
         </Box>
       ) : (
@@ -644,10 +670,10 @@ export default function Calendar() {
       {!loading && tickets.length === 0 && (
         <Paper elevation={2} sx={{ p: 6, textAlign: "center", mt: 4 }}>
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            📭 No hay citas programadas
+            📭 {t("common:calendar.messages.noScheduledAppointments")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            No se encontraron vacunaciones ni cirugías programadas
+            {t("common:calendar.messages.noVaccinationsOrSurgeries")}
           </Typography>
         </Paper>
       )}

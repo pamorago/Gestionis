@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext } from "react";
+import { useTranslation } from "react-i18next";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -14,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { decodeToken, autorize } = useContext(UserContext);
   const userData = decodeToken() || {};
   const isGmailUser = userData.correo?.endsWith("@gmail.com") || false;
@@ -98,7 +100,9 @@ export default function Dashboard() {
         color="text.primary"
         gutterBottom
       >
-        {isCliente ? "Crear un tiquete" : "Dashboard de tiquetes"}
+        {isCliente
+          ? t("common:dashboard.title.client")
+          : t("common:dashboard.title.admin")}
       </Typography>
 
       <Typography
@@ -108,14 +112,14 @@ export default function Dashboard() {
         gutterBottom
       >
         {isCliente
-          ? "Rellena el formulario para crear un nuevo tiquete"
-          : "Administración y monitoreo de tiquetes"}
+          ? t("common:dashboard.subtitle.client")
+          : t("common:dashboard.subtitle.admin")}
       </Typography>
 
       {loading && (
         <Box sx={{ mt: 4, textAlign: "center" }}>
           <Typography variant="h6" color="text.secondary">
-            Cargando información...
+            {t("common:dashboard.loading")}
           </Typography>
         </Box>
       )}
@@ -128,19 +132,25 @@ export default function Dashboard() {
               <>
                 <Grid item xs={12} md={4}>
                   <Paper sx={{ p: 2, textAlign: "center" }} elevation={2}>
-                    <Typography variant="subtitle1">Usuarios</Typography>
+                    <Typography variant="subtitle1">
+                      {t("common:dashboard.metrics.users")}
+                    </Typography>
                     <Typography variant="h4">{counts.users}</Typography>
                   </Paper>
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <Paper sx={{ p: 2, textAlign: "center" }} elevation={2}>
-                    <Typography variant="subtitle1">Tickets</Typography>
+                    <Typography variant="subtitle1">
+                      {t("common:dashboard.metrics.tickets")}
+                    </Typography>
                     <Typography variant="h4">{counts.tickets}</Typography>
                   </Paper>
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <Paper sx={{ p: 2, textAlign: "center" }} elevation={2}>
-                    <Typography variant="subtitle1">Mascotas</Typography>
+                    <Typography variant="subtitle1">
+                      {t("common:dashboard.metrics.pets")}
+                    </Typography>
                     <Typography variant="h4">{counts.mascotas}</Typography>
                   </Paper>
                 </Grid>
@@ -154,28 +164,30 @@ export default function Dashboard() {
                   <Grid container spacing={1} alignItems="center">
                     <Grid item xs={12}>
                       <Typography variant="h6" gutterBottom>
-                        Crear un tiquete
+                        {t("common:dashboard.quickCreate.title")}
                       </Typography>
                       <Typography
                         variant="caption"
                         display="block"
                         sx={{ mb: 2 }}
                       >
-                        Rellena los campos para crear un nuevo tiquete
+                        {t("common:dashboard.quickCreate.subtitle")}
                       </Typography>
                     </Grid>
 
                     <Grid item xs={12} sm={6}>
                       <TextField
                         select
-                        label="Mascota"
+                        label={t("common:dashboard.quickCreate.fields.pet")}
                         fullWidth
                         value={quick.id_mascota}
                         onChange={(e) =>
                           handleQuickChange("id_mascota", e.target.value)
                         }
                       >
-                        <MenuItem value="">-- Seleccionar --</MenuItem>
+                        <MenuItem value="">
+                          {t("common:dashboard.quickCreate.select")}
+                        </MenuItem>
                         {mascotas.map((m) => (
                           <MenuItem key={m.id_mascota} value={m.id_mascota}>
                             {m.nombre} {m.raza ? `• ${m.raza}` : ""}
@@ -187,14 +199,16 @@ export default function Dashboard() {
                     <Grid item xs={12} sm={6}>
                       <TextField
                         select
-                        label="Raza"
+                        label={t("common:dashboard.quickCreate.fields.breed")}
                         fullWidth
                         value={quick.raza}
                         onChange={(e) =>
                           handleQuickChange("raza", e.target.value)
                         }
                       >
-                        <MenuItem value="">-- Todas las razas --</MenuItem>
+                        <MenuItem value="">
+                          {t("common:dashboard.quickCreate.allBreeds")}
+                        </MenuItem>
                         {breedList.map((r) => (
                           <MenuItem key={r} value={r}>
                             {r}
@@ -206,14 +220,18 @@ export default function Dashboard() {
                     <Grid item xs={12} sm={6}>
                       <TextField
                         select
-                        label="Categoría"
+                        label={t(
+                          "common:dashboard.quickCreate.fields.category"
+                        )}
                         fullWidth
                         value={quick.id_categoria}
                         onChange={(e) =>
                           handleQuickChange("id_categoria", e.target.value)
                         }
                       >
-                        <MenuItem value="">-- Seleccionar --</MenuItem>
+                        <MenuItem value="">
+                          {t("common:dashboard.quickCreate.select")}
+                        </MenuItem>
                         {cats.map((c) => (
                           <MenuItem key={c.id_categoria} value={c.id_categoria}>
                             {c.nombre_categoria}
@@ -225,7 +243,9 @@ export default function Dashboard() {
                     <Grid item xs={12} sm={6}>
                       <TextField
                         select
-                        label="Veterinario"
+                        label={t(
+                          "common:dashboard.quickCreate.fields.veterinarian"
+                        )}
                         fullWidth
                         value={quick.id_asignado_a_usuario}
                         onChange={(e) =>
@@ -235,7 +255,9 @@ export default function Dashboard() {
                           )
                         }
                       >
-                        <MenuItem value="">-- Ninguno --</MenuItem>
+                        <MenuItem value="">
+                          {t("common:dashboard.quickCreate.none")}
+                        </MenuItem>
                         {vets.map((v) => (
                           <MenuItem
                             key={v.id_veterinario || v.id}
@@ -249,7 +271,7 @@ export default function Dashboard() {
 
                     <Grid item xs={12}>
                       <TextField
-                        label="Detalle (opcional)"
+                        label={t("common:dashboard.quickCreate.fields.detail")}
                         fullWidth
                         multiline
                         rows={2}
@@ -266,7 +288,7 @@ export default function Dashboard() {
                         color="primary"
                         onClick={handleQuickCreate}
                       >
-                        Crear Ticket
+                        {t("common:dashboard.quickCreate.button")}
                       </Button>
                     </Grid>
                   </Grid>
@@ -279,7 +301,7 @@ export default function Dashboard() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2 }}>
                   <Typography variant="h6" gutterBottom>
-                    Veterinarios disponibles
+                    {t("common:dashboard.veterinarians.title")}
                   </Typography>
                   <Grid container spacing={2}>
                     {vets.slice(0, 6).map((v) => (
@@ -289,7 +311,8 @@ export default function Dashboard() {
                             {v.nombre_completo}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {v.correo || "-"} • {v.telefono || "-"} • Activos:{" "}
+                            {v.correo || "-"} • {v.telefono || "-"} •{" "}
+                            {t("common:dashboard.veterinarians.active")}:{" "}
                             {v.tickets_activos ?? "-"}
                           </Typography>
                         </Box>

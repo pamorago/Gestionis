@@ -57,5 +57,116 @@
     "required": "Required",
     "selectOption": "Select option",
     "noSelection": "No selection"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "footer": {
+    "title": "CopyVet - Veterinary Clinic Management System",
+    "authors": "Paula Nicole Mora Gómez / Jazmín Angélica Esquivel Mairena"
+  },
+  "dashboard": {
+    "title": {
+      "client": "Create a ticket",
+      "admin": "Tickets Dashboard"
+    },
+    "subtitle": {
+      "client": "Fill out the form to create a new ticket",
+      "admin": "Ticket administration and monitoring"
+    },
+    "loading": "Loading information...",
+    "metrics": {
+      "users": "Users",
+      "tickets": "Tickets",
+      "pets": "Pets"
+    },
+    "quickCreate": {
+      "title": "Create a ticket",
+      "subtitle": "Fill in the fields to create a new ticket",
+      "fields": {
+        "pet": "Pet",
+        "breed": "Breed",
+        "category": "Category",
+        "veterinarian": "Veterinarian",
+        "detail": "Detail (optional)"
+      },
+      "select": "-- Select --",
+      "allBreeds": "-- All breeds --",
+      "none": "-- None --",
+      "button": "Create Ticket"
+    },
+    "veterinarians": {
+      "title": "Available veterinarians",
+      "active": "Active"
+    }
+  },
+  "calendar": {
+    "title": "Appointments Calendar",
+    "subtitle": "Scheduled Vaccinations, Minor Surgeries and Major Surgeries",
+    "loading": "Loading calendar...",
+    "views": {
+      "week": "Week View",
+      "month": "Month View"
+    },
+    "navigation": {
+      "today": "Today",
+      "goToToday": "Go to today"
+    },
+    "days": {
+      "short": {
+        "sunday": "Sun",
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat"
+      }
+    },
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "categories": {
+      "vaccination": "Vaccination",
+      "minorSurgery": "Minor Surgery",
+      "majorSurgery": "Major Surgery"
+    },
+    "messages": {
+      "noAppointments": "No appointments",
+      "unassigned": "Unassigned",
+      "viewDetails": "Click to view details",
+      "moreAppointments": "more",
+      "noScheduledAppointments": "No scheduled appointments",
+      "noVaccinationsOrSurgeries": "No vaccinations or surgeries found"
+    }
+  },
+  "assignmentsBoard": {
+    "title": "Assignments Board",
+    "subtitle": "Management of tickets assigned to each veterinarian",
+    "loading": "Loading board...",
+    "veterinarian": "Veterinarian",
+    "specialty": "Specialty",
+    "assignedTickets": "Assigned Tickets",
+    "activeTickets": "Active Tickets",
+    "noTickets": "No assigned tickets",
+    "noVeterinarians": "No veterinarians available",
+    "slaRemaining": "min remaining",
+    "ticketNumber": "Ticket"
+  },
+  "unauthorized": {
+    "title": "Authorization",
+    "message": "Unauthorized user"
   }
 }

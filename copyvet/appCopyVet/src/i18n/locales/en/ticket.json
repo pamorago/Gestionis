@@ -101,5 +101,34 @@
       "categoryNoChange": "The category cannot be changed",
       "petNoChange": "The pet cannot be changed"
     }
+  },
+  "detail": {
+    "loading": "Loading ticket...",
+    "ticketDetails": "Ticket Details",
+    "client": "Client",
+    "pet": "Pet",
+    "category": "Category",
+    "assignedTo": "Assigned to",
+    "unassigned": "Unassigned",
+    "appointmentDate": "Appointment Date",
+    "ticketImages": "Ticket Images",
+    "changeHistory": "Change History",
+    "noHistory": "No history records.",
+    "status": "Status",
+    "timeInfo": "Time Information",
+    "creationDate": "Creation Date",
+    "elapsedTime": "Elapsed Time",
+    "responseSLA": "Response SLA",
+    "resolutionSLA": "Resolution SLA",
+    "rating": "Rating",
+    "notRatedYet": "This ticket has not been rated yet.",
+    "rateService": "Rate Service",
+    "ratingDialog": {
+      "title": "Rate Service",
+      "question": "How would you rate this service?",
+      "commentLabel": "Comment (optional)",
+      "cancel": "Cancel",
+      "submit": "Submit Rating"
+    }
   }
 }

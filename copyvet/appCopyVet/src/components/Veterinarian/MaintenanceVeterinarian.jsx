@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Container,
@@ -45,6 +46,7 @@ function TabPanel({ children, value, index, ...other }) {
 }
 
 export default function MaintenanceVeterinarian() {
+  const { t } = useTranslation();
   const [currentTab, setCurrentTab] = useState(0);
 
   // Estados para formulario de Crear
@@ -116,7 +118,7 @@ export default function MaintenanceVeterinarian() {
         console.error("Error cargando veterinarios:", vetError);
         setVeterinarios([]);
         showSnackbar(
-          `Error cargando veterinarios: ${vetError.message}`,
+          t("veterinary:maintenance.messages.loadingError"),
           "warning"
         );
       }
@@ -142,7 +144,7 @@ export default function MaintenanceVeterinarian() {
         console.error("Error cargando especialidades:", espError);
         setEspecialidadesDisponibles([]);
         showSnackbar(
-          `Error cargando especialidades: ${espError.message}`,
+          t("veterinary:maintenance.messages.loadingError"),
           "warning"
         );
       }
@@ -150,10 +152,7 @@ export default function MaintenanceVeterinarian() {
       console.log("Carga de catálogos completada");
     } catch (error) {
       console.error("Error general al cargar catálogos:", error);
-      showSnackbar(
-        "Error al cargar los datos necesarios: " + (error.message || error),
-        "error"
-      );
+      showSnackbar(t("veterinary:maintenance.messages.loadingError"), "error");
     } finally {
       setLoadingCatalogos(false);
     }
@@ -179,20 +178,24 @@ export default function MaintenanceVeterinarian() {
 
     // Validar nombre
     if (!form.nombre_veterinario || form.nombre_veterinario.trim() === "") {
-      newErrors.nombre_veterinario = "El nombre del veterinario es obligatorio";
+      newErrors.nombre_veterinario = t(
+        "veterinary:maintenance.validation.nameRequired"
+      );
     } else if (form.nombre_veterinario.trim().length < 3) {
-      newErrors.nombre_veterinario =
-        "El nombre debe tener al menos 3 caracteres";
+      newErrors.nombre_veterinario = t(
+        "veterinary:maintenance.validation.nameMinLength"
+      );
     } else if (form.nombre_veterinario.trim().length > 100) {
-      newErrors.nombre_veterinario =
-        "El nombre no puede exceder 100 caracteres";
+      newErrors.nombre_veterinario = t(
+        "veterinary:maintenance.validation.nameMaxLength"
+      );
     }
 
     // Validar email
     if (!form.email || form.email.trim() === "") {
-      newErrors.email = "El email es obligatorio";
+      newErrors.email = t("veterinary:maintenance.validation.emailRequired");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      newErrors.email = "El formato del email no es válido";
+      newErrors.email = t("veterinary:maintenance.validation.emailInvalid");
     } else {
       // Validar email duplicado
       const emailLower = form.email.trim().toLowerCase();
@@ -206,26 +209,29 @@ export default function MaintenanceVeterinarian() {
       });
 
       if (existeDuplicado) {
-        newErrors.email = "Ya existe un veterinario con este email";
+        newErrors.email = t("veterinary:maintenance.validation.emailDuplicate");
       }
     }
 
     // Validar teléfono (ahora obligatorio)
     if (!form.telefono || form.telefono.trim() === "") {
-      newErrors.telefono = "El teléfono es obligatorio";
+      newErrors.telefono = t("veterinary:maintenance.validation.phoneRequired");
     } else if (!/^\d{8,15}$/.test(form.telefono.trim())) {
-      newErrors.telefono = "El teléfono debe tener entre 8 y 15 dígitos";
+      newErrors.telefono = t("veterinary:maintenance.validation.phoneInvalid");
     }
 
     // Validar especialidades (al menos una)
     if (!form.especialidades || form.especialidades.length === 0) {
-      newErrors.especialidades = "Debe seleccionar al menos una especialidad";
+      newErrors.especialidades = t(
+        "veterinary:maintenance.validation.specialtiesRequired"
+      );
     }
 
     // Validación específica para actualizar
     if (isUpdate && !form.id_veterinario) {
-      newErrors.id_veterinario =
-        "Debe seleccionar un veterinario para actualizar";
+      newErrors.id_veterinario = t(
+        "veterinary:maintenance.validation.veterinarianRequired"
+      );
     }
 
     setErrors(newErrors);
@@ -305,7 +311,10 @@ export default function MaintenanceVeterinarian() {
     console.log("Datos del formulario:", createForm);
 
     if (!validateForm(createForm)) {
-      showSnackbar("Por favor complete todos los campos obligatorios", "error");
+      showSnackbar(
+        t("veterinary:maintenance.validation.completeFields"),
+        "error"
+      );
       return;
     }
 
@@ -324,7 +333,10 @@ export default function MaintenanceVeterinarian() {
       const response = await VeterinarioService.create(veterinarioData);
       console.log("Respuesta del servidor:", response);
 
-      showSnackbar("Veterinario creado exitosamente", "success");
+      showSnackbar(
+        t("veterinary:maintenance.messages.createSuccess"),
+        "success"
+      );
 
       // Limpiar formulario
       setCreateForm({
@@ -346,7 +358,7 @@ export default function MaintenanceVeterinarian() {
       console.error("Detalles del error:", error.response);
 
       // Mostrar error específico del servidor si está disponible
-      let errorMessage = "Error al crear el veterinario";
+      let errorMessage = t("veterinary:maintenance.messages.createError");
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.response?.data?.result) {
@@ -385,14 +397,20 @@ export default function MaintenanceVeterinarian() {
       });
     } catch (error) {
       console.error("Error al cargar veterinario:", error);
-      showSnackbar("Error al cargar los datos del veterinario", "error");
+      showSnackbar(
+        t("veterinary:maintenance.messages.loadVeterinarianError"),
+        "error"
+      );
     }
   };
 
   // Actualizar veterinario
   const handleUpdate = async () => {
     if (!validateForm(updateForm, true)) {
-      showSnackbar("Por favor complete todos los campos obligatorios", "error");
+      showSnackbar(
+        t("veterinary:maintenance.validation.completeFields"),
+        "error"
+      );
       return;
     }
 
@@ -410,13 +428,16 @@ export default function MaintenanceVeterinarian() {
       };
 
       await VeterinarioService.update(updatedVeterinario);
-      showSnackbar("Veterinario actualizado exitosamente", "success");
+      showSnackbar(
+        t("veterinary:maintenance.messages.updateSuccess"),
+        "success"
+      );
 
       // Recargar veterinarios
       cargarCatalogos();
     } catch (error) {
       console.error("Error al actualizar veterinario:", error);
-      showSnackbar("Error al actualizar el veterinario", "error");
+      showSnackbar(t("veterinary:maintenance.messages.updateError"), "error");
     }
   };
 
@@ -424,7 +445,7 @@ export default function MaintenanceVeterinarian() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Mantenimiento de Veterinarios
+          {t("veterinary:maintenance.title")}
         </Typography>
 
         <Box sx={{ borderBottom: 1, borderColor: "divider", mt: 3 }}>
@@ -433,15 +454,21 @@ export default function MaintenanceVeterinarian() {
             onChange={handleTabChange}
             aria-label="Tabs de mantenimiento de veterinarios"
           >
-            <Tab label="Crear" id="maintenance-tab-0" />
-            <Tab label="Actualizar" id="maintenance-tab-1" />
+            <Tab
+              label={t("veterinary:maintenance.tabs.create")}
+              id="maintenance-tab-0"
+            />
+            <Tab
+              label={t("veterinary:maintenance.tabs.update")}
+              id="maintenance-tab-1"
+            />
           </Tabs>
         </Box>
 
         {/* TAB: CREAR VETERINARIO */}
         <TabPanel value={currentTab} index={0}>
           <Typography variant="h6" gutterBottom>
-            Crear Veterinario
+            {t("veterinary:maintenance.buttons.create")}
           </Typography>
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
@@ -449,16 +476,14 @@ export default function MaintenanceVeterinarian() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Nombre del Veterinario *"
+                label={`${t("veterinary:maintenance.fields.name")} *`}
                 value={createForm.nombre_veterinario}
                 onChange={(e) =>
                   handleCreateChange("nombre_veterinario", e.target.value)
                 }
                 error={!!errors.nombre_veterinario}
-                helperText={
-                  errors.nombre_veterinario || "Nombre completo del veterinario"
-                }
-                placeholder="Ej: Dr. Juan Pérez"
+                helperText={errors.nombre_veterinario}
+                placeholder={t("veterinary:maintenance.placeholders.name")}
               />
             </Grid>
 
@@ -466,13 +491,13 @@ export default function MaintenanceVeterinarian() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Email *"
+                label={`${t("veterinary:maintenance.fields.email")} *`}
                 type="email"
                 value={createForm.email}
                 onChange={(e) => handleCreateChange("email", e.target.value)}
                 error={!!errors.email}
-                helperText={errors.email || "Email único para el veterinario"}
-                placeholder="veterinario@copyvet.com"
+                helperText={errors.email}
+                placeholder={t("veterinary:maintenance.placeholders.email")}
               />
             </Grid>
 
@@ -480,28 +505,32 @@ export default function MaintenanceVeterinarian() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Teléfono *"
+                label={`${t("veterinary:maintenance.fields.phone")} *`}
                 value={createForm.telefono}
                 onChange={(e) => handleCreateChange("telefono", e.target.value)}
                 error={!!errors.telefono}
-                helperText={
-                  errors.telefono || "Teléfono de contacto (8-15 dígitos)"
-                }
-                placeholder="88888888"
+                helperText={errors.telefono}
+                placeholder={t("veterinary:maintenance.placeholders.phone")}
               />
             </Grid>
 
             {/* Especialidades */}
             <Grid item xs={12}>
               <FormControl fullWidth error={!!errors.especialidades}>
-                <InputLabel>Especialidades *</InputLabel>
+                <InputLabel>
+                  {t("veterinary:maintenance.fields.specialties")} *
+                </InputLabel>
                 <Select
                   multiple
                   value={createForm.especialidades}
                   onChange={(e) =>
                     handleCreateChange("especialidades", e.target.value)
                   }
-                  input={<OutlinedInput label="Especialidades *" />}
+                  input={
+                    <OutlinedInput
+                      label={`${t("veterinary:maintenance.fields.specialties")} *`}
+                    />
+                  }
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                       {selected.map((value) => {
@@ -544,14 +573,18 @@ export default function MaintenanceVeterinarian() {
             {/* Estado activo */}
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
-                <InputLabel>Estado</InputLabel>
+                <InputLabel>
+                  {t("veterinary:maintenance.fields.active")}
+                </InputLabel>
                 <Select
                   value={createForm.activo}
                   onChange={(e) => handleCreateChange("activo", e.target.value)}
-                  label="Estado"
+                  label={t("veterinary:maintenance.fields.active")}
                 >
-                  <MenuItem value={true}>Activo</MenuItem>
-                  <MenuItem value={false}>Inactivo</MenuItem>
+                  <MenuItem value={true}>{t("common:status.active")}</MenuItem>
+                  <MenuItem value={false}>
+                    {t("common:status.inactive")}
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -560,11 +593,11 @@ export default function MaintenanceVeterinarian() {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Carga Actual de Horas"
+                label={t("veterinary:maintenance.fields.currentLoad")}
                 type="number"
                 value={0}
                 disabled
-                helperText="Suma de horas de tickets asignados (inicia en 0)"
+                helperText={t("veterinary:list.hours")}
               />
             </Grid>
 
@@ -598,7 +631,7 @@ export default function MaintenanceVeterinarian() {
                 onClick={handleCreate}
                 fullWidth
               >
-                Crear Veterinario
+                {t("veterinary:maintenance.buttons.create")}
               </Button>
             </Grid>
           </Grid>
@@ -607,21 +640,23 @@ export default function MaintenanceVeterinarian() {
         {/* TAB: ACTUALIZAR VETERINARIO */}
         <TabPanel value={currentTab} index={1}>
           <Typography variant="h6" gutterBottom>
-            Actualizar Veterinario
+            {t("veterinary:maintenance.buttons.update")}
           </Typography>
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
             {/* Selector de veterinario */}
             <Grid item xs={12}>
               <FormControl fullWidth error={!!errors.id_veterinario}>
-                <InputLabel>Seleccionar Veterinario *</InputLabel>
+                <InputLabel>
+                  {t("veterinary:maintenance.fields.selectVeterinarian")} *
+                </InputLabel>
                 <Select
                   value={updateForm.id_veterinario}
                   onChange={(e) => {
                     handleUpdateChange("id_veterinario", e.target.value);
                     handleSelectVetToUpdate(e.target.value);
                   }}
-                  label="Seleccionar Veterinario *"
+                  label={`${t("veterinary:maintenance.fields.selectVeterinarian")} *`}
                 >
                   {veterinarios.map((vet) => (
                     <MenuItem
@@ -650,16 +685,13 @@ export default function MaintenanceVeterinarian() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Nombre del Veterinario *"
+                    label={`${t("veterinary:maintenance.fields.name")} *`}
                     value={updateForm.nombre_veterinario}
                     onChange={(e) =>
                       handleUpdateChange("nombre_veterinario", e.target.value)
                     }
                     error={!!errors.nombre_veterinario}
-                    helperText={
-                      errors.nombre_veterinario ||
-                      "Nombre completo del veterinario"
-                    }
+                    helperText={errors.nombre_veterinario}
                   />
                 </Grid>
 
@@ -667,7 +699,7 @@ export default function MaintenanceVeterinarian() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Email *"
+                    label={`${t("veterinary:maintenance.fields.email")} *`}
                     type="email"
                     value={updateForm.email}
                     onChange={(e) =>
@@ -675,9 +707,7 @@ export default function MaintenanceVeterinarian() {
                     }
                     required
                     error={!!errors.email}
-                    helperText={
-                      errors.email || "Email único para el veterinario"
-                    }
+                    helperText={errors.email}
                   />
                 </Grid>
 
@@ -685,30 +715,34 @@ export default function MaintenanceVeterinarian() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Teléfono *"
+                    label={`${t("veterinary:maintenance.fields.phone")} *`}
                     value={updateForm.telefono}
                     onChange={(e) =>
                       handleUpdateChange("telefono", e.target.value)
                     }
                     required
                     error={!!errors.telefono}
-                    helperText={
-                      errors.telefono || "Teléfono de contacto (8-15 dígitos)"
-                    }
+                    helperText={errors.telefono}
                   />
                 </Grid>
 
                 {/* Especialidades */}
                 <Grid item xs={12}>
                   <FormControl fullWidth error={!!errors.especialidades}>
-                    <InputLabel>Especialidades *</InputLabel>
+                    <InputLabel>
+                      {t("veterinary:maintenance.fields.specialties")} *
+                    </InputLabel>
                     <Select
                       multiple
                       value={updateForm.especialidades}
                       onChange={(e) =>
                         handleUpdateChange("especialidades", e.target.value)
                       }
-                      input={<OutlinedInput label="Especialidades *" />}
+                      input={
+                        <OutlinedInput
+                          label={`${t("veterinary:maintenance.fields.specialties")} *`}
+                        />
+                      }
                       renderValue={(selected) => (
                         <Box
                           sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
@@ -756,16 +790,22 @@ export default function MaintenanceVeterinarian() {
                 {/* Estado activo */}
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
-                    <InputLabel>Estado</InputLabel>
+                    <InputLabel>
+                      {t("veterinary:maintenance.fields.active")}
+                    </InputLabel>
                     <Select
                       value={updateForm.activo}
                       onChange={(e) =>
                         handleUpdateChange("activo", e.target.value)
                       }
-                      label="Estado"
+                      label={t("veterinary:maintenance.fields.active")}
                     >
-                      <MenuItem value={true}>Activo</MenuItem>
-                      <MenuItem value={false}>Inactivo</MenuItem>
+                      <MenuItem value={true}>
+                        {t("common:status.active")}
+                      </MenuItem>
+                      <MenuItem value={false}>
+                        {t("common:status.inactive")}
+                      </MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -774,11 +814,11 @@ export default function MaintenanceVeterinarian() {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Carga Actual de Horas"
+                    label={t("veterinary:maintenance.fields.currentLoad")}
                     type="number"
                     value={updateForm.carga_actual || 0}
                     disabled
-                    helperText="Suma de horas de tickets activos asignados (calculado automáticamente)"
+                    helperText={t("veterinary:list.hours")}
                   />
                 </Grid>
 
@@ -823,7 +863,7 @@ export default function MaintenanceVeterinarian() {
                     onClick={handleUpdate}
                     fullWidth
                   >
-                    Actualizar Veterinario
+                    {t("veterinary:maintenance.buttons.update")}
                   </Button>
                 </Grid>
               </>

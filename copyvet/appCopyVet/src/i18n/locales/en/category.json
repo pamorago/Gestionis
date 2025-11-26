@@ -22,5 +22,79 @@
     "noCategoriesFound": "No categories found",
     "categoryCreatedSuccess": "Category created successfully",
     "categoryUpdatedSuccess": "Category updated successfully"
+  },
+  "list": {
+    "title": "Service Categories",
+    "loading": "Loading categories...",
+    "empty": "No categories available.",
+    "sla": "SLA",
+    "responseTime": "Response",
+    "resolutionTime": "Resolution"
+  },
+  "maintenance": {
+    "title": "Category Maintenance",
+    "tabs": {
+      "create": "Create",
+      "update": "Update"
+    },
+    "fields": {
+      "categoryName": "Category Name",
+      "sla": "Associated SLA",
+      "tags": "Tags",
+      "specialties": "Specialties",
+      "selectCategory": "Select Category"
+    },
+    "placeholders": {
+      "categoryName": "E.g: Vaccination, Minor Surgery"
+    },
+    "helpers": {
+      "uniqueName": "The name must be unique, no duplicates allowed"
+    },
+    "validation": {
+      "nameRequired": "Category name is required",
+      "nameMinLength": "Name must be at least 3 characters",
+      "nameMaxLength": "Name cannot exceed 50 characters",
+      "nameDuplicate": "A category with this name already exists",
+      "slaRequired": "You must select an SLA (required)",
+      "tagsRequired": "You must select at least one tag",
+      "specialtiesRequired": "You must select at least one specialty",
+      "categoryRequired": "You must select a category to update",
+      "completeFields": "Please complete all required fields"
+    },
+    "messages": {
+      "loadingError": "Error loading required data",
+      "createSuccess": "Category created successfully",
+      "createError": "Error creating category",
+      "loadCategoryError": "Error loading category data",
+      "updateSuccess": "Category updated successfully",
+      "updateError": "Error updating category"
+    },
+    "buttons": {
+      "create": "Create Category",
+      "update": "Update Category"
+    }
+  },
+  "detail": {
+    "loading": "Loading category...",
+    "title": "Category",
+    "sections": {
+      "tags": "Tags",
+      "specialties": "Required Specialties",
+      "priority": "Priority Level",
+      "responseTime": "Response Time",
+      "resolutionTime": "Resolution Time",
+      "description": "Description"
+    },
+    "helpers": {
+      "responseTimeDescription": "Maximum time to provide the first ticket response",
+      "resolutionTimeDescription": "Maximum time to completely resolve the case",
+      "descriptionTemplate": "This category groups all cases related to {categoryName} and is governed by {slaDescription} priority SLAs.",
+      "notSpecified": "Not specified"
+    },
+    "time": {
+      "minutes": "minutes",
+      "hours": "hour | hours",
+      "na": "N/A"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import CategoryService from "../../services/CategoryService";
 import {
   Container,
@@ -14,6 +15,7 @@ import {
 import { Link } from "react-router-dom";
 
 export default function ListCategories() {
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +69,7 @@ export default function ListCategories() {
   return (
     <Container sx={{ p: 2 }}>
       <Typography variant="h4" gutterBottom>
-        📁 Categorías de Servicio
+        📁 {t("category:list.title")}
       </Typography>
 
       <Grid container spacing={3} sx={{ mt: 1 }}>
@@ -151,14 +153,16 @@ export default function ListCategories() {
                       color="text.secondary"
                       display="block"
                     >
-                      ⏱️ Respuesta: {formatTime(c.tiempo_minutos)}
+                      ⏱️ {t("category:list.responseTime")}:{" "}
+                      {formatTime(c.tiempo_minutos)}
                     </Typography>
                     <Typography
                       variant="caption"
                       color="text.secondary"
                       display="block"
                     >
-                      ✅ Resolución: {formatTime(c.tiempo_resolucion)}
+                      ✅ {t("category:list.resolutionTime")}:{" "}
+                      {formatTime(c.tiempo_resolucion)}
                     </Typography>
                   </Box>
                 </CardContent>
@@ -170,12 +174,12 @@ export default function ListCategories() {
 
       {loading && (
         <Typography sx={{ p: 2, textAlign: "center" }}>
-          Cargando categorías...
+          {t("category:list.loading")}
         </Typography>
       )}
       {!loading && items.length === 0 && (
         <Typography sx={{ p: 2, textAlign: "center" }}>
-          No hay categorías disponibles.
+          {t("category:list.empty")}
         </Typography>
       )}
     </Container>

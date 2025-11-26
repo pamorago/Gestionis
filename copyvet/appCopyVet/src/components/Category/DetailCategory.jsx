@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import CategoryService from "../../services/CategoryService";
 import {
   Container,
@@ -15,6 +16,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 export default function DetailCategory() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [cat, setCat] = useState(null);
 
   useEffect(() => {
@@ -27,17 +29,20 @@ export default function DetailCategory() {
       });
   }, [id]);
 
-  if (!cat) return <Container sx={{ p: 2 }}>Cargando categoría...</Container>;
+  if (!cat)
+    return <Container sx={{ p: 2 }}>{t("category:detail.loading")}</Container>;
 
   // Convertir minutos a formato legible
   const formatTime = (minutes) => {
-    if (!minutes) return "N/A";
-    if (minutes < 60) return `${minutes} minutos`;
+    if (!minutes) return t("category:detail.time.na");
+    if (minutes < 60) return `${minutes} ${t("category:detail.time.minutes")}`;
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    return mins > 0
-      ? `${hours}h ${mins}min`
-      : `${hours} hora${hours > 1 ? "s" : ""}`;
+    const hourLabel =
+      hours > 1
+        ? t("category:detail.time.hours").split(" | ")[1]
+        : t("category:detail.time.hours").split(" | ")[0];
+    return mins > 0 ? `${hours}h ${mins}min` : `${hours} ${hourLabel}`;
   };
 
   // Obtener emoji según categoría
@@ -88,7 +93,7 @@ export default function DetailCategory() {
           {getCategoryEmoji(cat.nombre_categoria)}
         </Typography>
         <Typography variant="h4" gutterBottom>
-          {cat.nombre_categoria || "Categoría"}
+          {cat.nombre_categoria || t("category:detail.title")}
         </Typography>
       </Box>
 
@@ -96,7 +101,7 @@ export default function DetailCategory() {
       {cat.etiquetas && cat.etiquetas.length > 0 && (
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-            🏷️ Etiquetas
+            🏷️ {t("category:detail.sections.tags")}
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             {cat.etiquetas.map((etiqueta) => (
@@ -116,7 +121,7 @@ export default function DetailCategory() {
       {cat.especialidades && cat.especialidades.length > 0 && (
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-            ⚕️ Especialidades Requeridas
+            ⚕️ {t("category:detail.sections.specialties")}
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             {cat.especialidades.map((especialidad, index) => (
@@ -140,10 +145,12 @@ export default function DetailCategory() {
             gutterBottom
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
-            ⚡ Nivel de Prioridad
+            ⚡ {t("category:detail.sections.priority")}
           </Typography>
           <Typography variant="body1" color="text.primary" sx={{ mb: 1 }}>
-            <strong>{cat.sla_descripcion || "No especificado"}</strong>
+            <strong>
+              {cat.sla_descripcion || t("category:detail.helpers.notSpecified")}
+            </strong>
           </Typography>
         </Box>
 
@@ -153,13 +160,13 @@ export default function DetailCategory() {
             gutterBottom
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
-            ⏱️ Tiempo de Respuesta
+            ⏱️ {t("category:detail.sections.responseTime")}
           </Typography>
           <Typography variant="body1" color="text.primary" sx={{ mb: 1 }}>
             <strong>{formatTime(cat.tiempo_minutos)}</strong>
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Tiempo máximo para dar la primera respuesta al ticket
+            {t("category:detail.helpers.responseTimeDescription")}
           </Typography>
         </Box>
 
@@ -169,13 +176,13 @@ export default function DetailCategory() {
             gutterBottom
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
-            ✅ Tiempo de Resolución
+            ✅ {t("category:detail.sections.resolutionTime")}
           </Typography>
           <Typography variant="body1" color="text.primary" sx={{ mb: 1 }}>
             <strong>{formatTime(cat.tiempo_resolucion)}</strong>
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Tiempo máximo para resolver completamente el caso
+            {t("category:detail.helpers.resolutionTimeDescription")}
           </Typography>
         </Box>
 
@@ -185,12 +192,13 @@ export default function DetailCategory() {
             gutterBottom
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
-            📝 Descripción
+            📝 {t("category:detail.sections.description")}
           </Typography>
           <Typography variant="body1" sx={{ fontStyle: "italic" }}>
-            Esta categoría agrupa todos los casos relacionados con{" "}
-            <strong>{cat.nombre_categoria}</strong> y se rige por los SLA de
-            prioridad <strong>{cat.sla_descripcion}</strong>.
+            {t("category:detail.helpers.descriptionTemplate", {
+              categoryName: cat.nombre_categoria,
+              slaDescription: cat.sla_descripcion,
+            })}
           </Typography>
         </Box>
       </Paper>

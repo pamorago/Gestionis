@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import VeterinarioService from "../../services/VeterinarioService";
 import {
   Container,
@@ -28,6 +29,7 @@ import {
 export default function DetailVeterinarian() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [tech, setTech] = useState(null);
   const [tickets, setTickets] = useState([]);
   const [tabValue, setTabValue] = useState(0);
@@ -103,7 +105,7 @@ export default function DetailVeterinarian() {
 
   // Formatear fecha
   const formatDate = (dateString) => {
-    if (!dateString) return "Sin fecha";
+    if (!dateString) return t("veterinary:detail.time.noDate");
     const date = new Date(dateString);
     return date.toLocaleDateString("es-ES", {
       day: "2-digit",
@@ -113,12 +115,11 @@ export default function DetailVeterinarian() {
   };
 
   if (!tech)
-    return <Container sx={{ p: 2 }}>Cargando veterinario...</Container>;
+    return (
+      <Container sx={{ p: 2 }}>{t("veterinary:detail.loading")}</Container>
+    );
 
-  const tiempo = calcularTiempoDisponible(
-    tech.carga_actual,
-    tech.carga_maxima
-  );
+  const tiempo = calcularTiempoDisponible(tech.carga_actual, tech.carga_maxima);
   const disponibilidadColor = getDisponibilidadColor(
     tiempo.disponible,
     tiempo.total
@@ -136,7 +137,7 @@ export default function DetailVeterinarian() {
     if (ticketList.length === 0) {
       return (
         <Typography sx={{ p: 2, textAlign: "center" }} color="text.secondary">
-          No hay tickets en esta categoría
+          {t("veterinary:detail.sections.noTickets")}
         </Typography>
       );
     }
@@ -221,7 +222,10 @@ export default function DetailVeterinarian() {
       </Box>
 
       <Typography variant="h4" gutterBottom>
-        🩺 {tech.nombre_veterinario || tech.nombre_completo || "Veterinario"}
+        🩺{" "}
+        {tech.nombre_veterinario ||
+          tech.nombre_completo ||
+          t("veterinary:detail.title")}
       </Typography>
 
       {/* Información principal */}
@@ -230,18 +234,14 @@ export default function DetailVeterinarian() {
           {/* Especialidades */}
           <Grid item xs={12}>
             <Stack direction="row" spacing={1} flexWrap="wrap">
-              {Array.isArray(tech.especialidades) && tech.especialidades.length > 0 ? (
+              {Array.isArray(tech.especialidades) &&
+              tech.especialidades.length > 0 ? (
                 tech.especialidades.map((esp, idx) => (
-                  <Chip
-                    key={idx}
-                    label={esp}
-                    color="primary"
-                    size="medium"
-                  />
+                  <Chip key={idx} label={esp} color="primary" size="medium" />
                 ))
               ) : (
                 <Chip
-                  label="Sin especialidad"
+                  label={t("veterinary:list.noSpecialty")}
                   color="default"
                   size="medium"
                 />
@@ -275,13 +275,16 @@ export default function DetailVeterinarian() {
             >
               <AssignmentIcon fontSize="small" color="action" />
               <Typography variant="body1">
-                <strong>Carga de Trabajo:</strong> {cargaTrabajo} tickets
-                activos
+                <strong>{t("veterinary:detail.sections.workload")}:</strong>{" "}
+                {cargaTrabajo}{" "}
+                {t("veterinary:detail.workloadSummary.activeTickets")}
               </Typography>
             </Box>
             <Typography variant="body2" color="text.secondary">
-              {ticketsAbiertos.length} abiertos • {ticketsEnProceso.length} en
-              proceso
+              {ticketsAbiertos.length}{" "}
+              {t("veterinary:detail.workloadSummary.open")} •{" "}
+              {ticketsEnProceso.length}{" "}
+              {t("veterinary:detail.workloadSummary.inProgress")}
             </Typography>
           </Grid>
 
@@ -302,10 +305,12 @@ export default function DetailVeterinarian() {
               <AccessTimeIcon fontSize="small" color="action" />
               <Box>
                 <Typography variant="body1" fontWeight="bold">
-                  Disponible: {tiempo.disponible}h / {tiempo.total}h
+                  {t("veterinary:detail.sections.available")}:{" "}
+                  {tiempo.disponible}h / {tiempo.total}h
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {tiempo.comprometidas}h comprometidas
+                  {tiempo.comprometidas}h{" "}
+                  {t("veterinary:detail.sections.committed")}
                 </Typography>
               </Box>
             </Box>
@@ -316,16 +321,22 @@ export default function DetailVeterinarian() {
       {/* Tabs para tickets */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h5" gutterBottom>
-          Tickets Asignados
+          {t("veterinary:detail.sections.assignedTickets")}
         </Typography>
         <Tabs
           value={tabValue}
           onChange={(e, newValue) => setTabValue(newValue)}
           sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}
         >
-          <Tab label={`Abiertos (${ticketsAbiertos.length})`} />
-          <Tab label={`En Proceso (${ticketsEnProceso.length})`} />
-          <Tab label={`Cerrados (${ticketsCerrados.length})`} />
+          <Tab
+            label={`${t("veterinary:detail.tabs.open")} (${ticketsAbiertos.length})`}
+          />
+          <Tab
+            label={`${t("veterinary:detail.tabs.inProgress")} (${ticketsEnProceso.length})`}
+          />
+          <Tab
+            label={`${t("veterinary:detail.tabs.closed")} (${ticketsCerrados.length})`}
+          />
         </Tabs>
 
         {/* Contenido de tabs */}

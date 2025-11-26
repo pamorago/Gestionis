@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import VeterinarioService from "../../services/VeterinarioService";
 import {
   Container,
@@ -20,6 +21,7 @@ import {
 } from "@mui/icons-material";
 
 export default function ListVeterinarians() {
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -59,15 +61,15 @@ export default function ListVeterinarians() {
   return (
     <Container sx={{ p: 2 }}>
       <Typography variant="h4" gutterBottom>
-        🩺 Veterinarios
+        🩺 {t("veterinary:list.title")}
       </Typography>
 
       {loading && (
-        <Typography sx={{ p: 2 }}>Cargando veterinarios...</Typography>
+        <Typography sx={{ p: 2 }}>{t("veterinary:list.loading")}</Typography>
       )}
 
       {!loading && items.length === 0 && (
-        <Typography sx={{ p: 2 }}>No hay veterinarios disponibles.</Typography>
+        <Typography sx={{ p: 2 }}>{t("veterinary:list.empty")}</Typography>
       )}
 
       <Grid container spacing={3}>
@@ -112,7 +114,12 @@ export default function ListVeterinarians() {
 
                     {/* Especialidad */}
                     <Chip
-                      label={Array.isArray(v.especialidades) && v.especialidades.length > 0 ? v.especialidades.join(", ") : "Sin especialidad"}
+                      label={
+                        Array.isArray(v.especialidades) &&
+                        v.especialidades.length > 0
+                          ? v.especialidades.join(", ")
+                          : t("veterinary:list.noSpecialty")
+                      }
                       color="primary"
                       size="small"
                       sx={{ mb: 2 }}
@@ -149,7 +156,7 @@ export default function ListVeterinarians() {
                     >
                       <AssignmentIcon fontSize="small" color="action" />
                       <Typography variant="body2">
-                        <strong>Tickets Activos:</strong>{" "}
+                        <strong>{t("veterinary:list.activeTickets")}:</strong>{" "}
                         {v.tickets_activos || 0}
                       </Typography>
                     </Box>
@@ -170,10 +177,14 @@ export default function ListVeterinarians() {
                       <AccessTimeIcon fontSize="small" color="action" />
                       <Box>
                         <Typography variant="body2" fontWeight="bold">
-                          Disponible: {tiempo.disponible}h / {tiempo.total}h
+                          {t("veterinary:list.available")}: {tiempo.disponible}
+                          {t("veterinary:list.hours")} / {tiempo.total}
+                          {t("veterinary:list.hours")}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {tiempo.comprometidas}h comprometidas
+                          {tiempo.comprometidas}
+                          {t("veterinary:list.hours")}{" "}
+                          {t("veterinary:list.committed")}
                         </Typography>
                       </Box>
                     </Box>

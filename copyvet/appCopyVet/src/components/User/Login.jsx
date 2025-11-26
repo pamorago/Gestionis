@@ -1,28 +1,32 @@
-import { useState, useContext } from 'react';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid2';
-import Typography from '@mui/material/Typography';
-import { useForm, Controller } from 'react-hook-form';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import toast from 'react-hot-toast';
-import UserService from '../../services/UserService';
-import { UserContext } from '../../context/UserContext';
+import { useState, useContext } from "react";
+import { useTranslation } from "react-i18next";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid2";
+import Typography from "@mui/material/Typography";
+import { useForm, Controller } from "react-hook-form";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import UserService from "../../services/UserService";
+import { UserContext } from "../../context/UserContext";
 
 export function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { saveUser } = useContext(UserContext);
   // Esquema de validación
   const loginSchema = yup.object({
     email: yup
       .string()
-      .required('El email es requerido')
-      .email('Formato email'),
-    password: yup.string().required('El password es requerido'),
+      .required(t("auth:login.validation.emailRequired"))
+      .email(t("auth:login.validation.emailFormat")),
+    password: yup
+      .string()
+      .required(t("auth:login.validation.passwordRequired")),
   });
   const {
     control,
@@ -31,8 +35,8 @@ export function Login() {
   } = useForm({
     // Valores iniciales
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
     // Asignación de validaciones
     resolver: yupResolver(loginSchema),
@@ -47,34 +51,35 @@ export function Login() {
       UserService.loginUser(DataForm)
         .then((response) => {
           console.log(response);
-         //Validar la respuesta
-         if(response.data !=null 
-          && response.data !='undefined'
-          && response.data !='Usuario no valido'
-         ){
-          //Usuario válido o identificado
-          //Guardar el token
-          saveUser(response.data)
-          toast.success('Bienvenido, usuario',{
-            duration:4000
-          })
-          return navigate('/')
-         }else{
-          //Usuario No válido
-          toast.error('Usuario No válido',{
-            duration:4000
-          })
-         }
+          //Validar la respuesta
+          if (
+            response.data != null &&
+            response.data != "undefined" &&
+            response.data != "Usuario no valido"
+          ) {
+            //Usuario válido o identificado
+            //Guardar el token
+            saveUser(response.data);
+            toast.success(t("auth:login.messages.welcome"), {
+              duration: 4000,
+            });
+            return navigate("/");
+          } else {
+            //Usuario No válido
+            toast.error(t("auth:login.messages.invalidUser"), {
+              duration: 4000,
+            });
+          }
         })
         .catch((error) => {
           if (error instanceof SyntaxError) {
             console.log(error);
             setError(error);
-            throw new Error('Respuesta no válida del servidor');
+            throw new Error(t("auth:login.messages.invalidResponse"));
           }
         });
     } catch (e) {
-      console.error('Error:', e);
+      console.error("Error:", e);
     }
   };
 
@@ -89,7 +94,7 @@ export function Login() {
         <Grid container spacing={1}>
           <Grid size={12} sm={12}>
             <Typography variant="h5" gutterBottom>
-              Login
+              {t("auth:login.title")}
             </Typography>
           </Grid>
           <Grid size={12} sm={4}>
@@ -102,9 +107,9 @@ export function Login() {
                   <TextField
                     {...field}
                     id="email"
-                    label="Email"
+                    label={t("auth:login.email")}
                     error={Boolean(errors.email)}
-                    helperText={errors.email ? errors.email.message : ' '}
+                    helperText={errors.email ? errors.email.message : " "}
                   />
                 )}
               />
@@ -119,10 +124,10 @@ export function Login() {
                   <TextField
                     {...field}
                     id="password"
-                    label="Password"
+                    label={t("auth:login.password")}
                     type="password"
                     error={Boolean(errors.password)}
-                    helperText={errors.password ? errors.password.message : ' '}
+                    helperText={errors.password ? errors.password.message : " "}
                   />
                 )}
               />
@@ -135,7 +140,7 @@ export function Login() {
               color="secondary"
               sx={{ m: 1 }}
             >
-              Login
+              {t("auth:login.loginButton")}
             </Button>
           </Grid>
         </Grid>

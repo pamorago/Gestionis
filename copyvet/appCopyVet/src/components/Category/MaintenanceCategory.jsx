@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Container,
@@ -39,6 +40,7 @@ function TabPanel({ children, value, index, ...other }) {
 }
 
 export default function MaintenanceCategory() {
+  const { t } = useTranslation();
   const [currentTab, setCurrentTab] = useState(0);
 
   // Estados para formulario de Crear
@@ -114,7 +116,7 @@ export default function MaintenanceCategory() {
       );
     } catch (error) {
       console.error("Error al cargar catálogos:", error);
-      showSnackbar("Error al cargar los datos necesarios", "error");
+      showSnackbar(t("category:maintenance.messages.loadingError"), "error");
     } finally {
       setLoadingCatalogos(false);
     }
@@ -140,11 +142,17 @@ export default function MaintenanceCategory() {
 
     // Validar nombre
     if (!form.nombre_categoria || form.nombre_categoria.trim() === "") {
-      newErrors.nombre_categoria = "El nombre de la categoría es obligatorio";
+      newErrors.nombre_categoria = t(
+        "category:maintenance.validation.nameRequired"
+      );
     } else if (form.nombre_categoria.trim().length < 3) {
-      newErrors.nombre_categoria = "El nombre debe tener al menos 3 caracteres";
+      newErrors.nombre_categoria = t(
+        "category:maintenance.validation.nameMinLength"
+      );
     } else if (form.nombre_categoria.trim().length > 50) {
-      newErrors.nombre_categoria = "El nombre no puede exceder 50 caracteres";
+      newErrors.nombre_categoria = t(
+        "category:maintenance.validation.nameMaxLength"
+      );
     } else {
       // Validar nombre duplicado
       const nombreLower = form.nombre_categoria.trim().toLowerCase();
@@ -158,7 +166,9 @@ export default function MaintenanceCategory() {
       });
 
       if (existeDuplicado) {
-        newErrors.nombre_categoria = "Ya existe una categoría con este nombre";
+        newErrors.nombre_categoria = t(
+          "category:maintenance.validation.nameDuplicate"
+        );
       }
     }
 
@@ -169,22 +179,26 @@ export default function MaintenanceCategory() {
       form.id_sla === null ||
       form.id_sla === undefined
     ) {
-      newErrors.id_sla = "Debe seleccionar un SLA (obligatorio)";
+      newErrors.id_sla = t("category:maintenance.validation.slaRequired");
     }
 
     // Validar etiquetas (al menos una)
     if (!form.etiquetas || form.etiquetas.length === 0) {
-      newErrors.etiquetas = "Debe seleccionar al menos una etiqueta";
+      newErrors.etiquetas = t("category:maintenance.validation.tagsRequired");
     }
 
     // Validar especialidades (al menos una)
     if (!form.especialidades || form.especialidades.length === 0) {
-      newErrors.especialidades = "Debe seleccionar al menos una especialidad";
+      newErrors.especialidades = t(
+        "category:maintenance.validation.specialtiesRequired"
+      );
     }
 
     // Validación específica para actualizar
     if (isUpdate && !form.id_categoria) {
-      newErrors.id_categoria = "Debe seleccionar una categoría para actualizar";
+      newErrors.id_categoria = t(
+        "category:maintenance.validation.categoryRequired"
+      );
     }
 
     setErrors(newErrors);
@@ -205,7 +219,7 @@ export default function MaintenanceCategory() {
       if (existeDuplicado) {
         setErrors({
           ...errors,
-          nombre_categoria: "Ya existe una categoría con este nombre",
+          nombre_categoria: t("category:maintenance.validation.nameDuplicate"),
         });
       } else if (errors[field]) {
         setErrors({ ...errors, [field]: null });
@@ -240,7 +254,7 @@ export default function MaintenanceCategory() {
       if (existeDuplicado) {
         setErrors({
           ...errors,
-          nombre_categoria: "Ya existe una categoría con este nombre",
+          nombre_categoria: t("category:maintenance.validation.nameDuplicate"),
         });
       } else if (errors[field]) {
         setErrors({ ...errors, [field]: null });
@@ -263,7 +277,10 @@ export default function MaintenanceCategory() {
   // Crear categoría
   const handleCreate = async () => {
     if (!validateForm(createForm)) {
-      showSnackbar("Por favor complete todos los campos obligatorios", "error");
+      showSnackbar(
+        t("category:maintenance.validation.completeFields"),
+        "error"
+      );
       return;
     }
 
@@ -276,7 +293,7 @@ export default function MaintenanceCategory() {
       };
 
       await CategoryService.create(categoryData);
-      showSnackbar("Categoría creada exitosamente", "success");
+      showSnackbar(t("category:maintenance.messages.createSuccess"), "success");
 
       // Limpiar formulario
       setCreateForm({
@@ -290,7 +307,7 @@ export default function MaintenanceCategory() {
       cargarCatalogos();
     } catch (error) {
       console.error("Error al crear categoría:", error);
-      showSnackbar("Error al crear la categoría", "error");
+      showSnackbar(t("category:maintenance.messages.createError"), "error");
     }
   };
 
@@ -319,14 +336,20 @@ export default function MaintenanceCategory() {
       });
     } catch (error) {
       console.error("Error al cargar categoría:", error);
-      showSnackbar("Error al cargar los datos de la categoría", "error");
+      showSnackbar(
+        t("category:maintenance.messages.loadCategoryError"),
+        "error"
+      );
     }
   };
 
   // Actualizar categoría
   const handleUpdate = async () => {
     if (!validateForm(updateForm, true)) {
-      showSnackbar("Por favor complete todos los campos obligatorios", "error");
+      showSnackbar(
+        t("category:maintenance.validation.completeFields"),
+        "error"
+      );
       return;
     }
 
@@ -341,13 +364,13 @@ export default function MaintenanceCategory() {
       };
 
       await CategoryService.update(updatedCategory);
-      showSnackbar("Categoría actualizada exitosamente", "success");
+      showSnackbar(t("category:maintenance.messages.updateSuccess"), "success");
 
       // Recargar categorías
       cargarCatalogos();
     } catch (error) {
       console.error("Error al actualizar categoría:", error);
-      showSnackbar("Error al actualizar la categoría", "error");
+      showSnackbar(t("category:maintenance.messages.updateError"), "error");
     }
   };
 
@@ -355,7 +378,7 @@ export default function MaintenanceCategory() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Mantenimiento de Categorías
+          {t("category:maintenance.title")}
         </Typography>
 
         <Box sx={{ borderBottom: 1, borderColor: "divider", mt: 3 }}>
@@ -364,15 +387,21 @@ export default function MaintenanceCategory() {
             onChange={handleTabChange}
             aria-label="Tabs de mantenimiento de categorías"
           >
-            <Tab label="Crear" id="maintenance-tab-0" />
-            <Tab label="Actualizar" id="maintenance-tab-1" />
+            <Tab
+              label={t("category:maintenance.tabs.create")}
+              id="maintenance-tab-0"
+            />
+            <Tab
+              label={t("category:maintenance.tabs.update")}
+              id="maintenance-tab-1"
+            />
           </Tabs>
         </Box>
 
         {/* TAB: CREAR CATEGORÍA */}
         <TabPanel value={currentTab} index={0}>
           <Typography variant="h6" gutterBottom>
-            Crear Categoría
+            {t("category:maintenance.buttons.create")}
           </Typography>
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
@@ -380,7 +409,7 @@ export default function MaintenanceCategory() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Nombre de Categoría *"
+                label={`${t("category:maintenance.fields.categoryName")} *`}
                 value={createForm.nombre_categoria}
                 onChange={(e) =>
                   handleCreateChange("nombre_categoria", e.target.value)
@@ -388,20 +417,24 @@ export default function MaintenanceCategory() {
                 error={!!errors.nombre_categoria}
                 helperText={
                   errors.nombre_categoria ||
-                  "El nombre debe ser único, no se permiten duplicados"
+                  t("category:maintenance.helpers.uniqueName")
                 }
-                placeholder="Ej: Vacunación, Cirugía menor"
+                placeholder={t(
+                  "category:maintenance.placeholders.categoryName"
+                )}
               />
             </Grid>
 
             {/* SLA Asociado */}
             <Grid item xs={12} md={6}>
               <FormControl fullWidth error={!!errors.id_sla}>
-                <InputLabel>SLA Asociado *</InputLabel>
+                <InputLabel>
+                  {t("category:maintenance.fields.sla")} *
+                </InputLabel>
                 <Select
                   value={createForm.id_sla}
                   onChange={(e) => handleCreateChange("id_sla", e.target.value)}
-                  label="SLA Asociado *"
+                  label={`${t("category:maintenance.fields.sla")} *`}
                 >
                   {slas.map((sla) => (
                     <MenuItem key={sla.id_sla} value={sla.id_sla}>
@@ -425,14 +458,20 @@ export default function MaintenanceCategory() {
             {/* Etiquetas */}
             <Grid item xs={12} md={6}>
               <FormControl fullWidth error={!!errors.etiquetas}>
-                <InputLabel>Etiquetas *</InputLabel>
+                <InputLabel>
+                  {t("category:maintenance.fields.tags")} *
+                </InputLabel>
                 <Select
                   multiple
                   value={createForm.etiquetas}
                   onChange={(e) =>
                     handleCreateChange("etiquetas", e.target.value)
                   }
-                  input={<OutlinedInput label="Etiquetas *" />}
+                  input={
+                    <OutlinedInput
+                      label={`${t("category:maintenance.fields.tags")} *`}
+                    />
+                  }
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                       {selected.map((value) => (
@@ -462,14 +501,20 @@ export default function MaintenanceCategory() {
             {/* Especialidades */}
             <Grid item xs={12} md={6}>
               <FormControl fullWidth error={!!errors.especialidades}>
-                <InputLabel>Especialidades *</InputLabel>
+                <InputLabel>
+                  {t("category:maintenance.fields.specialties")} *
+                </InputLabel>
                 <Select
                   multiple
                   value={createForm.especialidades}
                   onChange={(e) =>
                     handleCreateChange("especialidades", e.target.value)
                   }
-                  input={<OutlinedInput label="Especialidades *" />}
+                  input={
+                    <OutlinedInput
+                      label={`${t("category:maintenance.fields.specialties")} *`}
+                    />
+                  }
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                       {selected.map((value) => (
@@ -525,7 +570,7 @@ export default function MaintenanceCategory() {
                 onClick={handleCreate}
                 fullWidth
               >
-                Crear Categoría
+                {t("category:maintenance.buttons.create")}
               </Button>
             </Grid>
           </Grid>
@@ -534,21 +579,23 @@ export default function MaintenanceCategory() {
         {/* TAB: ACTUALIZAR CATEGORÍA */}
         <TabPanel value={currentTab} index={1}>
           <Typography variant="h6" gutterBottom>
-            Actualizar Categoría
+            {t("category:maintenance.buttons.update")}
           </Typography>
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
             {/* Selector de categoría */}
             <Grid item xs={12}>
               <FormControl fullWidth error={!!errors.id_categoria}>
-                <InputLabel>Seleccionar Categoría *</InputLabel>
+                <InputLabel>
+                  {t("category:maintenance.fields.selectCategory")} *
+                </InputLabel>
                 <Select
                   value={updateForm.id_categoria}
                   onChange={(e) => {
                     handleUpdateChange("id_categoria", e.target.value);
                     handleSelectCategoryToUpdate(e.target.value);
                   }}
-                  label="Seleccionar Categoría *"
+                  label={`${t("category:maintenance.fields.selectCategory")} *`}
                 >
                   {categorias.map((cat) => (
                     <MenuItem key={cat.id_categoria} value={cat.id_categoria}>
@@ -574,7 +621,7 @@ export default function MaintenanceCategory() {
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Nombre de Categoría *"
+                    label={`${t("category:maintenance.fields.categoryName")} *`}
                     value={updateForm.nombre_categoria}
                     onChange={(e) =>
                       handleUpdateChange("nombre_categoria", e.target.value)
@@ -582,7 +629,7 @@ export default function MaintenanceCategory() {
                     error={!!errors.nombre_categoria}
                     helperText={
                       errors.nombre_categoria ||
-                      "El nombre debe ser único, no se permiten duplicados"
+                      t("category:maintenance.helpers.uniqueName")
                     }
                   />
                 </Grid>
@@ -590,13 +637,15 @@ export default function MaintenanceCategory() {
                 {/* SLA Asociado */}
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth error={!!errors.id_sla}>
-                    <InputLabel>SLA Asociado *</InputLabel>
+                    <InputLabel>
+                      {t("category:maintenance.fields.sla")} *
+                    </InputLabel>
                     <Select
                       value={updateForm.id_sla}
                       onChange={(e) =>
                         handleUpdateChange("id_sla", e.target.value)
                       }
-                      label="SLA Asociado *"
+                      label={`${t("category:maintenance.fields.sla")} *`}
                     >
                       {slas.map((sla) => (
                         <MenuItem key={sla.id_sla} value={sla.id_sla}>
@@ -620,14 +669,20 @@ export default function MaintenanceCategory() {
                 {/* Etiquetas */}
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth error={!!errors.etiquetas}>
-                    <InputLabel>Etiquetas *</InputLabel>
+                    <InputLabel>
+                      {t("category:maintenance.fields.tags")} *
+                    </InputLabel>
                     <Select
                       multiple
                       value={updateForm.etiquetas}
                       onChange={(e) =>
                         handleUpdateChange("etiquetas", e.target.value)
                       }
-                      input={<OutlinedInput label="Etiquetas *" />}
+                      input={
+                        <OutlinedInput
+                          label={`${t("category:maintenance.fields.tags")} *`}
+                        />
+                      }
                       renderValue={(selected) => (
                         <Box
                           sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
@@ -659,14 +714,20 @@ export default function MaintenanceCategory() {
                 {/* Especialidades */}
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth error={!!errors.especialidades}>
-                    <InputLabel>Especialidades *</InputLabel>
+                    <InputLabel>
+                      {t("category:maintenance.fields.specialties")} *
+                    </InputLabel>
                     <Select
                       multiple
                       value={updateForm.especialidades}
                       onChange={(e) =>
                         handleUpdateChange("especialidades", e.target.value)
                       }
-                      input={<OutlinedInput label="Especialidades *" />}
+                      input={
+                        <OutlinedInput
+                          label={`${t("category:maintenance.fields.specialties")} *`}
+                        />
+                      }
                       renderValue={(selected) => (
                         <Box
                           sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
@@ -710,7 +771,7 @@ export default function MaintenanceCategory() {
                     onClick={handleUpdate}
                     fullWidth
                   >
-                    Actualizar Categoría
+                    {t("category:maintenance.buttons.update")}
                   </Button>
                 </Grid>
               </>
