@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import { Menu, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import LiveTvIcon from "@mui/icons-material/LiveTv";
+import PetsIcon from "@mui/icons-material/Pets";
 import Tooltip from "@mui/material/Tooltip";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { UserContext } from "../../context/UserContext";
@@ -355,16 +355,16 @@ export default function Header() {
       >
         <Toolbar>
           {/* Enlace página inicio */}
-          <Tooltip title="Casos CopyVet">
+          <Tooltip title="CopyVet">
             <IconButton
               size="large"
               edge="end"
               component="a"
               href="/"
-              aria-label="Casos CopyVet"
+              aria-label="CopyVet - Inicio"
               color="primary"
             >
-              <LiveTvIcon />
+              <PetsIcon />
             </IconButton>
           </Tooltip>
           {/* Enlace página inicio */}

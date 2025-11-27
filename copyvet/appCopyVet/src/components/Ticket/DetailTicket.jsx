@@ -271,7 +271,7 @@ export default function DetailTicket() {
           )}
 
           {/* Historial */}
-          <Paper sx={{ p: 3 }}>
+          <Paper elevation={3} sx={{ p: 3, boxShadow: 3 }}>
             <Typography variant="h6" gutterBottom>
               {t("ticket:detail.changeHistory")}
             </Typography>
@@ -290,6 +290,7 @@ export default function DetailTicket() {
                       borderRadius: 1,
                       borderLeft: 3,
                       borderColor: "primary.main",
+                      boxShadow: 2,
                     }}
                   >
                     <Typography variant="body2" fontWeight="bold">

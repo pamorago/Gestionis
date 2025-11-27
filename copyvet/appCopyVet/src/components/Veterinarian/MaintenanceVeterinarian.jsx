@@ -333,8 +333,9 @@ export default function MaintenanceVeterinarian() {
       const response = await VeterinarioService.create(veterinarioData);
       console.log("Respuesta del servidor:", response);
 
+      // Mostrar mensaje con contraseña temporal
       showSnackbar(
-        t("veterinary:maintenance.messages.createSuccess"),
+        `${t("veterinary:maintenance.messages.createSuccess")}. Contraseña temporal: 123456`,
         "success"
       );
 

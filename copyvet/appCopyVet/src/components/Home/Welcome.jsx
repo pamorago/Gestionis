@@ -5,7 +5,6 @@ import PetsIcon from "@mui/icons-material/Pets";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import veteImagen from "../../assets/veterinaria-dra-cats.jpg";
 
 export default function Welcome() {
@@ -14,11 +13,6 @@ export default function Welcome() {
 
   return (
     <Container sx={{ p: 4 }} maxWidth="lg">
-      {/* Language Switcher in top right */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <LanguageSwitcher />
-      </Box>
-
       {/* Hero Section */}
       <Box sx={{ textAlign: "center", mb: 6 }}>
         <Typography

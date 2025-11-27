@@ -5,5 +5,5 @@ return [
     'DB_PASSWORD' => '123456',
     'DB_HOST' => 'localhost',
     'DB_DBNAME' => 'copyvet',
-    'SECRET_KEY'=>'e0d17975bc9bd57eee132eecb6da6f11048e8a88506cc3bffc7249078cf2a77a'
+    'SECRET_KEY' => 'a2f138cde60fdfaa6de0f59294a97895af211d87a29e0442c43790184f6e78ae'
 ];

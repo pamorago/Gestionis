@@ -5,9 +5,12 @@ import { UserContext } from "../../context/UserContext";
 export function Logout() {
   const navigate = useNavigate();
   const { clearUser } = useContext(UserContext);
+
   useEffect(() => {
     clearUser();
-    return navigate("/user/login");
+    navigate("/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return null;
 }

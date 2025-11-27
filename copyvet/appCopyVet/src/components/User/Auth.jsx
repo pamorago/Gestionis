@@ -1,6 +1,6 @@
-import { useContext } from 'react';
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
-import { UserContext } from '../../context/UserContext';
+import { useContext } from "react";
+import { useLocation, Navigate, Outlet } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 
 export function Auth(requiredRoles) {
   const location = useLocation();

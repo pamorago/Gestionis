@@ -1,13 +1,23 @@
 import { useEffect, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
+import {
+  Container,
+  Typography,
+  Box,
+  Paper,
+  Grid,
+  Button,
+  TextField,
+  MenuItem,
+  Card,
+  CardContent,
+  Avatar,
+  Stack,
+} from "@mui/material";
+import PeopleIcon from "@mui/icons-material/People";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import PetsIcon from "@mui/icons-material/Pets";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import CopyVetService from "../../services/CopyVetService";
 import VeterinarioService from "../../services/VeterinarioService";
 import CategoryService from "../../services/CategoryService";
@@ -131,28 +141,79 @@ export default function Dashboard() {
             {!isCliente && (
               <>
                 <Grid item xs={12} md={4}>
-                  <Paper sx={{ p: 2, textAlign: "center" }} elevation={2}>
-                    <Typography variant="subtitle1">
-                      {t("common:dashboard.metrics.users")}
-                    </Typography>
-                    <Typography variant="h4">{counts.users}</Typography>
-                  </Paper>
+                  <Card elevation={3} sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Avatar
+                          sx={{
+                            bgcolor: "primary.main",
+                            width: 56,
+                            height: 56,
+                          }}
+                        >
+                          <PeopleIcon fontSize="large" />
+                        </Avatar>
+                        <Box>
+                          <Typography color="text.secondary" variant="body2">
+                            {t("common:dashboard.metrics.users")}
+                          </Typography>
+                          <Typography variant="h4" fontWeight="bold">
+                            {counts.users}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </CardContent>
+                  </Card>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <Paper sx={{ p: 2, textAlign: "center" }} elevation={2}>
-                    <Typography variant="subtitle1">
-                      {t("common:dashboard.metrics.tickets")}
-                    </Typography>
-                    <Typography variant="h4">{counts.tickets}</Typography>
-                  </Paper>
+                  <Card elevation={3} sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Avatar
+                          sx={{
+                            bgcolor: "success.main",
+                            width: 56,
+                            height: 56,
+                          }}
+                        >
+                          <ConfirmationNumberIcon fontSize="large" />
+                        </Avatar>
+                        <Box>
+                          <Typography color="text.secondary" variant="body2">
+                            {t("common:dashboard.metrics.tickets")}
+                          </Typography>
+                          <Typography variant="h4" fontWeight="bold">
+                            {counts.tickets}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </CardContent>
+                  </Card>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <Paper sx={{ p: 2, textAlign: "center" }} elevation={2}>
-                    <Typography variant="subtitle1">
-                      {t("common:dashboard.metrics.pets")}
-                    </Typography>
-                    <Typography variant="h4">{counts.mascotas}</Typography>
-                  </Paper>
+                  <Card elevation={3} sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Avatar
+                          sx={{
+                            bgcolor: "warning.main",
+                            width: 56,
+                            height: 56,
+                          }}
+                        >
+                          <PetsIcon fontSize="large" />
+                        </Avatar>
+                        <Box>
+                          <Typography color="text.secondary" variant="body2">
+                            {t("common:dashboard.metrics.pets")}
+                          </Typography>
+                          <Typography variant="h4" fontWeight="bold">
+                            {counts.mascotas}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </CardContent>
+                  </Card>
                 </Grid>
               </>
             )}
@@ -299,27 +360,77 @@ export default function Dashboard() {
             {/* Panel de veterinarios - solo visible para administradores y veterinarios */}
             {!isCliente && (
               <Grid item xs={12}>
-                <Paper sx={{ p: 2 }}>
-                  <Typography variant="h6" gutterBottom>
-                    {t("common:dashboard.veterinarians.title")}
-                  </Typography>
-                  <Grid container spacing={2}>
-                    {vets.slice(0, 6).map((v) => (
-                      <Grid item xs={12} sm={6} key={v.id_veterinario || v.id}>
-                        <Box sx={{ p: 1 }}>
-                          <Typography variant="subtitle2">
-                            {v.nombre_completo}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {v.correo || "-"} • {v.telefono || "-"} •{" "}
-                            {t("common:dashboard.veterinarians.active")}:{" "}
-                            {v.tickets_activos ?? "-"}
-                          </Typography>
-                        </Box>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Paper>
+                <Card elevation={3}>
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      gutterBottom
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
+                      <LocalHospitalIcon color="primary" />
+                      {t("common:dashboard.veterinarians.title")}
+                    </Typography>
+                    <Grid container spacing={2} sx={{ mt: 1 }}>
+                      {vets.slice(0, 6).map((v) => (
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          key={v.id_veterinario || v.id}
+                        >
+                          <Paper
+                            elevation={1}
+                            sx={{
+                              p: 2,
+                              transition: "all 0.2s",
+                              "&:hover": {
+                                elevation: 3,
+                                transform: "translateY(-2px)",
+                              },
+                            }}
+                          >
+                            <Stack spacing={1}>
+                              <Typography variant="subtitle1" fontWeight="bold">
+                                {v.nombre_completo}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {v.email || "-"}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                📞 {v.telefono || "-"}
+                              </Typography>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 0.5,
+                                }}
+                              >
+                                <Typography
+                                  variant="caption"
+                                  fontWeight="bold"
+                                  color="primary.main"
+                                >
+                                  {t("common:dashboard.veterinarians.active")}:
+                                </Typography>
+                                <Typography variant="caption">
+                                  {v.tickets_activos ?? 0}
+                                </Typography>
+                              </Box>
+                            </Stack>
+                          </Paper>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </CardContent>
+                </Card>
               </Grid>
             )}
           </Grid>

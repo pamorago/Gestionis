@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -48,6 +49,7 @@ function TabPanel({ children, value, index, ...other }) {
 
 export default function MaintenanceTicket() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
   const userDecoded = userContext?.decodeToken() || {};
   const userRole = userDecoded?.rol || "Cliente";
@@ -530,24 +532,10 @@ export default function MaintenanceTicket() {
         showSnackbar("Ticket creado exitosamente", "success");
       }
 
-      // Limpiar formulario
-      setCreateForm({
-        titulo: "",
-        descripcion: "",
-        id_categoria: "",
-        id_mascota: "",
-        fecha_cita: "",
-        id_creado_por_usuario: userRole === "Cliente" ? userId : "",
-        id_asignado_a_usuario: "",
-        nombre_solicitante:
-          userRole === "Cliente" ? createForm.nombre_solicitante : "",
-        email_solicitante:
-          userRole === "Cliente" ? createForm.email_solicitante : "",
-      });
-      setCreateImages([]);
-      setImagesPreviews([]);
-      setEtiquetasDeCategoria([]);
-      setVeterinariosDisponibles([]);
+      // Redirigir a la lista de tickets
+      setTimeout(() => {
+        navigate("/tickets");
+      }, 1500);
       setErrors({});
     } catch {
       showSnackbar("Error al crear el ticket", "error");

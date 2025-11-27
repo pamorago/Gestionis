@@ -1,11 +1,19 @@
 import { useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
-import FormControl from "@mui/material/FormControl";
-import Grid from "@mui/material/Grid2";
-import Typography from "@mui/material/Typography";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  IconButton,
+  Stack,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useForm, Controller } from "react-hook-form";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +26,16 @@ export function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { saveUser } = useContext(UserContext);
+
+  // Estado para controlar el modal
+  const [open, setOpen] = useState(true);
+
+  // Función para cerrar el modal
+  const handleClose = () => {
+    setOpen(false);
+    navigate("/");
+  };
+
   // Esquema de validación
   const loginSchema = yup.object({
     email: yup
@@ -28,6 +46,7 @@ export function Login() {
       .string()
       .required(t("auth:login.validation.passwordRequired")),
   });
+
   const {
     control,
     handleSubmit,
@@ -43,8 +62,8 @@ export function Login() {
   });
 
   // Valores de formulario
-
   const [error, setError] = useState(null);
+
   // Accion submit
   const onSubmit = (DataForm) => {
     try {
@@ -63,7 +82,7 @@ export function Login() {
             toast.success(t("auth:login.messages.welcome"), {
               duration: 4000,
             });
-            return navigate("/");
+            handleClose();
           } else {
             //Usuario No válido
             toast.error(t("auth:login.messages.invalidUser"), {
@@ -87,64 +106,93 @@ export function Login() {
   const onError = (errors, e) => console.log(errors, e);
 
   if (error) return <p>Error: {error.message}</p>;
+
   return (
     <>
       <Toaster />
-      <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
-        <Grid container spacing={1}>
-          <Grid size={12} sm={12}>
-            <Typography variant="h5" gutterBottom>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            boxShadow: 24,
+          },
+        }}
+      >
+        <DialogTitle>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="h5" component="div">
               {t("auth:login.title")}
             </Typography>
-          </Grid>
-          <Grid size={12} sm={4}>
-            {/* ['filled','outlined','standard']. */}
-            <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    id="email"
-                    label={t("auth:login.email")}
-                    error={Boolean(errors.email)}
-                    helperText={errors.email ? errors.email.message : " "}
-                  />
-                )}
-              />
-            </FormControl>
-          </Grid>
-          <Grid size={12} sm={4}>
-            <FormControl variant="standard" fullWidth sx={{ m: 1 }}>
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    id="password"
-                    label={t("auth:login.password")}
-                    type="password"
-                    error={Boolean(errors.password)}
-                    helperText={errors.password ? errors.password.message : " "}
-                  />
-                )}
-              />
-            </FormControl>
-          </Grid>
-          <Grid size={12} sm={12}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="secondary"
-              sx={{ m: 1 }}
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
-              {t("auth:login.loginButton")}
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent dividers>
+          <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
+            <Stack spacing={3} sx={{ mt: 1 }}>
+              <FormControl variant="standard" fullWidth>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      id="email"
+                      label={t("auth:login.email")}
+                      error={Boolean(errors.email)}
+                      helperText={errors.email ? errors.email.message : " "}
+                      fullWidth
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormControl variant="standard" fullWidth>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      id="password"
+                      label={t("auth:login.password")}
+                      type="password"
+                      error={Boolean(errors.password)}
+                      helperText={
+                        errors.password ? errors.password.message : " "
+                      }
+                      fullWidth
+                    />
+                  )}
+                />
+              </FormControl>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                size="large"
+              >
+                {t("auth:login.loginButton")}
+              </Button>
+            </Stack>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

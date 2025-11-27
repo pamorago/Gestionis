@@ -185,8 +185,8 @@ class VeterinarioModel
                 throw new Exception("Ya existe un usuario con este email");
             }
 
-            // Generar contraseña temporal (email sin dominio)
-            $password_temp = explode('@', $data->email)[0] . '123';
+            // Generar contraseña temporal
+            $password_temp = '123456';
             $password_hash = password_hash($password_temp, PASSWORD_BCRYPT);
 
             // Preparar valores para inserción
