@@ -198,6 +198,204 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Notificaciones",
+      "item": [
+        {
+          "name": "Listar Notificaciones por Usuario",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/index?id_usuario=2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion", "index"],
+              "query": [
+                {
+                  "key": "id_usuario",
+                  "value": "2",
+                  "description": "ID del usuario"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Notificaciones No Leídas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/getNoLeidas/2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion", "getNoLeidas", "2"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Contar Notificaciones No Leídas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/contarNoLeidas/2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion", "contarNoLeidas", "2"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Notificación por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Notificación",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"ticket_estado\",\n  \"descripcion\": \"El ticket #5 ha cambiado de estado\",\n  \"id_usuario\": 2,\n  \"id_evento\": 5,\n  \"importancia\": \"alta\",\n  \"responsable\": \"Sistema\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Marcar Notificación como Leída",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_usuario\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/marcarComoLeida/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion", "marcarComoLeida", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Marcar Todas como Leídas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_usuario\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/marcarTodasComoLeidas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion", "marcarTodasComoLeidas"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Notificaciones por Tipo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/getByTipo/2/ticket_estado",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": [
+                "copyvet",
+                "notificacion",
+                "getByTipo",
+                "2",
+                "ticket_estado"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Notificación",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado_leida\": true,\n  \"importancia\": \"normal\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Notificación",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:81/copyvet/notificacion/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "81",
+              "path": ["copyvet", "notificacion", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

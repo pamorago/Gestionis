@@ -14,6 +14,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { UserContext } from "../../context/UserContext";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
+import NotificationPanel from "../Notifications/NotificationPanel";
 
 export default function Header() {
   const { t } = useTranslation();
@@ -373,6 +374,7 @@ export default function Header() {
           <Box
             sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
           >
+            <NotificationPanel />
             <LanguageSwitcher />
           </Box>
           <div>{userMenu}</div>

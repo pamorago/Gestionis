@@ -17,6 +17,11 @@ class CategoriaModel
                     LEFT JOIN sla s ON c.id_sla = s.id_sla;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
 
+            // Asegurarse de que $vResultado sea un array
+            if (!is_array($vResultado)) {
+                $vResultado = [];
+            }
+
             // Cargar etiquetas y especialidades para cada categoría
             foreach ($vResultado as $categoria) {
                 $categoria->etiquetas = $this->getEtiquetas($categoria->id_categoria);

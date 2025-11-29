@@ -115,6 +115,9 @@ class UserModel
 
                 $usuario = $this->get($user->id_usuario);
                 if (!empty($usuario)) {
+                    // Generar notificación de login
+                    $this->generarNotificacionLogin($usuario);
+
                     // Datos para el token JWT
                     $data = [
                         'id' => $usuario->id_usuario,
@@ -136,6 +139,31 @@ class UserModel
             }
         } catch (Exception $e) {
             handleException($e);
+        }
+    }
+
+    private function generarNotificacionLogin($usuario)
+    {
+        try {
+            $notificacionModel = new NotificacionModel();
+
+            $ahora = date('Y-m-d H:i:s');
+
+            $datosNotificacion = [
+                'tipo' => 'login',
+                'descripcion' => 'Usuario ' . $usuario->nombre_completo . ' inició sesión',
+                'fecha_evento' => $ahora,
+                'id_usuario' => $usuario->id_usuario,
+                'id_evento' => $usuario->id_usuario,
+                'estado_leida' => false,
+                'importancia' => 'normal',
+                'responsable' => $usuario->nombre_completo
+            ];
+
+            $notificacionModel->create($datosNotificacion);
+        } catch (Exception $e) {
+            // Log el error pero no interrumpir el login
+            error_log("Error generando notificación de login: " . $e->getMessage());
         }
     }
     public function create($objeto)

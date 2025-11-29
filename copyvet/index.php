@@ -30,6 +30,7 @@ require_once "models/EstadoTicketModel.php";
 require_once "models/SlaModel.php";
 require_once "models/VeterinarioModel.php";
 require_once "models/AsignacionModel.php";
+require_once "models/NotificacionModel.php";
 
 /***--- Agregar todos los controladores*/
 require_once "controllers/UserController.php";
@@ -44,6 +45,7 @@ require_once "controllers/VeterinarioController.php";
 require_once "controllers/AsignacionController.php";
 require_once "controllers/EtiquetaController.php";
 require_once "controllers/EspecialidadController.php";
+require_once "controllers/NotificacionController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

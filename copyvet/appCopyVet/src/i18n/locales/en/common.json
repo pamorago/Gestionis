@@ -8,7 +8,8 @@
     "calendar": "Calendar",
     "assignments": "Assignments Board",
     "lists": "Lists",
-    "maintenance": "Maintenance"
+    "maintenance": "Maintenance",
+    "notifications": "Notifications"
   },
   "buttons": {
     "save": "Save",

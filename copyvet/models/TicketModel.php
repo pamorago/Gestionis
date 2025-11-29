@@ -1,10 +1,21 @@
 <?php
+require_once __DIR__ . '/HistoricoModel.php';
+require_once __DIR__ . '/NotificacionModel.php';
+
+/** @var HistoricoModel $historicoModel */
+/** @var NotificacionModel $notificacionModel */
+
 class TicketModel
 {
     public $enlace;
+    private $historicoModel;
+    private $notificacionModel;
+
     public function __construct()
     {
         $this->enlace = new MySqlConnect();
+        $this->historicoModel = new HistoricoModel();
+        $this->notificacionModel = new NotificacionModel();
     }
 
     public function all()
@@ -164,13 +175,34 @@ class TicketModel
 
             // Crear entrada en el histórico usando HistoricoModel
             if ($vResultado) {
-                $historicoModel = new HistoricoModel();
+                /** @noinspection PhpUndefinedClassInspection */
                 $historico = new stdClass();
                 $historico->id_ticket = $vResultado;
                 $historico->comentario = 'Ticket creado';
                 $historico->estado = 'Abierto';
                 $historico->id_usuario = $ticket->id_creado_por_usuario;
-                $historicoModel->create($historico);
+                $this->historicoModel->create($historico);
+
+                // Crear notificaciones: al cliente y al veterinario asignado (si existe)
+                if ($id_asignado !== 'NULL') {
+                    // Notificar al veterinario asignado
+                    $notificacion = new stdClass();
+                    $notificacion->tipo = 'ticket_creado';
+                    $notificacion->descripcion = "Nuevo ticket asignado: \"$titulo\"";
+                    $notificacion->id_usuario = $id_asignado;
+                    $notificacion->id_evento = $vResultado;
+                    $notificacion->importancia = 'alta';
+                    $this->notificacionModel->create($notificacion);
+                }
+
+                // Notificar al cliente (creador del ticket)
+                $notificacion = new stdClass();
+                $notificacion->tipo = 'ticket_creado';
+                $notificacion->descripcion = "Tu ticket \"$titulo\" ha sido registrado en el sistema";
+                $notificacion->id_usuario = $ticket->id_creado_por_usuario;
+                $notificacion->id_evento = $vResultado;
+                $notificacion->importancia = 'normal';
+                $this->notificacionModel->create($notificacion);
             }
 
             return ['id' => $vResultado, 'success' => true];
@@ -236,7 +268,8 @@ class TicketModel
             $vResultado = $this->enlace->ExecuteSQL_DML($vSql);
 
             // Crear entrada en el histórico - SIEMPRE se crea
-            $historicoModel = new HistoricoModel();
+            /** @noinspection PhpUndefinedClassInspection */
+            // $historicoModel used from class member
 
             // Validar que el comentario no esté vacío
             if (!isset($ticket->comentario) || empty(trim($ticket->comentario))) {
@@ -267,7 +300,7 @@ class TicketModel
                 $historico->comentario = $ticket->comentario;
                 $historico->estado = $this->getEstadoNombre($ticket->id_estado);
                 $historico->id_usuario = $ticket->id_usuario;
-                $historicoModel->create($historico);
+                $this->historicoModel->create($historico);
             }
 
             // Registrar reasignación si aplica (independiente del cambio de estado)
@@ -280,7 +313,18 @@ class TicketModel
 
                 // Solo crear si no se registró ya por cambio de estado
                 if (!$cambioEstado) {
-                    $historicoModel->create($historico);
+                    $this->historicoModel->create($historico);
+                }
+
+                // Enviar notificación al nuevo veterinario asignado (si existe)
+                if ($asignadoNuevo !== null && $asignadoNuevo !== '') {
+                    $notificacion = new stdClass();
+                    $notificacion->tipo = 'ticket_asignado';
+                    $notificacion->descripcion = "Te han asignado el ticket: \"" . $ticketAnterior->titulo . "\"";
+                    $notificacion->id_usuario = $asignadoNuevo;
+                    $notificacion->id_evento = $id;
+                    $notificacion->importancia = 'alta';
+                    $this->notificacionModel->create($notificacion);
                 }
             }
 
@@ -291,7 +335,33 @@ class TicketModel
                 $historico->comentario = $ticket->comentario;
                 $historico->estado = $this->getEstadoNombre($ticket->id_estado);
                 $historico->id_usuario = $ticket->id_usuario;
-                $historicoModel->create($historico);
+                $this->historicoModel->create($historico);
+            }
+
+            // Generar notificaciones si hubo cambio de estado
+            if ($cambioEstado) {
+                $estadoAnterior = $ticketAnterior->nombre_estado;
+                $estadoNuevo = $this->getEstadoNombre($ticket->id_estado);
+
+                // Notificar al cliente (creador del ticket)
+                $this->notificacionModel->crearNotificacionTicket(
+                    $id,
+                    $ticketAnterior->id_creado_por_usuario,
+                    $estadoAnterior,
+                    $estadoNuevo,
+                    $ticket->id_usuario
+                );
+
+                // Notificar al veterinario asignado (si existe)
+                if ($ticketAnterior->id_asignado_a_usuario) {
+                    $this->notificacionModel->crearNotificacionTicket(
+                        $id,
+                        $ticketAnterior->id_asignado_a_usuario,
+                        $estadoAnterior,
+                        $estadoNuevo,
+                        $ticket->id_usuario
+                    );
+                }
             }
 
             return ['id' => $id, 'success' => true];
