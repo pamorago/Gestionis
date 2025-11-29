@@ -56,10 +56,10 @@ const NotificationPanel = () => {
     }
   }, [userId]);
 
-  // Cargar notificaciones al montar y cada 10 segundos (polling)
+  // Cargar notificaciones al montar y cada 30 segundos (polling)
   useEffect(() => {
     cargarNotificaciones();
-    const intervalo = setInterval(cargarNotificaciones, 10000); // Polling cada 10 segundos
+    const intervalo = setInterval(cargarNotificaciones, 30000); // Polling cada 30 segundos
     return () => clearInterval(intervalo);
   }, [userId, cargarNotificaciones]);
 
@@ -77,7 +77,15 @@ const NotificationPanel = () => {
   const handleMarcarComoLeida = async (id_notificacion) => {
     try {
       await NotificacionService.marcarComoLeida(id_notificacion, userId);
-      cargarNotificaciones(); // Recargar
+      // Actualizar estado local sin hacer request
+      setNotificaciones((prev) =>
+        prev.map((n) =>
+          n.id_notificacion === id_notificacion
+            ? { ...n, estado_leida: true }
+            : n
+        )
+      );
+      setNoLeidas((prev) => Math.max(0, prev - 1));
     } catch (error) {
       console.error("Error al marcar como leída:", error);
     }
@@ -87,7 +95,11 @@ const NotificationPanel = () => {
   const handleMarcarTodasComoLeidas = async () => {
     try {
       await NotificacionService.marcarTodasComoLeidas(userId);
-      cargarNotificaciones(); // Recargar
+      // Actualizar estado local sin hacer request
+      setNotificaciones((prev) =>
+        prev.map((n) => ({ ...n, estado_leida: true }))
+      );
+      setNoLeidas(0);
     } catch (error) {
       console.error("Error al marcar todas como leídas:", error);
     }
@@ -143,10 +155,11 @@ const NotificationPanel = () => {
           <Badge badgeContent={noLeidas} color="error">
             {noLeidas > 0 ? (
               <NotificationsActiveIcon
-                sx={{ color: "#ff6b6b", animation: "pulse 2s infinite" }}
+                sx={{ animation: "pulse 2s infinite" }}
+                color="primary"
               />
             ) : (
-              <NotificationsIcon />
+              <NotificationsIcon color="primary" />
             )}
           </Badge>
         </IconButton>

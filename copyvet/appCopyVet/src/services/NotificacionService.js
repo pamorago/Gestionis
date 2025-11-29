@@ -5,7 +5,9 @@ const BASE_URL = import.meta.env.VITE_BASE_URL || window.location.origin + '/cop
 const NotificacionService = {
   // Obtener todas las notificaciones del usuario
   getByUsuario: (id_usuario) => {
-    return axios.get(`${BASE_URL}notificacion/index?id_usuario=${id_usuario}`);
+    const url = `${BASE_URL}notificacion?id_usuario=${id_usuario}`;
+    console.log('NotificacionService.getByUsuario URL:', url);
+    return axios.get(url);
   },
 
   // Obtener notificaciones no leídas

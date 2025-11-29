@@ -166,7 +166,7 @@ class NotificacionModel
                     WHERE id_notificacion = $id_notificacion 
                     AND id_usuario = $id_usuario";
 
-            return $this->enlace->ExecuteSQL($vSql);
+            return $this->enlace->ExecuteSQL_DML($vSql);
         } catch (Exception $e) {
             throw $e;
         }
@@ -181,7 +181,7 @@ class NotificacionModel
                     WHERE id_usuario = $id_usuario 
                     AND estado_leida = FALSE";
 
-            return $this->enlace->ExecuteSQL($vSql);
+            return $this->enlace->ExecuteSQL_DML($vSql);
         } catch (Exception $e) {
             throw $e;
         }

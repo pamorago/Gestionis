@@ -71,7 +71,9 @@ class RoutesController
                 http_response_code(200);
                 exit();
             }
-            $routesArray = explode("/", $_SERVER['REQUEST_URI']);
+            // Separar la URL del query string
+            $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $routesArray = explode("/", $uri);
             // Eliminar elementos vacíos del array
             $routesArray = array_filter($routesArray);
 
@@ -130,7 +132,19 @@ class RoutesController
                                     break;
 
                                 case 'POST':
-                                    if ($action) {
+                                    if ($param1) {
+                                        // POST con action y param: /controller/action/param
+                                        if (method_exists($controller, $action)) {
+                                            $response->$action($param1);
+                                        } else {
+                                            $json = array(
+                                                'status' => 404,
+                                                'result' => 'Acción no encontrada'
+                                            );
+                                            echo json_encode($json, http_response_code($json["status"]));
+                                        }
+                                    } elseif ($action) {
+                                        // POST con action sin param: /controller/action
                                         if (method_exists($controller, $action)) {
                                             $response->$action();
                                         } else {
@@ -141,6 +155,7 @@ class RoutesController
                                             echo json_encode($json, http_response_code($json["status"]));
                                         }
                                     } else {
+                                        // POST sin action: /controller
                                         $response->create();
                                     }
                                     break;

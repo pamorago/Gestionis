@@ -38,7 +38,6 @@ DROP TABLE IF EXISTS usuarios;
 
 DROP TABLE IF EXISTS roles;
 
-
 DROP TABLE IF EXISTS notificaciones;
 
 -- ======================================================
