@@ -72,6 +72,14 @@
     "buttons": {
       "create": "Create Category",
       "update": "Update Category"
+    },
+    "validationInfo": {
+      "title": "Required validations:",
+      "requiredFields": "All fields marked with (*) are required",
+      "nameLength": "Name must be between 3 and 50 characters",
+      "nameUnique": "Name must be unique (duplicates not allowed)",
+      "tagsMinimum": "Must select at least one tag",
+      "specialtiesMinimum": "Must select at least one specialty"
     }
   },
   "detail": {

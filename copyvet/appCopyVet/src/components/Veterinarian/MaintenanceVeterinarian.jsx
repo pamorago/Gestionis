@@ -605,18 +605,31 @@ export default function MaintenanceVeterinarian() {
             {/* Información de validaciones */}
             <Grid item xs={12}>
               <Alert severity="info">
-                <strong>Validaciones requeridas:</strong>
+                <strong>
+                  {t("veterinary:maintenance.validationInfo.title")}
+                </strong>
                 <ul style={{ marginBottom: 0 }}>
-                  <li>Todos los campos marcados con (*) son obligatorios</li>
-                  <li>El nombre debe tener entre 3 y 100 caracteres</li>
-                  <li>El email debe ser único y tener formato válido</li>
                   <li>
-                    El teléfono es opcional, pero si se especifica debe tener
-                    entre 8-15 dígitos
+                    {t("veterinary:maintenance.validationInfo.requiredFields")}
                   </li>
-                  <li>Debe seleccionar al menos una especialidad</li>
                   <li>
-                    Se generará una contraseña temporal basada en el email
+                    {t("veterinary:maintenance.validationInfo.nameLength")}
+                  </li>
+                  <li>
+                    {t("veterinary:maintenance.validationInfo.emailUnique")}
+                  </li>
+                  <li>
+                    {t("veterinary:maintenance.validationInfo.phoneOptional")}
+                  </li>
+                  <li>
+                    {t(
+                      "veterinary:maintenance.validationInfo.specialtiesMinimum"
+                    )}
+                  </li>
+                  <li>
+                    {t(
+                      "veterinary:maintenance.validationInfo.temporaryPassword"
+                    )}
                   </li>
                 </ul>
               </Alert>

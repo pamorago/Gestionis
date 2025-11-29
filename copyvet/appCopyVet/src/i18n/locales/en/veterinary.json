@@ -97,6 +97,15 @@
     "buttons": {
       "create": "Create Veterinarian",
       "update": "Update Veterinarian"
+    },
+    "validationInfo": {
+      "title": "Required validations:",
+      "requiredFields": "All fields marked with (*) are required",
+      "nameLength": "Name must be between 3 and 100 characters",
+      "emailUnique": "Email must be unique and have valid format",
+      "phoneOptional": "Phone is optional, but if specified must have between 8-15 digits",
+      "specialtiesMinimum": "Must select at least one specialty",
+      "temporaryPassword": "A temporary password will be generated based on the email"
     }
   },
   "detail": {

@@ -72,6 +72,14 @@
     "buttons": {
       "create": "Crear Categoría",
       "update": "Actualizar Categoría"
+    },
+    "validationInfo": {
+      "title": "Validaciones requeridas:",
+      "requiredFields": "Todos los campos marcados con (*) son obligatorios",
+      "nameLength": "El nombre debe tener entre 3 y 50 caracteres",
+      "nameUnique": "El nombre debe ser único (no se permiten duplicados)",
+      "tagsMinimum": "Debe seleccionar al menos una etiqueta",
+      "specialtiesMinimum": "Debe seleccionar al menos una especialidad"
     }
   },
   "detail": {

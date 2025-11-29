@@ -549,13 +549,23 @@ export default function MaintenanceCategory() {
             {/* Información de validaciones */}
             <Grid item xs={12}>
               <Alert severity="info">
-                <strong>Validaciones requeridas:</strong>
+                <strong>
+                  {t("category:maintenance.validationInfo.title")}
+                </strong>
                 <ul style={{ marginBottom: 0 }}>
-                  <li>Todos los campos marcados con (*) son obligatorios</li>
-                  <li>El nombre debe tener entre 3 y 50 caracteres</li>
-                  <li>El nombre debe ser único (no se permiten duplicados)</li>
-                  <li>Debe seleccionar al menos una etiqueta</li>
-                  <li>Debe seleccionar al menos una especialidad</li>
+                  <li>
+                    {t("category:maintenance.validationInfo.requiredFields")}
+                  </li>
+                  <li>{t("category:maintenance.validationInfo.nameLength")}</li>
+                  <li>{t("category:maintenance.validationInfo.nameUnique")}</li>
+                  <li>
+                    {t("category:maintenance.validationInfo.tagsMinimum")}
+                  </li>
+                  <li>
+                    {t(
+                      "category:maintenance.validationInfo.specialtiesMinimum"
+                    )}
+                  </li>
                 </ul>
               </Alert>
             </Grid>
