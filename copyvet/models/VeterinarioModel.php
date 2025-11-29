@@ -142,6 +142,7 @@ class VeterinarioModel
     public function getTicketsAsignados($id)
     {
         try {
+            $id = (int)$id;
             $vSql = "SELECT 
                         t.id_ticket,
                         t.titulo,
@@ -149,6 +150,8 @@ class VeterinarioModel
                         e.nombre_estado,
                         c.nombre_categoria,
                         s.descripcion AS prioridad,
+                        s.tiempo_resolucion AS sla_resolucion,
+                        CAST(TIMESTAMPDIFF(MINUTE, t.fecha_creacion, NOW()) AS UNSIGNED) AS tiempo_transcurrido,
                         CAST(s.tiempo_resolucion / 60 AS UNSIGNED) as horas_estimadas,
                         t.fecha_creacion,
                         t.fecha_cita,
@@ -166,7 +169,7 @@ class VeterinarioModel
             return $vResultado ?: [];
         } catch (Exception $e) {
             error_log("Error en VeterinarioModel::getTicketsAsignados: " . $e->getMessage());
-            return [];
+            throw new Exception("Error al obtener tickets asignados");
         }
     }
 

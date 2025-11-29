@@ -44,8 +44,8 @@ function VeterinarianTickets({ id }) {
         const allTickets = Array.isArray(r.data) ? r.data : [];
 
         // Filtrar solo tickets abiertos y en proceso
-        const filteredTickets = allTickets.filter((t) => {
-          const estado = (t.nombre_estado || "").toLowerCase();
+        const filteredTickets = allTickets.filter((ticket) => {
+          const estado = (ticket.nombre_estado || "").toLowerCase();
           return estado === "abierto" || estado === "en proceso";
         });
 
@@ -81,13 +81,13 @@ function VeterinarianTickets({ id }) {
 
   return (
     <Box>
-      {tickets.map((t) => {
+      {tickets.map((ticket) => {
         // tiempo restante: sla_resolucion - tiempo_transcurrido (en min)
         const remaining =
-          (t.sla_resolucion ?? 0) - (t.tiempo_transcurrido ?? 0);
+          (ticket.sla_resolucion ?? 0) - (ticket.tiempo_transcurrido ?? 0);
         return (
           <Card
-            key={t.id_ticket}
+            key={ticket.id_ticket}
             elevation={1}
             sx={{
               mt: 1.5,
@@ -110,7 +110,7 @@ function VeterinarianTickets({ id }) {
                     variant="subtitle2"
                     fontWeight={600}
                     component={Link}
-                    to={`/ticket/${t.id_ticket}`}
+                    to={`/ticket/${ticket.id_ticket}`}
                     sx={{
                       textDecoration: "none",
                       color: "primary.main",
@@ -120,17 +120,17 @@ function VeterinarianTickets({ id }) {
                     <AssignmentIcon
                       sx={{ fontSize: 16, mr: 0.5, verticalAlign: "middle" }}
                     />
-                    #{t.id_ticket} - {t.titulo}
+                    #{ticket.id_ticket} - {ticket.titulo}
                   </Typography>
                   <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
                     <Chip
-                      label={t.nombre_categoria}
+                      label={ticket.nombre_categoria}
                       size="small"
                       variant="outlined"
                       sx={{ height: 20, fontSize: "0.7rem" }}
                     />
                     <Chip
-                      label={t.nombre_estado}
+                      label={ticket.nombre_estado}
                       size="small"
                       color="default"
                       sx={{ height: 20, fontSize: "0.7rem" }}

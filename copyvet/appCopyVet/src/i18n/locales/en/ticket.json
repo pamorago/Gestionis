@@ -67,6 +67,8 @@
       "unassigned": "Unassigned (will be assigned automatically)",
       "selectCategoryFirst": "Select a category first to filter veterinarians by specialty",
       "available": "Available",
+      "automaticSelection": "Automatic Selection (system will assign optimal veterinarian)",
+      "autoAssignInfo": "The system will automatically assign the veterinarian with the lowest workload",
       "requesterInfo": "Requester Information (your user)",
       "selectClient": "Select the client requesting the ticket",
       "requesterClient": "Requesting Client",
@@ -87,7 +89,10 @@
       "requiresImmediateAttention": "This category requires immediate attention",
       "selectDateHelper": "Select appointment date (today up to 7 days)",
       "titleHelper": "Brief description of the problem (10-100 characters)",
-      "descriptionHelper": "Describe the problem or need in detail"
+      "descriptionHelper": "Describe the problem or need in detail",
+      "changeComment": "Change Comment",
+      "changeCommentHelper": "Required - Describe the changes made or the reason for the update. This comment will be saved in the ticket history.",
+      "changeCommentPlaceholder": "E.g.: Changed status to 'In Progress' because we started attending the pet..."
     },
     "validation": {
       "importantInfo": "Important information:",
@@ -99,7 +104,8 @@
       "autoAssignVet": "If no veterinarian is assigned, the system will assign the one with the lowest workload",
       "slaAutoCalculated": "Response and resolution SLA will be calculated automatically",
       "categoryNoChange": "The category cannot be changed",
-      "petNoChange": "The pet cannot be changed"
+      "petNoChange": "The pet cannot be changed",
+      "commentRequired": "Comment is required to record changes in the history"
     }
   },
   "detail": {

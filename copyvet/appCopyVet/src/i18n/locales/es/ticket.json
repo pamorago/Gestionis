@@ -67,6 +67,8 @@
       "unassigned": "Sin asignar (se asignará automáticamente)",
       "selectCategoryFirst": "Seleccione una categoría primero para filtrar veterinarios por especialidad",
       "available": "Disponible",
+      "automaticSelection": "Selección Automática (sistema asignará al veterinario óptimo)",
+      "autoAssignInfo": "El sistema asignará automáticamente al veterinario con menor carga de trabajo",
       "requesterInfo": "Información del Solicitante (su usuario)",
       "selectClient": "Seleccione el cliente que solicita el tiquete",
       "requesterClient": "Cliente Solicitante",
@@ -87,7 +89,10 @@
       "requiresImmediateAttention": "Esta categoría requiere atención inmediata",
       "selectDateHelper": "Seleccione fecha para la cita (hoy hasta 7 días)",
       "titleHelper": "Breve descripción del problema (10-100 caracteres)",
-      "descriptionHelper": "Describa detalladamente el problema o necesidad"
+      "descriptionHelper": "Describa detalladamente el problema o necesidad",
+      "changeComment": "Comentario del Cambio",
+      "changeCommentHelper": "Obligatorio - Describa los cambios realizados o el motivo de la actualización. Este comentario se guardará en el histórico del tiquete.",
+      "changeCommentPlaceholder": "Ej: Se cambió el estado a 'En Proceso' porque se comenzó a atender la mascota..."
     },
     "validation": {
       "importantInfo": "Información importante:",
@@ -99,7 +104,8 @@
       "autoAssignVet": "Si no asigna veterinario, el sistema lo asignará al de menor carga",
       "slaAutoCalculated": "El SLA de respuesta y resolución se calcularán automáticamente",
       "categoryNoChange": "La categoría no se puede cambiar",
-      "petNoChange": "La mascota no se puede cambiar"
+      "petNoChange": "La mascota no se puede cambiar",
+      "commentRequired": "El comentario es obligatorio para registrar cambios en el histórico"
     }
   },
   "detail": {

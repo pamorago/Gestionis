@@ -150,9 +150,13 @@ class TicketModel
                 ? "'$ticket->fecha_cita'"
                 : 'NULL';
 
+            // Escapar comillas simples en strings para evitar errores SQL
+            $titulo = str_replace("'", "''", $ticket->titulo);
+            $descripcion = str_replace("'", "''", $ticket->descripcion);
+
             $vSql = "INSERT INTO tickets (titulo, descripcion, fecha_creacion, fecha_cita, 
                     id_estado, id_categoria, id_mascota, id_creado_por_usuario, id_asignado_a_usuario) 
-                    VALUES ('$ticket->titulo', '$ticket->descripcion', NOW(), 
+                    VALUES ('$titulo', '$descripcion', NOW(), 
                     $fecha_cita, $ticket->id_estado, $ticket->id_categoria, 
                     $ticket->id_mascota, $ticket->id_creado_por_usuario, $id_asignado);";
 
@@ -186,6 +190,26 @@ class TicketModel
                 return ['success' => false, 'error' => 'Ticket no encontrado'];
             }
 
+            // Validar transición de estado si hubo cambio
+            if ($ticketAnterior->id_estado != $ticket->id_estado) {
+                $transicionValida = $this->validarTransicionEstado(
+                    $ticketAnterior->id_estado,
+                    $ticket->id_estado
+                );
+
+                if (!$transicionValida['valido']) {
+                    throw new Exception($transicionValida['mensaje']);
+                }
+            }
+
+            // Validar que no se puede cambiar de estado sin técnico asignado (excepto Pendiente)
+            $estadoNuevo = $this->getEstadoNombre($ticket->id_estado);
+            if ($estadoNuevo !== 'Abierto' && $estadoNuevo !== 'Pendiente' && $estadoNuevo !== 'Cancelado') {
+                if (!isset($ticket->id_asignado_a_usuario) || $ticket->id_asignado_a_usuario === null || $ticket->id_asignado_a_usuario === '') {
+                    throw new Exception("No se puede cambiar a estado '$estadoNuevo' sin un veterinario asignado");
+                }
+            }
+
             // Construir query de actualización
             $id_asignado = isset($ticket->id_asignado_a_usuario) && $ticket->id_asignado_a_usuario !== null
                 ? $ticket->id_asignado_a_usuario
@@ -195,9 +219,13 @@ class TicketModel
                 ? "'$ticket->fecha_cita'"
                 : 'NULL';
 
+            // Escapar comillas simples en strings para evitar errores SQL
+            $titulo = str_replace("'", "''", $ticket->titulo);
+            $descripcion = str_replace("'", "''", $ticket->descripcion);
+
             $vSql = "UPDATE tickets SET 
-                    titulo = '$ticket->titulo',
-                    descripcion = '$ticket->descripcion',
+                    titulo = '$titulo',
+                    descripcion = '$descripcion',
                     fecha_cita = $fecha_cita,
                     id_estado = $ticket->id_estado,
                     id_categoria = $ticket->id_categoria,
@@ -207,41 +235,64 @@ class TicketModel
 
             $vResultado = $this->enlace->ExecuteSQL_DML($vSql);
 
-            // Crear entrada en el histórico - SIEMPRE se crea (incluso si no hubo cambios)
-            // $vResultado puede ser 0 si no hubo cambios en los datos
+            // Crear entrada en el histórico - SIEMPRE se crea
             $historicoModel = new HistoricoModel();
-            $historico = new stdClass();
-            $historico->id_ticket = $id;
 
-            // Determinar qué cambió para el comentario
-            $cambios = [];
-            if ($ticketAnterior->id_estado != $ticket->id_estado) {
-                $estadoNuevo = $this->getEstadoNombre($ticket->id_estado);
-                $cambios[] = "Estado cambiado a: $estadoNuevo";
-            }
-            if ($ticketAnterior->titulo != $ticket->titulo) {
-                $cambios[] = "Título actualizado";
-            }
-            if ($ticketAnterior->descripcion != $ticket->descripcion) {
-                $cambios[] = "Descripción actualizada";
-            }
-            if ($ticketAnterior->id_asignado_a_usuario != $ticket->id_asignado_a_usuario) {
-                $cambios[] = "Veterinario asignado actualizado";
+            // Validar que el comentario no esté vacío
+            if (!isset($ticket->comentario) || empty(trim($ticket->comentario))) {
+                throw new Exception("El comentario es obligatorio para registrar cambios en el histórico");
             }
 
-            // Si hay comentario personalizado, usarlo; sino, usar resumen de cambios
-            if (isset($ticket->comentario) && !empty($ticket->comentario)) {
+            // Determinar qué cambió
+            $cambioEstado = $ticketAnterior->id_estado != $ticket->id_estado;
+
+            // Comparar asignaciones considerando NULL y valores vacíos
+            $asignadoAnterior = $ticketAnterior->id_asignado_a_usuario ?? null;
+            $asignadoNuevo = $ticket->id_asignado_a_usuario ?? null;
+
+            // Normalizar valores vacíos a null
+            if ($asignadoAnterior === '' || $asignadoAnterior === 'NULL') {
+                $asignadoAnterior = null;
+            }
+            if ($asignadoNuevo === '' || $asignadoNuevo === 'NULL') {
+                $asignadoNuevo = null;
+            }
+
+            $cambioAsignacion = $asignadoAnterior != $asignadoNuevo;
+
+            // Registrar cambio de estado si aplica
+            if ($cambioEstado) {
+                $historico = new stdClass();
+                $historico->id_ticket = $id;
                 $historico->comentario = $ticket->comentario;
-            } else {
-                $historico->comentario = count($cambios) > 0
-                    ? 'Ticket actualizado: ' . implode(', ', $cambios)
-                    : 'Ticket actualizado';
+                $historico->estado = $this->getEstadoNombre($ticket->id_estado);
+                $historico->id_usuario = $ticket->id_usuario;
+                $historicoModel->create($historico);
             }
 
-            $historico->estado = $this->getEstadoNombre($ticket->id_estado);
-            $historico->id_usuario = $ticket->id_usuario;
+            // Registrar reasignación si aplica (independiente del cambio de estado)
+            if ($cambioAsignacion) {
+                $historico = new stdClass();
+                $historico->id_ticket = $id;
+                $historico->comentario = $ticket->comentario;
+                $historico->estado = $this->getEstadoNombre($ticket->id_estado);
+                $historico->id_usuario = $ticket->id_usuario;
 
-            $historicoModel->create($historico);
+                // Solo crear si no se registró ya por cambio de estado
+                if (!$cambioEstado) {
+                    $historicoModel->create($historico);
+                }
+            }
+
+            // Si no hubo cambios significativos pero hay comentario, registrar como actualización general
+            if (!$cambioEstado && !$cambioAsignacion) {
+                $historico = new stdClass();
+                $historico->id_ticket = $id;
+                $historico->comentario = $ticket->comentario;
+                $historico->estado = $this->getEstadoNombre($ticket->id_estado);
+                $historico->id_usuario = $ticket->id_usuario;
+                $historicoModel->create($historico);
+            }
 
             return ['id' => $id, 'success' => true];
         } catch (Exception $e) {
@@ -251,9 +302,72 @@ class TicketModel
 
     private function getEstadoNombre($id_estado)
     {
-        $vSql = "SELECT nombre_estado FROM estadosticket WHERE id_estado = $id_estado;";
-        $resultado = $this->enlace->ExecuteSQL($vSql);
-        return $resultado[0]->nombre_estado;
+        try {
+            $vSql = "SELECT nombre_estado FROM estadosticket WHERE id_estado = $id_estado;";
+            $resultado = $this->enlace->ExecuteSQL($vSql);
+            if ($resultado && !empty($resultado)) {
+                return $resultado[0]->nombre_estado;
+            }
+            return 'Desconocido';
+        } catch (Exception $e) {
+            error_log("Error en getEstadoNombre: " . $e->getMessage());
+            return 'Desconocido';
+        }
+    }
+
+    private function getUsuarioNombre($id_usuario)
+    {
+        try {
+            $vSql = "SELECT nombre_completo FROM usuarios WHERE id_usuario = $id_usuario;";
+            $resultado = $this->enlace->ExecuteSQL($vSql);
+            if ($resultado && !empty($resultado)) {
+                return $resultado[0]->nombre_completo;
+            }
+            return 'Usuario desconocido';
+        } catch (Exception $e) {
+            error_log("Error en getUsuarioNombre: " . $e->getMessage());
+            return 'Usuario desconocido';
+        }
+    }
+
+    private function validarTransicionEstado($id_estado_actual, $id_estado_nuevo)
+    {
+        // Obtener nombres de estados
+        $estadoActual = $this->getEstadoNombre($id_estado_actual);
+        $estadoNuevo = $this->getEstadoNombre($id_estado_nuevo);
+
+        // Definir flujo válido: Pendiente/Abierto → En proceso → Cerrado
+        // También se permite Cancelado desde cualquier estado
+        $transicionesValidas = [
+            'Abierto' => ['En proceso', 'Cancelado'],
+            'Pendiente' => ['En proceso', 'Cancelado'],
+            'En proceso' => ['Cerrado', 'Cancelado'],
+            'Cerrado' => [], // No se puede cambiar desde cerrado
+            'Cancelado' => [] // No se puede cambiar desde cancelado
+        ];
+
+        // Si el estado no cambió, es válido
+        if ($estadoActual === $estadoNuevo) {
+            return ['valido' => true];
+        }
+
+        // Verificar si la transición está permitida
+        if (!isset($transicionesValidas[$estadoActual])) {
+            return [
+                'valido' => false,
+                'mensaje' => "Estado actual '$estadoActual' no es válido"
+            ];
+        }
+
+        if (!in_array($estadoNuevo, $transicionesValidas[$estadoActual])) {
+            return [
+                'valido' => false,
+                'mensaje' => "No se puede cambiar de '$estadoActual' a '$estadoNuevo'. Estados permitidos: "
+                    . implode(', ', $transicionesValidas[$estadoActual])
+            ];
+        }
+
+        return ['valido' => true];
     }
 
     public function delete($id)
@@ -303,10 +417,9 @@ class TicketModel
         try {
             $vSql = "INSERT INTO ticketimage (id_ticket, imagen, created_at) 
                      VALUES ($id_ticket, '$nombreArchivo', NOW());";
-            $this->enlace->ExecuteSQL_DML($vSql);
+            $lastId = $this->enlace->ExecuteSQL_DML_last($vSql);
 
             // Retornar el ID insertado
-            $lastId = $this->enlace->getLastInsertId();
             return [
                 'id_imagen' => $lastId,
                 'id_ticket' => $id_ticket,

@@ -19,10 +19,20 @@ import {
   Grid,
   CircularProgress,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableHead,
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import TicketService from "../../services/TicketService";
 import CategoryService from "../../services/CategoryService";
 import UserService from "../../services/UserService";
@@ -90,9 +100,14 @@ export default function MaintenanceTicket() {
   const [imagesPreviews, setImagesPreviews] = useState([]);
   const [updateImagesPreviews, setUpdateImagesPreviews] = useState([]);
 
+  // Estados para autotriage
+  const [showAutoTriageDialog, setShowAutoTriageDialog] = useState(false);
+  const [autoTriageResult, setAutoTriageResult] = useState(null);
+
   const [tickets, setTickets] = useState([]);
   const [estados, setEstados] = useState([]);
   const [loadingTicket, setLoadingTicket] = useState(false);
+  const [originalEstado, setOriginalEstado] = useState(null); // Para validar cambio de estado
 
   // Estados para catálogos
   const [categorias, setCategorias] = useState([]);
@@ -111,6 +126,7 @@ export default function MaintenanceTicket() {
 
   // Estados para validación
   const [errors, setErrors] = useState({});
+  const [especialidadWarning, setEspecialidadWarning] = useState("");
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
@@ -181,7 +197,40 @@ export default function MaintenanceTicket() {
     try {
       const res = await TicketService.list();
       const ticketsArray = Array.isArray(res.data) ? res.data : [];
-      setTickets(ticketsArray);
+
+      // Filtrar: excluir Cerrado y Cancelado
+      const ticketsFiltrados = ticketsArray.filter((ticket) => {
+        const estado = ticket.nombre_estado?.toLowerCase();
+        return estado !== "cerrado" && estado !== "cancelado";
+      });
+
+      // Ordenar: primero por estado (Abierto/Pendiente, luego En Proceso), después por fecha
+      const ticketsOrdenados = ticketsFiltrados.sort((a, b) => {
+        const estadoA = a.nombre_estado?.toLowerCase() || "";
+        const estadoB = b.nombre_estado?.toLowerCase() || "";
+
+        // Definir prioridad de estados
+        const prioridadEstado = (estado) => {
+          if (estado === "abierto" || estado === "pendiente") return 1;
+          if (estado === "en proceso") return 2;
+          return 3; // Otros estados
+        };
+
+        const prioridadA = prioridadEstado(estadoA);
+        const prioridadB = prioridadEstado(estadoB);
+
+        // Si tienen diferente prioridad, ordenar por prioridad
+        if (prioridadA !== prioridadB) {
+          return prioridadA - prioridadB;
+        }
+
+        // Si tienen la misma prioridad, ordenar por fecha (más reciente primero)
+        const fechaA = new Date(a.fecha_creacion || 0);
+        const fechaB = new Date(b.fecha_creacion || 0);
+        return fechaB - fechaA;
+      });
+
+      setTickets(ticketsOrdenados);
     } catch (error) {
       showSnackbar("Error al cargar tickets", error);
     }
@@ -221,6 +270,9 @@ export default function MaintenanceTicket() {
         id_asignado_a_usuario: ticket.id_asignado_a_usuario || "",
         comentario: "",
       });
+
+      // Guardar estado original para detectar cambios
+      setOriginalEstado(ticket.id_estado);
 
       // Cargar etiquetas de la categoría y esperar a que termine
       if (ticket.id_categoria) {
@@ -292,26 +344,24 @@ export default function MaintenanceTicket() {
       const categoria = catResponse.data;
       const especialidades = categoria.especialidades || [];
 
-      // Si es Admin o Veterinario, filtrar veterinarios por especialidades
-      if (userRole === "Administrador" || userRole === "Veterinario") {
-        const vetResponse = await VeterinarioService.list();
-        const todosVeterinarios = vetResponse.data;
+      // Cargar veterinarios filtrados por especialidades (para todos los roles)
+      const vetResponse = await VeterinarioService.list();
+      const todosVeterinarios = vetResponse.data;
 
-        // Filtrar veterinarios que tengan al menos una especialidad de la categoría
-        const especialidadNombres = especialidades.map((e) =>
+      // Filtrar veterinarios que tengan al menos una especialidad de la categoría
+      const especialidadNombres = especialidades.map((e) =>
+        typeof e === "string" ? e : e.nombre_especialidad
+      );
+
+      const veterinariosFiltrados = todosVeterinarios.filter((vet) => {
+        const vetEspecialidades = vet.especialidades || [];
+        const vetEspNombres = vetEspecialidades.map((e) =>
           typeof e === "string" ? e : e.nombre_especialidad
         );
+        return especialidadNombres.some((esp) => vetEspNombres.includes(esp));
+      });
 
-        const veterinariosFiltrados = todosVeterinarios.filter((vet) => {
-          const vetEspecialidades = vet.especialidades || [];
-          const vetEspNombres = vetEspecialidades.map((e) =>
-            typeof e === "string" ? e : e.nombre_especialidad
-          );
-          return especialidadNombres.some((esp) => vetEspNombres.includes(esp));
-        });
-
-        setVeterinariosDisponibles(veterinariosFiltrados);
-      }
+      setVeterinariosDisponibles(veterinariosFiltrados);
     } catch (error) {
       console.error("Error al cargar etiquetas:", error);
       setEtiquetasDeCategoria([]);
@@ -342,8 +392,41 @@ export default function MaintenanceTicket() {
       newErrors.id_categoria = "Debe seleccionar una categoría";
     }
 
+    // Validar mascota
+    if (!form.id_mascota) {
+      newErrors.id_mascota = "Debe seleccionar una mascota";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const validateCreateForm = (form) => {
+    const baseValidation = validateForm(form);
+    const newErrors = { ...errors };
+
+    // Validar cliente (solo para Admin/Veterinario creando)
+    if (
+      (userRole === "Administrador" || userRole === "Veterinario") &&
+      !form.id_creado_por_usuario
+    ) {
+      newErrors.id_creado_por_usuario = "Debe seleccionar un cliente";
+      setErrors(newErrors);
+      return false;
+    }
+
+    // Validar fecha de cita (si no es emergencia)
+    const esEmergencia = etiquetasDeCategoria.some((e) =>
+      e.nombre_etiqueta.toLowerCase().includes("emergencia")
+    );
+
+    if (!esEmergencia && (!form.fecha_cita || form.fecha_cita.trim() === "")) {
+      newErrors.fecha_cita = "Debe seleccionar una fecha de cita";
+      setErrors(newErrors);
+      return false;
+    }
+
+    return baseValidation;
   };
 
   // Manejo de cambios en formulario Crear
@@ -355,9 +438,30 @@ export default function MaintenanceTicket() {
         [field]: value,
         id_asignado_a_usuario: "",
       });
+      setEspecialidadWarning("");
       if (value) {
         cargarEtiquetasDeCategoria(value);
       }
+    } else if (field === "id_asignado_a_usuario") {
+      // Validar especialidad cuando se selecciona veterinario manualmente
+      if (value && veterinariosDisponibles.length > 0) {
+        const veterinarioSeleccionado = veterinariosDisponibles.find(
+          (v) => v.id_veterinario === value
+        );
+
+        // Si el veterinario no está en la lista de disponibles (filtrados por especialidad)
+        // esto no debería pasar porque el Select ya está filtrado, pero por si acaso
+        if (!veterinarioSeleccionado) {
+          setEspecialidadWarning(
+            "⚠️ Este veterinario no tiene las especialidades requeridas para esta categoría. Se recomienda seleccionar otro veterinario."
+          );
+        } else {
+          setEspecialidadWarning("");
+        }
+      } else {
+        setEspecialidadWarning("");
+      }
+      setCreateForm({ ...createForm, [field]: value });
     } else {
       setCreateForm({ ...createForm, [field]: value });
     }
@@ -485,9 +589,64 @@ export default function MaintenanceTicket() {
     }
   };
 
+  // Función de autotriage con fórmula completa
+  const calcularAutotriage = (categoria, veterinarios) => {
+    if (!categoria || !veterinarios || veterinarios.length === 0) {
+      return null;
+    }
+
+    // Obtener prioridad (id_sla) y tiempo de respuesta
+    const prioridad = categoria.id_sla || 3; // Default: Normal
+    const tiempoRespuestaSLA = categoria.tiempo_minutos || 60; // minutos
+
+    // Calcular tiempo transcurrido desde ahora (ticket recién creado = 0)
+    const tiempoTranscurrido = 0;
+    const tiempoRestanteSLA = tiempoRespuestaSLA - tiempoTranscurrido;
+
+    // Calcular puntaje para cada veterinario
+    const veterinariosConPuntaje = veterinarios.map((vet) => {
+      // Fórmula: puntaje = (prioridad * 1000) - tiempoRestanteSLA + (carga * -100)
+      // Mayor puntaje = mayor prioridad y menor carga
+      const carga = vet.carga_actual || 0;
+      const puntaje = prioridad * 1000 - tiempoRestanteSLA - carga * 100;
+
+      return {
+        ...vet,
+        puntaje,
+        prioridad,
+        tiempoRestanteSLA,
+        carga,
+      };
+    });
+
+    // Ordenar por puntaje descendente
+    veterinariosConPuntaje.sort((a, b) => b.puntaje - a.puntaje);
+
+    // El veterinario óptimo es el de mayor puntaje
+    const veterinarioOptimo = veterinariosConPuntaje[0];
+
+    // Generar justificación
+    let justificacion = `Asignado automáticamente por AUTOTRIAGE. `;
+    justificacion += `Puntaje: ${veterinarioOptimo.puntaje}. `;
+    justificacion += `Razones: Prioridad ${categoria.sla_descripcion || "Normal"} (${prioridad}), `;
+    justificacion += `SLA ${tiempoRestanteSLA} min, `;
+    justificacion += `Carga actual ${veterinarioOptimo.carga}h.`;
+
+    return {
+      veterinarioSeleccionado: veterinarioOptimo,
+      todosLosVeterinarios: veterinariosConPuntaje,
+      justificacion,
+      formula: {
+        prioridad,
+        tiempoRestanteSLA,
+        descripcionSLA: categoria.sla_descripcion,
+      },
+    };
+  };
+
   // Crear ticket
   const handleCreate = async () => {
-    if (!validateForm(createForm)) {
+    if (!validateCreateForm(createForm)) {
       showSnackbar("Por favor complete todos los campos obligatorios", "error");
       return;
     }
@@ -498,20 +657,70 @@ export default function MaintenanceTicket() {
         e.nombre_etiqueta.toLowerCase().includes("emergencia")
       );
 
+      // Asignación automática si no hay veterinario seleccionado
+      let veterinarioAsignado = createForm.id_asignado_a_usuario || null;
+      let resultadoAutotriage = null;
+
+      if (!veterinarioAsignado && veterinariosDisponibles.length > 0) {
+        // Obtener información completa de la categoría
+        const catResponse = await CategoryService.get(createForm.id_categoria);
+        const categoria = catResponse.data;
+
+        // Aplicar autotriage con fórmula completa
+        resultadoAutotriage = calcularAutotriage(
+          categoria,
+          veterinariosDisponibles
+        );
+
+        if (resultadoAutotriage) {
+          veterinarioAsignado =
+            resultadoAutotriage.veterinarioSeleccionado.id_veterinario;
+
+          // Solo mostrar diálogo si el usuario es Admin o Veterinario
+          const mostrarDialogo =
+            userRole === "Administrador" || userRole === "Veterinario";
+
+          if (mostrarDialogo) {
+            // Guardar resultado para mostrar en diálogo
+            setAutoTriageResult(resultadoAutotriage);
+            setShowAutoTriageDialog(true);
+
+            // Esperar a que el usuario cierre el diálogo
+            // El ticket se creará después de ver la justificación
+            return;
+          }
+          // Si es cliente, asignar automáticamente sin mostrar diálogo
+        }
+      }
+
+      // Si no hay autotriage o el usuario ya cerró el diálogo, crear el ticket
+      await crearTicketFinal(veterinarioAsignado, esEmergencia);
+    } catch {
+      showSnackbar("Error al crear el ticket", "error");
+    }
+  };
+
+  // Función auxiliar para crear el ticket (se llama desde handleCreate o desde el diálogo)
+  const crearTicketFinal = async (veterinarioAsignado, esEmergencia) => {
+    try {
+      // Si hay veterinario asignado (por autotriage o manual), estado = 2 (Asignado)
+      // Si no hay veterinario, estado = 1 (Pendiente/Abierto)
+      const estadoInicial = veterinarioAsignado ? 2 : 1;
+
       const ticketData = {
         titulo: createForm.titulo.trim(),
         descripcion: createForm.descripcion.trim(),
         id_categoria: createForm.id_categoria,
         id_mascota: createForm.id_mascota,
         id_creado_por_usuario: createForm.id_creado_por_usuario,
-        id_asignado_a_usuario: createForm.id_asignado_a_usuario || null,
+        id_asignado_a_usuario: veterinarioAsignado,
         fecha_creacion: toMySQLDateTime(new Date().toISOString()),
         fecha_cita: esEmergencia
           ? toMySQLDateTime(new Date().toISOString())
           : createForm.fecha_cita
             ? toMySQLDateTime(createForm.fecha_cita)
             : null,
-        id_estado: 1, // Pendiente/Abierto
+        id_estado: estadoInicial,
       };
 
       const response = await TicketService.create(ticketData);
@@ -569,7 +778,30 @@ export default function MaintenanceTicket() {
       return;
     }
 
+    // Validar comentario obligatorio
+    if (!updateForm.comentario || updateForm.comentario.trim() === "") {
+      showSnackbar(t("ticket:maintenance.validation.commentRequired"), "error");
+      return;
+    }
+
+    // Validar imágenes obligatorias si cambia el estado
+    const cambioEstado =
+      originalEstado && updateForm.id_estado !== originalEstado;
+    if (cambioEstado && updateImages.length === 0) {
+      showSnackbar(
+        "Debe subir al menos una imagen al cambiar el estado del ticket",
+        "error"
+      );
+      return;
+    }
+
     try {
+      // Validar que tenemos el ID del usuario
+      if (!userId) {
+        showSnackbar("Error: No se pudo obtener el ID del usuario", "error");
+        return;
+      }
+
       const ticketData = {
         titulo: updateForm.titulo.trim(),
         descripcion: updateForm.descripcion.trim(),
@@ -620,6 +852,7 @@ export default function MaintenanceTicket() {
       setUpdateImagesPreviews([]);
       setEtiquetasDeCategoria([]);
       setVeterinariosDisponibles([]);
+      setOriginalEstado(null);
       setErrors({});
 
       // Recargar lista de tickets
@@ -788,13 +1021,18 @@ export default function MaintenanceTicket() {
                 ) : (
                   <TextField
                     fullWidth
+                    required
                     type="date"
-                    label={t("ticket:appointmentDate")}
+                    label={`${t("ticket:appointmentDate")} *`}
                     value={createForm.fecha_cita}
                     onChange={(e) =>
                       handleCreateChange("fecha_cita", e.target.value)
                     }
-                    helperText={t("ticket:maintenance.labels.selectDateHelper")}
+                    error={!!errors.fecha_cita}
+                    helperText={
+                      errors.fecha_cita ||
+                      t("ticket:maintenance.labels.selectDateHelper")
+                    }
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -861,7 +1099,9 @@ export default function MaintenanceTicket() {
                     disabled={!createForm.id_categoria}
                   >
                     <MenuItem value="">
-                      <em>{t("ticket:maintenance.labels.unassigned")}</em>
+                      <em>
+                        {t("ticket:maintenance.labels.automaticSelection")}
+                      </em>
                     </MenuItem>
                     {veterinariosDisponibles.map((vet) => {
                       const especialidades = Array.isArray(vet.especialidades)
@@ -894,6 +1134,21 @@ export default function MaintenanceTicket() {
                       {t("ticket:maintenance.labels.selectCategoryFirst")}
                     </Typography>
                   )}
+                  {createForm.id_categoria &&
+                    createForm.id_asignado_a_usuario === "" && (
+                      <Typography
+                        variant="caption"
+                        color="info.main"
+                        sx={{ mt: 0.5, ml: 2 }}
+                      >
+                        {t("ticket:maintenance.labels.autoAssignInfo")}
+                      </Typography>
+                    )}
+                  {especialidadWarning && (
+                    <Alert severity="warning" sx={{ mt: 1 }}>
+                      {especialidadWarning}
+                    </Alert>
+                  )}
                 </FormControl>
               </Grid>
             )}
@@ -913,7 +1168,11 @@ export default function MaintenanceTicket() {
             {(userRole === "Administrador" || userRole === "Veterinario") &&
               !loadingCatalogos && (
                 <Grid item xs={12}>
-                  <FormControl fullWidth required>
+                  <FormControl
+                    fullWidth
+                    required
+                    error={!!errors.id_creado_por_usuario}
+                  >
                     <InputLabel>
                       {t("ticket:maintenance.labels.requesterClient")} *
                     </InputLabel>
@@ -945,6 +1204,15 @@ export default function MaintenanceTicket() {
                         </MenuItem>
                       ))}
                     </Select>
+                    {errors.id_creado_por_usuario && (
+                      <Typography
+                        variant="caption"
+                        color="error"
+                        sx={{ mt: 0.5, ml: 2 }}
+                      >
+                        {errors.id_creado_por_usuario}
+                      </Typography>
+                    )}
                   </FormControl>
                 </Grid>
               )}
@@ -998,20 +1266,28 @@ export default function MaintenanceTicket() {
             {/* Información de validaciones */}
             <Grid item xs={12}>
               <Alert severity="info">
-                <strong>{t("ticket:validation.importantInfo")}</strong>
+                <strong>
+                  {t("ticket:maintenance.validation.importantInfo")}
+                </strong>
                 <ul style={{ marginBottom: 0 }}>
-                  <li>{t("ticket:validation.requiredFields")}</li>
-                  <li>{t("ticket:validation.titleLength")}</li>
-                  <li>{t("ticket:validation.descriptionRequired")}</li>
-                  <li>{t("ticket:validation.tagsAutoAssigned")}</li>
+                  <li>{t("ticket:maintenance.validation.requiredFields")}</li>
+                  <li>{t("ticket:maintenance.validation.titleLength")}</li>
+                  <li>
+                    {t("ticket:maintenance.validation.descriptionRequired")}
+                  </li>
+                  <li>{t("ticket:maintenance.validation.tagsAutoAssigned")}</li>
                   {(userRole === "Administrador" ||
                     userRole === "Veterinario") && (
                     <>
-                      <li>{t("ticket:validation.vetsFiltered")}</li>
-                      <li>{t("ticket:validation.autoAssignVet")}</li>
+                      <li>{t("ticket:maintenance.validation.vetsFiltered")}</li>
+                      <li>
+                        {t("ticket:maintenance.validation.autoAssignVet")}
+                      </li>
                     </>
                   )}
-                  <li>{t("ticket:validation.slaAutoCalculated")}</li>
+                  <li>
+                    {t("ticket:maintenance.validation.slaAutoCalculated")}
+                  </li>
                 </ul>
               </Alert>
             </Grid>
@@ -1338,13 +1614,22 @@ export default function MaintenanceTicket() {
                     fullWidth
                     multiline
                     rows={3}
-                    label="Comentario del cambio"
+                    required
+                    label={`${t("ticket:maintenance.labels.changeComment")} *`}
                     value={updateForm.comentario}
                     onChange={(e) =>
                       handleUpdateChange("comentario", e.target.value)
                     }
-                    helperText="Opcional - Describa los cambios realizados (se guardará en el histórico)"
-                    placeholder="Ej: Se cambió el estado a 'En Proceso' porque..."
+                    error={
+                      updateForm.comentario !== undefined &&
+                      updateForm.comentario.trim() === ""
+                    }
+                    helperText={t(
+                      "ticket:maintenance.labels.changeCommentHelper"
+                    )}
+                    placeholder={t(
+                      "ticket:maintenance.labels.changeCommentPlaceholder"
+                    )}
                   />
                 </Grid>
 
@@ -1468,6 +1753,118 @@ export default function MaintenanceTicket() {
           <CircularProgress />
         </Box>
       )}
+
+      {/* Diálogo de Autotriage */}
+      <Dialog
+        open={showAutoTriageDialog}
+        onClose={() => setShowAutoTriageDialog(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <CheckCircleIcon color="success" />
+            <Typography variant="h6">
+              Resultado de Asignación Automática (Autotriage)
+            </Typography>
+          </Stack>
+        </DialogTitle>
+        <DialogContent>
+          {autoTriageResult && (
+            <Box>
+              <Alert severity="success" sx={{ mb: 2 }}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Veterinario Seleccionado:{" "}
+                  {autoTriageResult.veterinarioSeleccionado.nombre_completo}
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  {autoTriageResult.justificacion}
+                </Typography>
+              </Alert>
+
+              <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                Fórmula Aplicada
+              </Typography>
+              <Paper sx={{ p: 2, bgcolor: "grey.50", mb: 2 }}>
+                <Typography variant="body2" fontFamily="monospace">
+                  puntaje = (prioridad × 1000) - tiempoRestanteSLA - (carga ×
+                  100)
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  • Prioridad: {autoTriageResult.formula.prioridad} (
+                  {autoTriageResult.formula.descripcionSLA})
+                </Typography>
+                <Typography variant="body2">
+                  • Tiempo restante SLA:{" "}
+                  {autoTriageResult.formula.tiempoRestanteSLA} minutos
+                </Typography>
+              </Paper>
+
+              <Typography variant="h6" gutterBottom>
+                Veterinarios Evaluados
+              </Typography>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>#</TableCell>
+                    <TableCell>Veterinario</TableCell>
+                    <TableCell align="center">Carga (h)</TableCell>
+                    <TableCell align="center">Puntaje</TableCell>
+                    <TableCell align="center">Seleccionado</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {autoTriageResult.todosLosVeterinarios.map((vet, index) => (
+                    <TableRow
+                      key={vet.id_veterinario}
+                      sx={{
+                        bgcolor:
+                          index === 0 ? "success.lighter" : "transparent",
+                      }}
+                    >
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{vet.nombre_completo}</TableCell>
+                      <TableCell align="center">{vet.carga}</TableCell>
+                      <TableCell align="center">
+                        <strong>{vet.puntaje}</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        {index === 0 && <CheckCircleIcon color="success" />}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setShowAutoTriageDialog(false)}
+            color="secondary"
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={async () => {
+              setShowAutoTriageDialog(false);
+              // Determinar si es emergencia
+              const esEmergencia = etiquetasDeCategoria.some((e) =>
+                e.nombre_etiqueta.toLowerCase().includes("emergencia")
+              );
+              // Crear el ticket con el veterinario asignado
+              await crearTicketFinal(
+                autoTriageResult.veterinarioSeleccionado.id_veterinario,
+                esEmergencia
+              );
+            }}
+            variant="contained"
+            color="primary"
+          >
+            Aceptar y Crear Ticket
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

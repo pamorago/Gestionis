@@ -6,11 +6,15 @@ import { UserContext } from "../../context/UserContext";
 export default function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
     }
+    setIsLoading(false);
   }, []);
   const saveUser = (user) => {
     setUser(user);
@@ -83,6 +87,7 @@ export default function UserProvider({ children }) {
       value={{
         user,
         isAuthenticated,
+        isLoading,
         saveUser,
         clearUser,
         autorize,

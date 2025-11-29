@@ -30,7 +30,7 @@ import {
 import TicketService from "../../services/TicketService";
 
 export default function Calendar() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -41,15 +41,17 @@ export default function Calendar() {
     TicketService.list()
       .then((r) => {
         // Filtrar solo citas programadas (con fecha_cita) y categorías específicas
-        const filtered = (Array.isArray(r.data) ? r.data : []).filter((t) => {
-          const categoria = t.nombre_categoria?.toLowerCase();
-          return (
-            t.fecha_cita &&
-            (categoria === "vacunación" ||
-              categoria === "cirugía menor" ||
-              categoria === "cirugía mayor")
-          );
-        });
+        const filtered = (Array.isArray(r.data) ? r.data : []).filter(
+          (ticket) => {
+            const categoria = ticket.nombre_categoria?.toLowerCase();
+            return (
+              ticket.fecha_cita &&
+              (categoria === "vacunación" ||
+                categoria === "cirugía menor" ||
+                categoria === "cirugía mayor")
+            );
+          }
+        );
         setTickets(filtered);
       })
       .catch((err) => {
@@ -136,9 +138,14 @@ export default function Calendar() {
 
   // Agrupar tickets por día
   const getTicketsForDay = (day) => {
-    const dayStr = day.toISOString().split("T")[0];
-    return tickets.filter((t) => {
-      const citaDate = new Date(t.fecha_cita).toISOString().split("T")[0];
+    const year = day.getFullYear();
+    const month = String(day.getMonth() + 1).padStart(2, "0");
+    const dayNum = String(day.getDate()).padStart(2, "0");
+    const dayStr = `${year}-${month}-${dayNum}`;
+
+    return tickets.filter((ticket) => {
+      // Extraer solo la parte de fecha (YYYY-MM-DD) sin conversión UTC
+      const citaDate = ticket.fecha_cita.split(" ")[0]; // Toma solo "YYYY-MM-DD"
       return citaDate === dayStr;
     });
   };
@@ -298,21 +305,21 @@ export default function Calendar() {
                       {t("common:calendar.messages.noAppointments")}
                     </Typography>
                   ) : (
-                    day.tickets.map((t) => (
+                    day.tickets.map((ticket) => (
                       <Tooltip
-                        key={t.id_ticket}
-                        title={`${t("common:calendar.messages.viewDetails")} - ${t.nombre_categoria}`}
+                        key={ticket.id_ticket}
+                        title={`${t("common:calendar.messages.viewDetails")} - ${ticket.nombre_categoria}`}
                         arrow
                       >
                         <Paper
                           component={Link}
-                          to={`/ticket/${t.id_ticket}`}
+                          to={`/ticket/${ticket.id_ticket}`}
                           elevation={1}
                           sx={{
                             p: 1,
                             borderLeft: 4,
                             borderLeftColor: getCategoryColor(
-                              t.nombre_categoria
+                              ticket.nombre_categoria
                             ),
                             cursor: "pointer",
                             textDecoration: "none",
@@ -333,10 +340,12 @@ export default function Calendar() {
                           >
                             <Box
                               sx={{
-                                color: getCategoryColor(t.nombre_categoria),
+                                color: getCategoryColor(
+                                  ticket.nombre_categoria
+                                ),
                               }}
                             >
-                              {getCategoryIcon(t.nombre_categoria)}
+                              {getCategoryIcon(ticket.nombre_categoria)}
                             </Box>
                             <Box sx={{ flex: 1, minWidth: 0 }}>
                               <Typography
@@ -349,7 +358,7 @@ export default function Calendar() {
                                   whiteSpace: "nowrap",
                                 }}
                               >
-                                #{t.id_ticket}
+                                #{ticket.id_ticket}
                               </Typography>
                               <Typography
                                 variant="caption"
@@ -362,7 +371,7 @@ export default function Calendar() {
                                   whiteSpace: "nowrap",
                                 }}
                               >
-                                {t.mascota}
+                                {ticket.mascota}
                               </Typography>
                               <Typography
                                 variant="caption"
@@ -375,7 +384,7 @@ export default function Calendar() {
                                   whiteSpace: "nowrap",
                                 }}
                               >
-                                {t.asignado_a?.split(" ")[0] ||
+                                {ticket.asignado_a?.split(" ")[0] ||
                                   t("common:calendar.messages.unassigned")}
                               </Typography>
                             </Box>
@@ -479,15 +488,15 @@ export default function Calendar() {
                     </Box>
 
                     <Stack spacing={0.5}>
-                      {dayTickets.slice(0, 3).map((t) => (
+                      {dayTickets.slice(0, 3).map((ticket) => (
                         <Tooltip
-                          key={t.id_ticket}
-                          title={`${t("common:calendar.messages.viewDetails")} - ${t.mascota}`}
+                          key={ticket.id_ticket}
+                          title={`${t("common:calendar.messages.viewDetails")} - ${ticket.mascota}`}
                           arrow
                         >
                           <Box
                             component={Link}
-                            to={`/ticket/${t.id_ticket}`}
+                            to={`/ticket/${ticket.id_ticket}`}
                             sx={{
                               display: "flex",
                               alignItems: "center",
@@ -497,7 +506,7 @@ export default function Calendar() {
                               bgcolor: "background.default",
                               borderLeft: 2,
                               borderLeftColor: getCategoryColor(
-                                t.nombre_categoria
+                                ticket.nombre_categoria
                               ),
                               cursor: "pointer",
                               textDecoration: "none",
@@ -509,13 +518,15 @@ export default function Calendar() {
                           >
                             <Box
                               sx={{
-                                color: getCategoryColor(t.nombre_categoria),
+                                color: getCategoryColor(
+                                  ticket.nombre_categoria
+                                ),
                                 display: "flex",
                                 alignItems: "center",
                                 fontSize: "0.7rem",
                               }}
                             >
-                              {getCategoryIcon(t.nombre_categoria)}
+                              {getCategoryIcon(ticket.nombre_categoria)}
                             </Box>
                             <Typography
                               variant="caption"
@@ -526,7 +537,7 @@ export default function Calendar() {
                                 whiteSpace: "nowrap",
                               }}
                             >
-                              #{t.id_ticket}
+                              #{ticket.id_ticket}
                             </Typography>
                           </Box>
                         </Tooltip>

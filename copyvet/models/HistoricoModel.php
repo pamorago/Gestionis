@@ -58,9 +58,13 @@ class HistoricoModel
     public function create($historico)
     {
         try {
+            // Escapar comillas simples para evitar errores de SQL
+            $comentario = str_replace("'", "''", $historico->comentario);
+            $estado = str_replace("'", "''", $historico->estado);
+
             $vSql = "INSERT INTO historico (id_ticket, fecha, comentario, estado, id_usuario)
                     VALUES ($historico->id_ticket, NOW(), 
-                    '$historico->comentario', '$historico->estado', 
+                    '$comentario', '$estado', 
                     $historico->id_usuario);";
 
             $vResultado = $this->enlace->ExecuteSQL_DML($vSql);
