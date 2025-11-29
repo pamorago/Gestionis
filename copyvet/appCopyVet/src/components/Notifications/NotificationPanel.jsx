@@ -39,7 +39,12 @@ const NotificationPanel = () => {
 
   // Cargar notificaciones
   const cargarNotificaciones = useCallback(async () => {
-    if (!userId) return;
+    if (!userId) {
+      // Si no hay usuario, limpiar las notificaciones
+      setNotificaciones([]);
+      setNoLeidas(0);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -51,6 +56,9 @@ const NotificationPanel = () => {
       setNoLeidas(noLeidasResponse.data?.total || 0);
     } catch (error) {
       console.error("Error cargando notificaciones:", error);
+      // En caso de error, limpiar también
+      setNotificaciones([]);
+      setNoLeidas(0);
     } finally {
       setLoading(false);
     }
@@ -138,6 +146,11 @@ const NotificationPanel = () => {
   };
 
   const open = Boolean(anchorEl);
+
+  // No mostrar nada si no hay usuario autenticado
+  if (!userId) {
+    return null;
+  }
 
   return (
     <>
