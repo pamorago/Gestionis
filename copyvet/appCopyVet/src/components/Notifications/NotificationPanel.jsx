@@ -304,8 +304,10 @@ const NotificationPanel = () => {
                               : "bold",
                             color: notificacion.estado_leida ? "#666" : "#000",
                             mb: 0.5,
+                            wordWrap: "break-word",
+                            overflowWrap: "break-word",
+                            whiteSpace: "normal",
                           }}
-                          noWrap
                         >
                           {notificacion.descripcion}
                         </Typography>

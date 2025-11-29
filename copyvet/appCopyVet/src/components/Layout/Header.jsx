@@ -106,7 +106,7 @@ export default function Header() {
     {
       name: t("common:navigation.tickets"),
       link: "/maintenance/tickets",
-      roles: ["Administrador"],
+      roles: ["Administrador", "Veterinario"],
     },
     {
       name: t("common:navigation.categories"),
@@ -183,66 +183,67 @@ export default function Header() {
         </>
       )}
 
-      {/* Dropdown de Mantenimientos - Solo visible para Administrador */}
-      {userData && autorize({ requiredRoles: ["Administrador"] }) && (
-        <>
-          <Button
-            color="secondary"
-            onClick={handleMantenimientosMenuOpen}
-            endIcon={<ArrowDropDownIcon />}
-          >
-            <Typography textAlign="center">
-              {t("common:navigation.maintenance")}
-            </Typography>
-          </Button>
-          <Menu
-            id="mantenimientos-menu"
-            anchorEl={anchorElMantenimientos}
-            open={isMantenimientosMenuOpen}
-            onClose={handleMantenimientosMenuClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "left",
-            }}
-          >
-            {mantenimientosItems.map((item, index) => {
-              if (userData && item.roles) {
-                if (autorize({ requiredRoles: item.roles })) {
-                  return (
-                    <MenuItem
-                      key={index}
-                      component={Link}
-                      to={item.link}
-                      onClick={handleMantenimientosMenuClose}
-                    >
-                      {item.name}
-                    </MenuItem>
-                  );
+      {/* Dropdown de Mantenimientos - Visible para Administrador y Veterinario */}
+      {userData &&
+        autorize({ requiredRoles: ["Administrador", "Veterinario"] }) && (
+          <>
+            <Button
+              color="secondary"
+              onClick={handleMantenimientosMenuOpen}
+              endIcon={<ArrowDropDownIcon />}
+            >
+              <Typography textAlign="center">
+                {t("common:navigation.maintenance")}
+              </Typography>
+            </Button>
+            <Menu
+              id="mantenimientos-menu"
+              anchorEl={anchorElMantenimientos}
+              open={isMantenimientosMenuOpen}
+              onClose={handleMantenimientosMenuClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+            >
+              {mantenimientosItems.map((item, index) => {
+                if (userData && item.roles) {
+                  if (autorize({ requiredRoles: item.roles })) {
+                    return (
+                      <MenuItem
+                        key={index}
+                        component={Link}
+                        to={item.link}
+                        onClick={handleMantenimientosMenuClose}
+                      >
+                        {item.name}
+                      </MenuItem>
+                    );
+                  }
+                  return null;
+                } else {
+                  if (item.roles == null) {
+                    return (
+                      <MenuItem
+                        key={index}
+                        component={Link}
+                        to={item.link}
+                        onClick={handleMantenimientosMenuClose}
+                      >
+                        {item.name}
+                      </MenuItem>
+                    );
+                  }
+                  return null;
                 }
-                return null;
-              } else {
-                if (item.roles == null) {
-                  return (
-                    <MenuItem
-                      key={index}
-                      component={Link}
-                      to={item.link}
-                      onClick={handleMantenimientosMenuClose}
-                    >
-                      {item.name}
-                    </MenuItem>
-                  );
-                }
-                return null;
-              }
-            })}
-          </Menu>
-        </>
-      )}
+              })}
+            </Menu>
+          </>
+        )}
 
       {/* Otros botones del menú principal */}
       {navItems &&

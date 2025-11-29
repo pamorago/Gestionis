@@ -158,6 +158,10 @@ const rutas = createBrowserRouter([
             path: "/assignments",
             element: <AssignmentsBoard />,
           },
+          {
+            path: "/maintenance/tickets",
+            element: <MaintenanceTicket />,
+          },
         ],
       },
 
@@ -181,10 +185,6 @@ const rutas = createBrowserRouter([
           {
             path: "/category/:id",
             element: <DetailCategory />,
-          },
-          {
-            path: "/maintenance/tickets",
-            element: <MaintenanceTicket />,
           },
           {
             path: "/maintenance/veterinarians",

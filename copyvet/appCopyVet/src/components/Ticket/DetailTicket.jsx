@@ -14,13 +14,6 @@ import {
   CardContent,
   Stack,
   Divider,
-  Rating,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
 } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
@@ -29,7 +22,6 @@ import {
   Category as CategoryIcon,
   Assignment as AssignmentIcon,
   CalendarToday as CalendarIcon,
-  Star as StarIcon,
 } from "@mui/icons-material";
 
 // Función para obtener el color del estado
@@ -55,9 +47,6 @@ export default function DetailTicket() {
   const [ticket, setTicket] = useState(null);
   const [history, setHistory] = useState([]);
   const [imagenes, setImagenes] = useState([]);
-  const [openRating, setOpenRating] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [comentario, setComentario] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -86,19 +75,6 @@ export default function DetailTicket() {
         setImagenes([]);
       });
   }, [id]);
-
-  const handleOpenRating = () => setOpenRating(true);
-  const handleCloseRating = () => {
-    setOpenRating(false);
-    setRating(0);
-    setComentario("");
-  };
-
-  const handleSubmitRating = () => {
-    // TODO: Enviar valoración al backend
-    console.log("Valoración:", rating, "Comentario:", comentario);
-    handleCloseRating();
-  };
 
   // Formatear fecha
   const formatDate = (dateString) => {
@@ -155,14 +131,6 @@ export default function DetailTicket() {
             color={statusColor}
             size="medium"
           />
-          {isCerrado && ticket.valoracion && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Rating value={ticket.valoracion} readOnly size="small" />
-              <Typography variant="body2" color="text.secondary">
-                ({ticket.valoracion})
-              </Typography>
-            </Box>
-          )}
         </Box>
         <Typography variant="h5" gutterBottom>
           {ticket.titulo}
@@ -383,101 +351,8 @@ export default function DetailTicket() {
               </Box>
             </Stack>
           </Paper>
-
-          {/* Valoración */}
-          {isCerrado && (
-            <Paper sx={{ p: 3 }}>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ display: "flex", alignItems: "center", gap: 1 }}
-              >
-                <StarIcon color="warning" />
-                {t("ticket:detail.rating")}
-              </Typography>
-              {ticket.valoracion ? (
-                <Box>
-                  <Rating value={ticket.valoracion} readOnly size="large" />
-                  <Typography variant="h4" color="warning.main" sx={{ mt: 1 }}>
-                    {ticket.valoracion}/5
-                  </Typography>
-                  {ticket.comentario_valoracion && (
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 2 }}
-                    >
-                      &ldquo;{ticket.comentario_valoracion}&rdquo;
-                    </Typography>
-                  )}
-                </Box>
-              ) : (
-                <Box>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
-                  >
-                    {t("ticket:detail.notRatedYet")}
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    startIcon={<StarIcon />}
-                    onClick={handleOpenRating}
-                  >
-                    {t("ticket:detail.rateService")}
-                  </Button>
-                </Box>
-              )}
-            </Paper>
-          )}
         </Grid>
       </Grid>
-
-      {/* Dialog de valoración */}
-      <Dialog
-        open={openRating}
-        onClose={handleCloseRating}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>{t("ticket:detail.ratingDialog.title")}</DialogTitle>
-        <DialogContent>
-          <Box sx={{ py: 2, textAlign: "center" }}>
-            <Typography variant="body1" gutterBottom>
-              {t("ticket:detail.ratingDialog.question")}
-            </Typography>
-            <Rating
-              value={rating}
-              onChange={(e, newValue) => setRating(newValue)}
-              size="large"
-              sx={{ my: 2 }}
-            />
-            <TextField
-              label={t("ticket:detail.ratingDialog.commentLabel")}
-              multiline
-              rows={4}
-              fullWidth
-              value={comentario}
-              onChange={(e) => setComentario(e.target.value)}
-              sx={{ mt: 2 }}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseRating}>
-            {t("ticket:detail.ratingDialog.cancel")}
-          </Button>
-          <Button
-            onClick={handleSubmitRating}
-            variant="contained"
-            disabled={rating === 0}
-          >
-            {t("ticket:detail.ratingDialog.submit")}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Container>
   );
 }

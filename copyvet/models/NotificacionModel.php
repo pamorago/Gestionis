@@ -138,7 +138,7 @@ class NotificacionModel
             $id_usuario = (int)$data->id_usuario;
             $id_evento = isset($data->id_evento) ? (int)$data->id_evento : 'NULL';
             $importancia = isset($data->importancia) ? call_user_func($this->sanitize, $data->importancia) : 'normal';
-            $responsable = isset($data->responsable) ? call_user_func($this->sanitize, $data->responsable) : 'NULL';
+            $responsable = isset($data->responsable) && $data->responsable !== null ? "'" . call_user_func($this->sanitize, $data->responsable) . "'" : 'NULL';
             $vSql = "INSERT INTO notificaciones
                             (tipo, descripcion, id_usuario, id_evento, importancia, responsable, estado_leida, fecha_evento)
                             VALUES 

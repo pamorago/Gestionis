@@ -14,8 +14,7 @@
     "open": "Open",
     "inProgress": "In Progress",
     "closed": "Closed",
-    "cancelled": "Cancelled",
-    "resolved": "Resolved"
+    "cancelled": "Cancelled"
   },
   "priority": {
     "priority": "Priority",

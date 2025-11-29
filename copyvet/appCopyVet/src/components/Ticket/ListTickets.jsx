@@ -102,10 +102,10 @@ export default function ListTickets() {
         return 2;
       case "cerrado":
         return 3;
-      case "resuelto":
-        return 3;
-      default:
+      case "cancelado":
         return 4;
+      default:
+        return 5;
     }
   };
 

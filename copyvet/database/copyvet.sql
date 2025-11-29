@@ -759,32 +759,45 @@ INSERT INTO
     ticketimage (id_ticket, imagen, created_at)
 VALUES
     (
-        11,
-        'CopyVetVacunacionRocky.jpeg',
-        '2025-10-03 14:30:00'
-    ), -- Vacunación Rocky
+        1,
+        'consulta-veterinaria-1.jpg',
+        '2025-10-02 10:30:00'
+    ), -- Consulta General Max - En proceso
+    (2, 'post operatoria.jpg', '2025-10-05 12:00:00'), -- Revisión Postoperatoria Bella - En proceso
+    (3, 'fractura simba.jpg', '2025-10-08 16:30:00'), -- Emergencia Fractura Simba - En proceso
     (
         4,
         'CopyVetRadiografiaNina.jpeg',
         '2025-10-09 10:30:00'
-    ), -- Consulta Dermatológica Nina
+    ), -- Consulta Dermatológica Nina - En proceso
     (
         5,
         'CopyVetConsultaExotica.jpg',
         '2025-10-10 14:30:00'
-    ), -- Revisión Coco - Especies Exóticas
+    ), -- Revisión Coco - En proceso
+    (6, 'boxer como nuevo.jpg', '2025-10-11 08:45:00'), -- Cirugía Mayor Bella - En proceso
+    (
+        8,
+        'perico coco vomito.jpg',
+        '2025-10-12 20:30:00'
+    ), -- Emergencia Intoxicación Coco - En proceso
     (
         9,
         'CopyVetDermatologiaLuna.jpg',
         '2025-10-01 13:30:00'
-    ), -- Control Dermatológico Luna
+    ), -- Control Dermatológico Luna - Cerrado
+    (
+        11,
+        'CopyVetVacunacionRocky.jpeg',
+        '2025-10-03 14:30:00'
+    ), -- Vacunación Rocky - Cerrado
     (
         12,
         'CopyVetRadiografiaNina.jpeg',
         '2025-10-05 11:30:00'
     );
 
--- Revisión quirúrgica de Luna
+-- Revisión quirúrgica Luna - Cerrado
 ;
 
 -- ======================================================
@@ -926,6 +939,13 @@ VALUES
     ),
     (
         9,
+        '2025-10-01 14:00:00',
+        'Asignado a Dr. Ricardo Soto para atención',
+        'En proceso',
+        4
+    ),
+    (
+        9,
         '2025-10-02 15:00:00',
         'Tratamiento completado, sin reacciones alérgicas',
         'Cerrado',
@@ -951,6 +971,13 @@ VALUES
         'Ingreso para vacunación',
         'Abierto',
         11
+    ),
+    (
+        11,
+        '2025-10-03 15:00:00',
+        'Iniciando proceso de vacunación - Dra. Ana Gómez',
+        'En proceso',
+        3
     ),
     (
         11,
@@ -998,40 +1025,162 @@ VALUES
 -- ======================================================
 -- TABLA: notificaciones
 -- ======================================================
-CREATE TABLE notificaciones (
-    id_notificacion INT AUTO_INCREMENT PRIMARY KEY,
-    tipo VARCHAR(50) NOT NULL, -- Ej: 'ticket_estado', 'login'
-    descripcion TEXT NOT NULL,
-    fecha_evento DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    id_usuario INT NOT NULL, -- Usuario destinatario
-    id_evento INT NULL, -- ID del ticket u otro evento relacionado
-    estado_leida BOOLEAN NOT NULL DEFAULT FALSE, -- FALSE = no leída, TRUE = leída
-    importancia VARCHAR(20) DEFAULT 'normal', -- Ej: 'normal', 'alta', 'baja'
-    responsable VARCHAR(100) DEFAULT NULL, -- Usuario responsable del cambio (opcional)
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
-);
+CREATE TABLE
+    notificaciones (
+        id_notificacion INT AUTO_INCREMENT PRIMARY KEY,
+        tipo VARCHAR(50) NOT NULL, -- Ej: 'ticket_estado', 'login'
+        descripcion TEXT NOT NULL,
+        fecha_evento DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        id_usuario INT NOT NULL, -- Usuario destinatario
+        id_evento INT NULL, -- ID del ticket u otro evento relacionado
+        estado_leida BOOLEAN NOT NULL DEFAULT FALSE, -- FALSE = no leída, TRUE = leída
+        importancia VARCHAR(20) DEFAULT 'normal', -- Ej: 'normal', 'alta', 'baja'
+        responsable VARCHAR(100) DEFAULT NULL, -- Usuario responsable del cambio (opcional)
+        FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
+    );
 
-CREATE INDEX idx_usuario_leida ON notificaciones(id_usuario, estado_leida);
-CREATE INDEX idx_tipo_fecha ON notificaciones(tipo, fecha_evento);
+CREATE INDEX idx_usuario_leida ON notificaciones (id_usuario, estado_leida);
+
+CREATE INDEX idx_tipo_fecha ON notificaciones (tipo, fecha_evento);
 
 -- ======================================================
 -- DATOS DE PRUEBA: notificaciones
 -- ======================================================
-INSERT INTO notificaciones (tipo, descripcion, fecha_evento, id_usuario, id_evento, estado_leida, importancia, responsable) 
-SELECT 'ticket_estado', 'El ticket #1 ha cambiado de estado: Abierto → En proceso', DATE_SUB(NOW(), INTERVAL 12 HOUR), 3, 1, FALSE, 'alta', 'Carlos Méndez'
-WHERE NOT EXISTS (SELECT 1 FROM notificaciones WHERE tipo='ticket_estado' AND id_usuario=3 AND id_evento=1 LIMIT 1);
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #1 ha cambiado de estado: Abierto → En proceso',
+    (CURRENT_TIMESTAMP - INTERVAL 12 HOUR),
+    3,
+    1,
+    FALSE,
+    'alta',
+    'Carlos Méndez'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 3
+            AND id_evento = 1
+        LIMIT
+            1
+    );
 
-INSERT INTO notificaciones (tipo, descripcion, fecha_evento, id_usuario, id_evento, estado_leida, importancia, responsable) 
-SELECT 'ticket_estado', 'El ticket #1 ha cambiado de estado: Abierto → En proceso', DATE_SUB(NOW(), INTERVAL 12 HOUR), 1, 1, FALSE, 'alta', 'Carlos Méndez'
-WHERE NOT EXISTS (SELECT 1 FROM notificaciones WHERE tipo='ticket_estado' AND id_usuario=1 AND id_evento=1 LIMIT 1);
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #1 ha cambiado de estado: Abierto → En proceso',
+    (CURRENT_TIMESTAMP - INTERVAL 12 HOUR),
+    1,
+    1,
+    FALSE,
+    'alta',
+    'Carlos Méndez'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 1
+            AND id_evento = 1
+        LIMIT
+            1
+    );
 
-INSERT INTO notificaciones (tipo, descripcion, fecha_evento, id_usuario, id_evento, estado_leida, importancia, responsable) 
-SELECT 'ticket_estado', 'El ticket #2 ha cambiado de estado: En proceso → Cerrado', DATE_SUB(NOW(), INTERVAL 6 HOUR), 4, 2, TRUE, 'normal', 'Ana Gómez'
-WHERE NOT EXISTS (SELECT 1 FROM notificaciones WHERE tipo='ticket_estado' AND id_usuario=4 AND id_evento=2 LIMIT 1);
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #2 ha cambiado de estado: En proceso → Cerrado',
+    (CURRENT_TIMESTAMP - INTERVAL 6 HOUR),
+    4,
+    2,
+    TRUE,
+    'normal',
+    'Ana Gómez'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 4
+            AND id_evento = 2
+        LIMIT
+            1
+    );
 
-INSERT INTO notificaciones (tipo, descripcion, fecha_evento, id_usuario, id_evento, estado_leida, importancia, responsable) 
-SELECT 'ticket_estado', 'El ticket #2 ha cambiado de estado: En proceso → Cerrado', DATE_SUB(NOW(), INTERVAL 6 HOUR), 2, 2, TRUE, 'normal', 'Ana Gómez'
-WHERE NOT EXISTS (SELECT 1 FROM notificaciones WHERE tipo='ticket_estado' AND id_usuario=2 AND id_evento=2 LIMIT 1);
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #2 ha cambiado de estado: En proceso → Cerrado',
+    (CURRENT_TIMESTAMP - INTERVAL 6 HOUR),
+    2,
+    2,
+    TRUE,
+    'normal',
+    'Ana Gómez'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 2
+            AND id_evento = 2
+        LIMIT
+            1
+    );
 
 -- ======================================================
 -- REACTIVAR VERIFICACIONES DE CLAVES FORÁNEAS

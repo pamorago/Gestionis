@@ -244,8 +244,8 @@ export default function MaintenanceTicket() {
       setEstados([
         { id_estado: 1, nombre_estado: "Pendiente" },
         { id_estado: 2, nombre_estado: "En Proceso" },
-        { id_estado: 3, nombre_estado: "Resuelto" },
-        { id_estado: 4, nombre_estado: "Cerrado" },
+        { id_estado: 3, nombre_estado: "Cerrado" },
+        { id_estado: 4, nombre_estado: "Cancelado" },
       ]);
     } catch (error) {
       showSnackbar("Error al cargar estados", error);
@@ -703,9 +703,8 @@ export default function MaintenanceTicket() {
   // Función auxiliar para crear el ticket (se llama desde handleCreate o desde el diálogo)
   const crearTicketFinal = async (veterinarioAsignado, esEmergencia) => {
     try {
-      // Si hay veterinario asignado (por autotriage o manual), estado = 2 (Asignado)
-      // Si no hay veterinario, estado = 1 (Pendiente/Abierto)
-      const estadoInicial = veterinarioAsignado ? 2 : 1;
+      // Todos los tickets inician en estado 1 (Abierto)
+      const estadoInicial = 1;
 
       const ticketData = {
         titulo: createForm.titulo.trim(),
@@ -718,7 +717,21 @@ export default function MaintenanceTicket() {
         fecha_cita: esEmergencia
           ? toMySQLDateTime(new Date().toISOString())
           : createForm.fecha_cita
-            ? toMySQLDateTime(createForm.fecha_cita)
+            ? (() => {
+                // Para tickets programables, agregar 1 hora a la hora actual
+                const fechaSeleccionada = new Date(
+                  createForm.fecha_cita + "T00:00:00"
+                );
+                const ahora = new Date();
+                // Combinar la fecha seleccionada con una hora más que la actual
+                fechaSeleccionada.setHours(
+                  ahora.getHours() + 1,
+                  ahora.getMinutes(),
+                  0,
+                  0
+                );
+                return toMySQLDateTime(fechaSeleccionada.toISOString());
+              })()
             : null,
         id_estado: estadoInicial,
       };
@@ -784,12 +797,21 @@ export default function MaintenanceTicket() {
       return;
     }
 
-    // Validar imágenes obligatorias si cambia el estado
+    // Validar imágenes obligatorias si cambia el estado (excepto si cambia a Cancelado)
     const cambioEstado =
       originalEstado && updateForm.id_estado !== originalEstado;
-    if (cambioEstado && updateImages.length === 0) {
+
+    // Buscar el nombre del estado seleccionado
+    const estadoSeleccionado = estados.find(
+      (e) => e.id_estado === updateForm.id_estado
+    );
+    const esCancelado = estadoSeleccionado?.nombre_estado
+      ?.toLowerCase()
+      .includes("cancelado");
+
+    if (cambioEstado && updateImages.length === 0 && !esCancelado) {
       showSnackbar(
-        "Debe subir al menos una imagen al cambiar el estado del ticket",
+        "Debe subir al menos una imagen al cambiar el estado del ticket (excepto al cancelar)",
         "error"
       );
       return;
