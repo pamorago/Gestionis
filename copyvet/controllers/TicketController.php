@@ -212,4 +212,30 @@ class ticket
             handleException($e);
         }
     }
+
+    public function valorar($id_ticket)
+    {
+        try {
+            $response = new Response();
+            $request = new Request();
+            $data = $request->getJSON();
+
+            // Validar que se recibió la valoración
+            if (!isset($data->valoracion)) {
+                throw new Exception('La valoración es requerida');
+            }
+
+            // Validar que se recibió el id del usuario
+            if (!isset($data->id_usuario)) {
+                throw new Exception('El id del usuario es requerido');
+            }
+
+            $model = new TicketModel();
+            $result = $model->valorarTicket($id_ticket, $data);
+
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }

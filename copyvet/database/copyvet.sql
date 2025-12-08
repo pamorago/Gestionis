@@ -1183,6 +1183,24 @@ WHERE
     );
 
 -- ======================================================
+-- AGREGAR CAMPOS DE VALORACION A TICKETS
+-- ======================================================
+-- Agregar columnas de valoracion a la tabla tickets
+ALTER TABLE tickets
+ADD COLUMN valoracion INT DEFAULT NULL COMMENT 'Valoracion del servicio (1-5 estrellas)',
+ADD COLUMN comentario_valoracion TEXT DEFAULT NULL COMMENT 'Comentario opcional del cliente sobre el servicio',
+ADD COLUMN fecha_valoracion DATETIME DEFAULT NULL COMMENT 'Fecha y hora en que se realizo la valoracion';
+
+-- Agregar restriccion para que la valoracion sea entre 1 y 5
+ALTER TABLE tickets ADD CONSTRAINT chk_valoracion CHECK (
+    valoracion IS NULL
+    OR (
+        valoracion >= 1
+        AND valoracion <= 5
+    )
+);
+
+-- ======================================================
 -- REACTIVAR VERIFICACIONES DE CLAVES FORÁNEAS
 -- ======================================================
 SET

@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import TicketService from "../../services/TicketService";
+import ValoracionDialog from "./ValoracionDialog";
+import { UserContext } from "../../context/UserContext";
 import {
   Container,
   Typography,
@@ -14,6 +16,10 @@ import {
   CardContent,
   Stack,
   Divider,
+  Button,
+  Rating,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
@@ -22,6 +28,7 @@ import {
   Category as CategoryIcon,
   Assignment as AssignmentIcon,
   CalendarToday as CalendarIcon,
+  StarRate as StarRateIcon,
 } from "@mui/icons-material";
 
 // Función para obtener el color del estado
@@ -44,9 +51,15 @@ export default function DetailTicket() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const userContext = useContext(UserContext);
+  const userDecoded = userContext?.decodeToken() || {};
+  const userId = userDecoded?.id_usuario || userDecoded?.sub || userDecoded?.id;
+
   const [ticket, setTicket] = useState(null);
   const [history, setHistory] = useState([]);
   const [imagenes, setImagenes] = useState([]);
+  const [openValoracionDialog, setOpenValoracionDialog] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
     if (!id) return;
@@ -96,6 +109,44 @@ export default function DetailTicket() {
     const mins = minutes % 60;
     if (hours > 0) return `${hours}h ${mins}min`;
     return `${mins}min`;
+  };
+
+  // Manejar valoración
+  const handleValorarClick = () => {
+    setOpenValoracionDialog(true);
+  };
+
+  const handleValoracionSubmit = async (valoracionData) => {
+    try {
+      const payload = {
+        ...valoracionData,
+        id_usuario: userId,
+      };
+
+      await TicketService.valorar(id, payload);
+
+      // Recargar el ticket para mostrar la valoración
+      const ticketResponse = await TicketService.get(id);
+      setTicket(ticketResponse.data || ticketResponse.data?.[0] || null);
+
+      setSnackbar({
+        open: true,
+        message: "Valoración enviada exitosamente",
+        severity: "success",
+      });
+      setOpenValoracionDialog(false);
+    } catch (error) {
+      console.error("Error al valorar ticket:", error);
+      setSnackbar({
+        open: true,
+        message: error.response?.data?.message || "Error al enviar la valoración",
+        severity: "error",
+      });
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   if (!ticket)
@@ -285,6 +336,63 @@ export default function DetailTicket() {
 
         {/* Panel lateral */}
         <Grid item xs={12} md={4}>
+          {/* Valoración */}
+          {isCerrado && (
+            <Paper sx={{ p: 3, mb: 3 }}>
+              <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <StarRateIcon color="warning" />
+                Valoración del Servicio
+              </Typography>
+              
+              {ticket.valoracion ? (
+                <Box>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                    <Rating value={ticket.valoracion} readOnly size="large" />
+                    <Typography variant="body1" fontWeight="bold">
+                      ({ticket.valoracion}/5)
+                    </Typography>
+                  </Box>
+                  
+                  {ticket.comentario_valoracion && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        Comentario:
+                      </Typography>
+                      <Typography variant="body2" sx={{ mt: 0.5 }}>
+                        {ticket.comentario_valoracion}
+                      </Typography>
+                    </Box>
+                  )}
+                  
+                  <Typography variant="caption" color="text.secondary">
+                    Valorado el: {formatDate(ticket.fecha_valoracion)}
+                  </Typography>
+                </Box>
+              ) : (
+                <Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Este ticket aún no ha sido valorado.
+                  </Typography>
+                  {ticket.id_creado_por_usuario == userId ? (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      startIcon={<StarRateIcon />}
+                      onClick={handleValorarClick}
+                    >
+                      Valorar Servicio
+                    </Button>
+                  ) : (
+                    <Alert severity="info" sx={{ fontSize: "0.875rem" }}>
+                      Solo el creador del ticket puede valorarlo.
+                    </Alert>
+                  )}
+                </Box>
+              )}
+            </Paper>
+          )}
+
           {/* Tiempos y SLA */}
           <Paper sx={{ p: 3, mb: 3 }}>
             <Typography variant="h6" gutterBottom>
@@ -353,6 +461,30 @@ export default function DetailTicket() {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* Diálogo de Valoración */}
+      <ValoracionDialog
+        open={openValoracionDialog}
+        onClose={() => setOpenValoracionDialog(false)}
+        onSubmit={handleValoracionSubmit}
+        ticketTitulo={ticket?.titulo || ""}
+      />
+
+      {/* Snackbar para notificaciones */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

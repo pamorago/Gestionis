@@ -35,7 +35,10 @@ class TicketModel
                         t.fecha_cita,
                         s.tiempo_minutos AS sla_respuesta,
                         s.tiempo_resolucion AS sla_resolucion,
-                        TIMESTAMPDIFF(MINUTE, t.fecha_creacion, NOW()) AS tiempo_transcurrido
+                        TIMESTAMPDIFF(MINUTE, t.fecha_creacion, NOW()) AS tiempo_transcurrido,
+                        t.valoracion,
+                        t.comentario_valoracion,
+                        t.fecha_valoracion
                     FROM tickets t
                     JOIN estadosticket e ON e.id_estado = t.id_estado
                     JOIN categorias c ON c.id_categoria = t.id_categoria
@@ -58,6 +61,9 @@ class TicketModel
                         t.id_ticket,
                         t.titulo,
                         t.descripcion,
+                        t.valoracion,
+                        t.comentario_valoracion,
+                        t.fecha_valoracion,
                         e.nombre_estado,
                         e.id_estado,
                         c.nombre_categoria,
@@ -494,6 +500,78 @@ class TicketModel
                 'id_imagen' => $lastId,
                 'id_ticket' => $id_ticket,
                 'imagen' => $nombreArchivo
+            ];
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function valorarTicket($id_ticket, $valoracion_data)
+    {
+        try {
+            // Validar que el ticket existe y está cerrado
+            $ticket = $this->get($id_ticket);
+            if (!$ticket) {
+                throw new Exception('Ticket no encontrado');
+            }
+
+            if ($ticket->nombre_estado !== 'Cerrado') {
+                throw new Exception('Solo se pueden valorar tickets cerrados');
+            }
+
+            // Validar que la valoración es válida (1-5)
+            $valoracion = (int)$valoracion_data->valoracion;
+            if ($valoracion < 1 || $valoracion > 5) {
+                throw new Exception('La valoración debe estar entre 1 y 5');
+            }
+
+            // Validar que el usuario que valora es el creador del ticket
+            if ($ticket->id_creado_por_usuario != $valoracion_data->id_usuario) {
+                throw new Exception('Solo el creador del ticket puede valorarlo');
+            }
+
+            // Validar que el ticket no ha sido valorado previamente
+            if ($ticket->valoracion !== null) {
+                throw new Exception('Este ticket ya ha sido valorado');
+            }
+
+            // Escapar comentario si existe
+            $comentario = isset($valoracion_data->comentario_valoracion) && $valoracion_data->comentario_valoracion !== null
+                ? "'" . str_replace("'", "''", $valoracion_data->comentario_valoracion) . "'"
+                : 'NULL';
+
+            // Actualizar ticket con valoración
+            $vSql = "UPDATE tickets SET 
+                        valoracion = $valoracion,
+                        comentario_valoracion = $comentario,
+                        fecha_valoracion = NOW()
+                    WHERE id_ticket = $id_ticket;";
+
+            $vResultado = $this->enlace->ExecuteSQL_DML($vSql);
+
+            // Crear entrada en el histórico
+            $historico = new stdClass();
+            $historico->id_ticket = $id_ticket;
+            $historico->comentario = "Ticket valorado con $valoracion estrellas";
+            $historico->estado = 'Cerrado';
+            $historico->id_usuario = $valoracion_data->id_usuario;
+            $this->historicoModel->create($historico);
+
+            // Notificar al veterinario asignado
+            if ($ticket->id_asignado_a_usuario) {
+                $notificacion = new stdClass();
+                $notificacion->tipo = 'ticket_valorado';
+                $notificacion->descripcion = "El ticket \"" . $ticket->titulo . "\" ha sido valorado con $valoracion estrellas";
+                $notificacion->id_usuario = $ticket->id_asignado_a_usuario;
+                $notificacion->id_evento = $id_ticket;
+                $notificacion->importancia = 'normal';
+                $this->notificacionModel->create($notificacion);
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Valoración registrada exitosamente',
+                'valoracion' => $valoracion
             ];
         } catch (Exception $e) {
             handleException($e);
