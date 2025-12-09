@@ -29,8 +29,14 @@ import { UserContext } from "../../context/UserContext";
 import SlaEstadisticasCards from "../Dashboard/SlaEstadisticasCards";
 import TicketsPorEstadoChart from "../Dashboard/TicketsPorEstadoChart";
 import TicketsPorCategoriaChart from "../Dashboard/TicketsPorCategoriaChart";
-import TopVeterinariosPanel from "../Dashboard/TopVeterinariosPanel";
 import AlertasUrgentes from "../Dashboard/AlertasUrgentes";
+import TicketsCreatedByMonthChart from "../Dashboard/TicketsCreatedByMonthChart";
+import RatingSummaryCard from "../Dashboard/RatingSummaryCard";
+import SLAComplianceCard from "../Dashboard/SLAComplianceCard";
+import TechniciansRankingPanel from "../Dashboard/TechniciansRankingPanel";
+import CategoriesWithNonComplianceChart from "../Dashboard/CategoriesWithNonComplianceChart";
+import RatingByCategoryPanel from "../Dashboard/RatingByCategoryPanel";
+import RatingByCategoryChart from "../Dashboard/RatingByCategoryChart";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -39,6 +45,12 @@ export default function Dashboard() {
   const isGmailUser = userData.correo?.endsWith("@gmail.com") || false;
   const isCliente =
     isGmailUser || autorize?.({ requiredRoles: ["Cliente"] }) || false;
+
+  // Verificar si es administrador
+  const isAdmin =
+    userData.id_rol === 1 ||
+    autorize?.({ requiredRoles: ["Administrador"] }) ||
+    false;
 
   const [counts, setCounts] = useState({ users: 0, tickets: 0, mascotas: 0 });
   const [vets, setVets] = useState([]);
@@ -98,9 +110,9 @@ export default function Dashboard() {
     return () => (mounted = false);
   }, [isCliente]);
 
-  // Load dashboard statistics for admin and veterinarians
+  // Load dashboard statistics for admin only
   useEffect(() => {
-    if (isCliente) return;
+    if (!isAdmin) return;
 
     let mounted = true;
     DashboardService.getEstadisticas()
@@ -126,7 +138,7 @@ export default function Dashboard() {
       });
 
     return () => (mounted = false);
-  }, [isCliente]);
+  }, [isAdmin]);
 
   const handleQuickChange = (field, value) =>
     setQuick((s) => ({ ...s, [field]: value }));
@@ -179,8 +191,8 @@ export default function Dashboard() {
       {!loading && (
         <Box sx={{ mt: 4 }}>
           <Grid container spacing={2}>
-            {/* Panel de métricas - solo visible para administradores y veterinarios */}
-            {!isCliente && (
+            {/* Panel de métricas - solo visible para administradores */}
+            {isAdmin && (
               <>
                 <Grid item xs={12} md={4}>
                   <Card elevation={3} sx={{ height: "100%" }}>
@@ -399,8 +411,8 @@ export default function Dashboard() {
               </Grid>
             )}
 
-            {/* Panel de veterinarios - solo visible para administradores y veterinarios */}
-            {!isCliente && (
+            {/* Panel de veterinarios - solo visible para administradores */}
+            {isAdmin && (
               <Grid item xs={12}>
                 <Card elevation={3}>
                   <CardContent>
@@ -476,8 +488,8 @@ export default function Dashboard() {
               </Grid>
             )}
 
-            {/* Dashboard Statistics - solo visible para administradores y veterinarios */}
-            {!isCliente && (
+            {/* Dashboard Statistics - solo visible para administradores */}
+            {isAdmin && (
               <>
                 {estadisticasError && (
                   <Grid item xs={12}>
@@ -506,6 +518,24 @@ export default function Dashboard() {
                       </Grid>
                     )}
 
+                    {/* Rating Summary Card with Dialog */}
+                    {estadisticas.rating_promedio && (
+                      <Grid item xs={12} md={6}>
+                        <RatingSummaryCard
+                          overallRating={estadisticas.rating_promedio}
+                        />
+                      </Grid>
+                    )}
+
+                    {/* SLA Compliance Card */}
+                    {estadisticas.estadisticas_sla && (
+                      <Grid item xs={12} md={6}>
+                        <SLAComplianceCard
+                          data={estadisticas.estadisticas_sla}
+                        />
+                      </Grid>
+                    )}
+
                     {/* Charts Section */}
                     <Grid item xs={12} md={6}>
                       {estadisticas.tickets_por_estado &&
@@ -525,18 +555,58 @@ export default function Dashboard() {
                         )}
                     </Grid>
 
-                    {/* Top Veterinarios Panel */}
+                    {/* Tickets Created by Month Chart */}
+                    {estadisticas.tickets_por_mes &&
+                      estadisticas.tickets_por_mes.length > 0 && (
+                        <Grid item xs={12} md={6}>
+                          <TicketsCreatedByMonthChart
+                            data={estadisticas.tickets_por_mes}
+                          />
+                        </Grid>
+                      )}
+
+                    {/* Categories with Noncompliance Chart */}
+                    {estadisticas.categorias_incumplimiento &&
+                      estadisticas.categorias_incumplimiento.length > 0 && (
+                        <Grid item xs={12} md={6}>
+                          <CategoriesWithNonComplianceChart
+                            data={estadisticas.categorias_incumplimiento}
+                          />
+                        </Grid>
+                      )}
+
+                    {/* Rating by Category Chart */}
+                    {estadisticas.rating_por_categoria &&
+                      estadisticas.rating_por_categoria.length > 0 && (
+                        <Grid item xs={12} md={6}>
+                          <RatingByCategoryChart
+                            data={estadisticas.rating_por_categoria}
+                          />
+                        </Grid>
+                      )}
+
+                    {/* Top Veterinarios Panel (Ranking) */}
                     {estadisticas.top_veterinarios &&
                       estadisticas.top_veterinarios.length > 0 && (
-                        <Grid item xs={12} md={6}>
-                          <TopVeterinariosPanel
+                        <Grid item xs={12}>
+                          <TechniciansRankingPanel
                             data={estadisticas.top_veterinarios}
                           />
                         </Grid>
                       )}
 
+                    {/* Rating by Category Panel */}
+                    {estadisticas.rating_por_categoria &&
+                      estadisticas.rating_por_categoria.length > 0 && (
+                        <Grid item xs={12}>
+                          <RatingByCategoryPanel
+                            data={estadisticas.rating_por_categoria}
+                          />
+                        </Grid>
+                      )}
+
                     {/* Urgent Alerts Panel */}
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12}>
                       <AlertasUrgentes
                         ticketsUrgentes={estadisticas.tickets_urgentes || []}
                         ticketsProximos={

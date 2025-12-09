@@ -31,6 +31,7 @@ const NotificationPanel = () => {
   const { decodeToken } = useContext(UserContext);
   const userData = decodeToken() || {};
   const userId = userData?.id_usuario || userData?.sub || userData?.id;
+  const userRole = userData?.nombre_rol || userData?.rol || "Usuario"; // Obtener el rol del usuario
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificaciones, setNotificaciones] = useState([]);
@@ -134,8 +135,28 @@ const NotificationPanel = () => {
         return "🎫";
       case "login":
         return "🔐";
+      case "asignacion":
+        return "👤";
+      case "cambio_estado":
+        return "⚡";
       default:
         return "📢";
+    }
+  };
+
+  // Obtener descripción del tipo de notificación
+  const getTipoDescripcion = (tipo) => {
+    switch (tipo) {
+      case "ticket_estado":
+        return "Cambio de Tiquete";
+      case "login":
+        return "Inicio de Sesión";
+      case "asignacion":
+        return "Asignación";
+      case "cambio_estado":
+        return "Cambio de Estado";
+      default:
+        return "Notificación";
     }
   };
 
@@ -281,9 +302,18 @@ const NotificationPanel = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              {t("common:navigation.notifications") || "Notificaciones"}
-            </Typography>
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                {t("common:navigation.notifications") || "Notificaciones"}
+              </Typography>
+              <Typography
+                variant="caption"
+                color="textSecondary"
+                sx={{ display: "block", mt: 0.3 }}
+              >
+                Rol: <strong>{userRole}</strong>
+              </Typography>
+            </Box>
             {noLeidas > 0 && (
               <Tooltip title="Marcar todas como leídas">
                 <IconButton size="small" onClick={handleMarcarTodasComoLeidas}>
@@ -384,6 +414,41 @@ const NotificationPanel = () => {
 
                       <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Box sx={{ mb: 0.5 }}>
+                          <Stack
+                            direction="row"
+                            spacing={0.5}
+                            alignItems="center"
+                            sx={{ mb: 0.3 }}
+                          >
+                            <Typography
+                              variant="caption"
+                              sx={{ fontWeight: "bold", color: "#1976d2" }}
+                            >
+                              {getTipoDescripcion(notificacion.tipo)}
+                            </Typography>
+                            {notificacion.importancia && (
+                              <Chip
+                                label={notificacion.importancia.toUpperCase()}
+                                size="small"
+                                sx={{
+                                  height: "18px",
+                                  fontSize: "0.65rem",
+                                  backgroundColor:
+                                    notificacion.importancia === "alta"
+                                      ? "#ffe0e0"
+                                      : notificacion.importancia === "normal"
+                                        ? "#e0e9ff"
+                                        : "#e0ffe0",
+                                  color:
+                                    notificacion.importancia === "alta"
+                                      ? "#c41e3a"
+                                      : notificacion.importancia === "normal"
+                                        ? "#0052cc"
+                                        : "#2f8f2f",
+                                }}
+                              />
+                            )}
+                          </Stack>
                           {renderDescripcion(notificacion)}
                         </Box>
 

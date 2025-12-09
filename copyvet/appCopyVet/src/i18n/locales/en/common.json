@@ -101,6 +101,61 @@
       "title": "Available veterinarians",
       "active": "Active"
     },
+    "ticketsMonth": {
+      "title": "Tickets created by month",
+      "total": "Total tickets"
+    },
+    "ratingAverage": {
+      "title": "Overall average rating",
+      "outOf": "of",
+      "count": "Total ratings",
+      "quality": "Quality"
+    },
+    "ratingSummary": {
+      "title": "Service Ratings",
+      "clickForDetails": "Click to see details by category",
+      "detailsTitle": "Rating Details by Category",
+      "category": "Category",
+      "rating": "Rating",
+      "count": "Count"
+    },
+    "slaCompliance": {
+      "title": "SLA Compliance",
+      "response": "Response SLA",
+      "resolution": "Resolution SLA",
+      "tickets": "within SLA",
+      "ticketsOutOfSla": "outside SLA",
+      "summary": "Overall status",
+      "statusGood": "Excellent compliance",
+      "statusWarning": "Moderate compliance",
+      "statusCritical": "Critical compliance"
+    },
+    "techniciansRanking": {
+      "title": "Technician Ranking",
+      "position": "Pos",
+      "name": "Name",
+      "solved": "Solved",
+      "rating": "Rating"
+    },
+    "ratingByCategory": {
+      "title": "Ratings by Category",
+      "category": "Category",
+      "avgRating": "Average Rating",
+      "ratedTickets": "Rated Tickets",
+      "totalTickets": "Total",
+      "note": "Showing only categories with closed and rated tickets"
+    },
+    "ratingByCategoryChart": {
+      "title": "Average Rating by Category",
+      "avgRating": "Average Rating",
+      "note": "Chart of average rating by category. Scale: 0-5 stars"
+    },
+    "categoriesNoncompliance": {
+      "title": "Categories with most non-compliance",
+      "noncompliance": "Non-compliance",
+      "total": "Total"
+    },
+    "noData": "No data available",
     "statistics": {
       "slaCards": {
         "totalTickets": "Total Tickets",

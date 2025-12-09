@@ -106,6 +106,54 @@ class dashboard
             LIMIT 10";
             $ticketsProximosVencer = $enlace->ExecuteSQL($vSqlProximosVencer);
 
+            // Promedio de valoraciones general
+            $vSqlRatingPromedio = "SELECT 
+                COALESCE(AVG(t.valoracion), 0) as promedio_valoracion,
+                COUNT(CASE WHEN t.valoracion IS NOT NULL THEN 1 END) as total_valoraciones
+            FROM tickets t";
+            $ratingPromedio = $enlace->ExecuteSQL($vSqlRatingPromedio);
+
+            // Tickets creados por mes (últimos 12 meses)
+            $vSqlTicketsMonth = "SELECT 
+                DATE_FORMAT(t.fecha_creacion, '%Y-%m') as mes,
+                COUNT(t.id_ticket) as total
+            FROM tickets t
+            WHERE t.fecha_creacion >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(t.fecha_creacion, '%Y-%m')
+            ORDER BY mes ASC";
+            $ticketsCreatedByMonth = $enlace->ExecuteSQL($vSqlTicketsMonth);
+
+            // Categorías con más incumplimientos
+            $vSqlCategoriesNoncompliance = "SELECT 
+                c.nombre_categoria,
+                COUNT(t.id_ticket) as total,
+                SUM(CASE 
+                    WHEN TIMESTAMPDIFF(MINUTE, t.fecha_creacion, NOW()) > s.tiempo_resolucion 
+                    AND t.id_estado != 3 AND t.id_estado != 4
+                    THEN 1 ELSE 0 END
+                ) as incumplimientos
+            FROM categorias c
+            LEFT JOIN tickets t ON t.id_categoria = c.id_categoria
+            LEFT JOIN sla s ON s.id_sla = c.id_sla
+            GROUP BY c.id_categoria, c.nombre_categoria
+            HAVING incumplimientos > 0
+            ORDER BY incumplimientos DESC
+            LIMIT 10";
+            $categoriesNoncompliance = $enlace->ExecuteSQL($vSqlCategoriesNoncompliance);
+
+            // Valoraciones por categoría
+            $vSqlRatingByCategory = "SELECT 
+                c.id_categoria,
+                c.nombre_categoria,
+                COALESCE(AVG(t.valoracion), 0) as valoracion_promedio,
+                COUNT(CASE WHEN t.valoracion IS NOT NULL THEN 1 END) as total_valoraciones,
+                COUNT(t.id_ticket) as total_tickets
+            FROM categorias c
+            LEFT JOIN tickets t ON t.id_categoria = c.id_categoria AND t.id_estado = 3
+            GROUP BY c.id_categoria, c.nombre_categoria
+            ORDER BY valoracion_promedio DESC";
+            $ratingByCategory = $enlace->ExecuteSQL($vSqlRatingByCategory);
+
             // Consolidar todas las estadísticas
             $estadisticas = [
                 'tickets_por_estado' => $ticketsPorEstado,
@@ -113,7 +161,11 @@ class dashboard
                 'estadisticas_sla' => $estadisticasSLA[0] ?? null,
                 'top_veterinarios' => $topVeterinarios,
                 'tickets_urgentes' => $ticketsUrgentes,
-                'tickets_proximos_vencer' => $ticketsProximosVencer
+                'tickets_proximos_vencer' => $ticketsProximosVencer,
+                'rating_promedio' => $ratingPromedio[0] ?? null,
+                'tickets_por_mes' => $ticketsCreatedByMonth,
+                'categorias_incumplimiento' => $categoriesNoncompliance,
+                'rating_por_categoria' => $ratingByCategory
             ];
 
             $response->toJSON([

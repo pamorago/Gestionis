@@ -101,6 +101,61 @@
       "title": "Veterinarios disponibles",
       "active": "Activos"
     },
+    "ticketsMonth": {
+      "title": "Tiquetes creados por mes",
+      "total": "Total tiquetes"
+    },
+    "ratingAverage": {
+      "title": "Valoración promedio general",
+      "outOf": "de",
+      "count": "Total de valoraciones",
+      "quality": "Calidad"
+    },
+    "ratingSummary": {
+      "title": "Calificaciones del Servicio",
+      "clickForDetails": "Haz clic para ver detalles por categoría",
+      "detailsTitle": "Detalles de Calificaciones por Categoría",
+      "category": "Categoría",
+      "rating": "Calificación",
+      "count": "Cantidad"
+    },
+    "slaCompliance": {
+      "title": "Cumplimiento de SLA",
+      "response": "SLA de Respuesta",
+      "resolution": "SLA de Resolución",
+      "tickets": "dentro de SLA",
+      "ticketsOutOfSla": "fuera de SLA",
+      "summary": "Estado general",
+      "statusGood": "Excelente cumplimiento",
+      "statusWarning": "Cumplimiento moderado",
+      "statusCritical": "Cumplimiento crítico"
+    },
+    "techniciansRanking": {
+      "title": "Ranking de Técnicos",
+      "position": "Pos",
+      "name": "Nombre",
+      "solved": "Resueltos",
+      "rating": "Valoración"
+    },
+    "ratingByCategory": {
+      "title": "Valoraciones por Categoría",
+      "category": "Categoría",
+      "avgRating": "Valoración Promedio",
+      "ratedTickets": "Tiquetes Valorados",
+      "totalTickets": "Total",
+      "note": "Mostrando solo categorías con tiquetes cerrados y valorados"
+    },
+    "ratingByCategoryChart": {
+      "title": "Valoración Promedio por Categoría",
+      "avgRating": "Valoración Promedio",
+      "note": "Gráfico de valoración promedio por categoría. Escala: 0-5 estrellas"
+    },
+    "categoriesNoncompliance": {
+      "title": "Categorías con más incumplimientos",
+      "noncompliance": "Incumplimientos",
+      "total": "Total"
+    },
+    "noData": "No hay datos disponibles",
     "statistics": {
       "slaCards": {
         "totalTickets": "Total Tiquetes",
