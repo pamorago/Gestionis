@@ -100,6 +100,42 @@
     "veterinarians": {
       "title": "Available veterinarians",
       "active": "Active"
+    },
+    "statistics": {
+      "slaCards": {
+        "totalTickets": "Total Tickets",
+        "withinSla": "Within SLA",
+        "outsideSla": "Outside SLA",
+        "ofTotal": "of total"
+      },
+      "charts": {
+        "ticketsByState": "Tickets by State",
+        "ticketsByCategory": "Tickets by Category",
+        "total": "Total",
+        "tickets": "Tickets"
+      },
+      "topVeterinarians": {
+        "title": "Top Veterinarians",
+        "top1": "Top 1",
+        "ticketsResolved": "tickets resolved",
+        "ratings": "ratings"
+      },
+      "urgentAlerts": {
+        "urgentTickets": "Urgent Tickets",
+        "expiringTickets": "Tickets Expiring Soon",
+        "category": "Category",
+        "specialty": "Specialty",
+        "assignedTo": "Assigned to",
+        "unassigned": "Unassigned",
+        "state": "State",
+        "priority": "Priority",
+        "expired": "EXPIRED",
+        "allClear": {
+          "title": "All under control",
+          "message": "No urgent tickets or about to breach SLA"
+        },
+        "moreTickets": "more tickets..."
+      }
     }
   },
   "calendar": {

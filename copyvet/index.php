@@ -46,6 +46,7 @@ require_once "controllers/AsignacionController.php";
 require_once "controllers/EtiquetaController.php";
 require_once "controllers/EspecialidadController.php";
 require_once "controllers/NotificacionController.php";
+require_once "controllers/DashboardController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

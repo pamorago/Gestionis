@@ -1201,6 +1201,37 @@ ALTER TABLE tickets ADD CONSTRAINT chk_valoracion CHECK (
 );
 
 -- ======================================================
+-- AGREGAR VALORACIONES A TICKETS CERRADOS
+-- ======================================================
+-- Actualizar tickets cerrados (estado = 3) con valoraciones aleatorias
+UPDATE tickets
+SET
+    valoracion = 5,
+    comentario_valoracion = 'Excelente servicio, muy profesional y atento. Mi mascota se recuperó rápidamente.',
+    fecha_valoracion = DATE_ADD (fecha_creacion, INTERVAL 5 DAY)
+WHERE
+    id_ticket = 9
+    AND id_estado = 3;
+
+UPDATE tickets
+SET
+    valoracion = 4,
+    comentario_valoracion = 'Buen servicio, aunque tuve que esperar un poco más de lo esperado.',
+    fecha_valoracion = DATE_ADD (fecha_creacion, INTERVAL 3 DAY)
+WHERE
+    id_ticket = 11
+    AND id_estado = 3;
+
+UPDATE tickets
+SET
+    valoracion = 5,
+    comentario_valoracion = 'Muy satisfecho con la atención recibida. El veterinario explicó todo claramente.',
+    fecha_valoracion = DATE_ADD (fecha_creacion, INTERVAL 4 DAY)
+WHERE
+    id_ticket = 12
+    AND id_estado = 3;
+
+-- ======================================================
 -- REACTIVAR VERIFICACIONES DE CLAVES FORÁNEAS
 -- ======================================================
 SET

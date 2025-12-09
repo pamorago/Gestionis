@@ -13,6 +13,8 @@ import {
   CardContent,
   Avatar,
   Stack,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
@@ -21,8 +23,14 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import CopyVetService from "../../services/CopyVetService";
 import VeterinarioService from "../../services/VeterinarioService";
 import CategoryService from "../../services/CategoryService";
+import DashboardService from "../../services/DashboardService";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
+import SlaEstadisticasCards from "../Dashboard/SlaEstadisticasCards";
+import TicketsPorEstadoChart from "../Dashboard/TicketsPorEstadoChart";
+import TicketsPorCategoriaChart from "../Dashboard/TicketsPorCategoriaChart";
+import TopVeterinariosPanel from "../Dashboard/TopVeterinariosPanel";
+import AlertasUrgentes from "../Dashboard/AlertasUrgentes";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -38,6 +46,10 @@ export default function Dashboard() {
   const [mascotas, setMascotas] = useState([]);
   const [breedList, setBreedList] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Dashboard statistics state
+  const [estadisticas, setEstadisticas] = useState(null);
+  const [estadisticasError, setEstadisticasError] = useState(null);
 
   const [quick, setQuick] = useState({
     id_mascota: "",
@@ -83,6 +95,36 @@ export default function Dashboard() {
       .finally(() => {
         if (mounted) setLoading(false);
       });
+    return () => (mounted = false);
+  }, [isCliente]);
+
+  // Load dashboard statistics for admin and veterinarians
+  useEffect(() => {
+    if (isCliente) return;
+
+    let mounted = true;
+    DashboardService.getEstadisticas()
+      .then((response) => {
+        if (!mounted) return;
+
+        if (response.data?.success) {
+          setEstadisticas(response.data.data);
+        } else if (response.data) {
+          // Si la respuesta tiene datos pero no tiene el campo 'success', asumir que son las estadísticas directamente
+          setEstadisticas(response.data);
+        } else {
+          console.error("Formato de respuesta inesperado:", response);
+          setEstadisticasError("Error al cargar estadísticas del dashboard");
+        }
+      })
+      .catch((error) => {
+        if (!mounted) return;
+        console.error("Error loading dashboard statistics:", error);
+        setEstadisticasError(
+          `Error al conectar con el servidor: ${error.message}`
+        );
+      });
+
     return () => (mounted = false);
   }, [isCliente]);
 
@@ -432,6 +474,79 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
               </Grid>
+            )}
+
+            {/* Dashboard Statistics - solo visible para administradores y veterinarios */}
+            {!isCliente && (
+              <>
+                {estadisticasError && (
+                  <Grid item xs={12}>
+                    <Alert severity="error">{estadisticasError}</Alert>
+                  </Grid>
+                )}
+
+                {!estadisticasError && !estadisticas && (
+                  <Grid item xs={12}>
+                    <Box
+                      sx={{ display: "flex", justifyContent: "center", p: 4 }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  </Grid>
+                )}
+
+                {estadisticas && (
+                  <>
+                    {/* SLA Statistics Cards */}
+                    {estadisticas.estadisticas_sla && (
+                      <Grid item xs={12}>
+                        <SlaEstadisticasCards
+                          data={estadisticas.estadisticas_sla}
+                        />
+                      </Grid>
+                    )}
+
+                    {/* Charts Section */}
+                    <Grid item xs={12} md={6}>
+                      {estadisticas.tickets_por_estado &&
+                        estadisticas.tickets_por_estado.length > 0 && (
+                          <TicketsPorEstadoChart
+                            data={estadisticas.tickets_por_estado}
+                          />
+                        )}
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      {estadisticas.tickets_por_categoria &&
+                        estadisticas.tickets_por_categoria.length > 0 && (
+                          <TicketsPorCategoriaChart
+                            data={estadisticas.tickets_por_categoria}
+                          />
+                        )}
+                    </Grid>
+
+                    {/* Top Veterinarios Panel */}
+                    {estadisticas.top_veterinarios &&
+                      estadisticas.top_veterinarios.length > 0 && (
+                        <Grid item xs={12} md={6}>
+                          <TopVeterinariosPanel
+                            data={estadisticas.top_veterinarios}
+                          />
+                        </Grid>
+                      )}
+
+                    {/* Urgent Alerts Panel */}
+                    <Grid item xs={12} md={6}>
+                      <AlertasUrgentes
+                        ticketsUrgentes={estadisticas.tickets_urgentes || []}
+                        ticketsProximos={
+                          estadisticas.tickets_proximos_vencer || []
+                        }
+                      />
+                    </Grid>
+                  </>
+                )}
+              </>
             )}
           </Grid>
         </Box>

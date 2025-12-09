@@ -100,6 +100,42 @@
     "veterinarians": {
       "title": "Veterinarios disponibles",
       "active": "Activos"
+    },
+    "statistics": {
+      "slaCards": {
+        "totalTickets": "Total Tiquetes",
+        "withinSla": "Dentro de SLA",
+        "outsideSla": "Fuera de SLA",
+        "ofTotal": "del total"
+      },
+      "charts": {
+        "ticketsByState": "Tiquetes por Estado",
+        "ticketsByCategory": "Tiquetes por Categoría",
+        "total": "Total",
+        "tickets": "tiquetes"
+      },
+      "topVeterinarians": {
+        "title": "Top Veterinarios",
+        "top1": "Top 1",
+        "ticketsResolved": "tiquetes resueltos",
+        "ratings": "valoraciones"
+      },
+      "urgentAlerts": {
+        "urgentTickets": "Tiquetes Urgentes Sin Asignar",
+        "expiringTickets": "Tiquetes Próximos a Vencer",
+        "category": "Categoría",
+        "specialty": "Sin especialidad",
+        "assignedTo": "Asignado a",
+        "unassigned": "Sin asignar",
+        "state": "Estado",
+        "priority": "Prioridad",
+        "expired": "VENCIDO",
+        "allClear": {
+          "title": "Todo bajo control",
+          "message": "No hay tiquetes urgentes ni próximos a vencer en este momento."
+        },
+        "moreTickets": "tiquetes urgentes más"
+      }
     }
   },
   "calendar": {
