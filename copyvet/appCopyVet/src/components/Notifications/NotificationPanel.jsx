@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import {
   IconButton,
   Badge,
@@ -66,6 +67,13 @@ const NotificationPanel = () => {
 
   // Cargar notificaciones al montar y cada 30 segundos (polling)
   useEffect(() => {
+    // Solo cargar si hay userId válido
+    if (!userId) {
+      setNotificaciones([]);
+      setNoLeidas(0);
+      return;
+    }
+
     cargarNotificaciones();
     const intervalo = setInterval(cargarNotificaciones, 30000); // Polling cada 30 segundos
     return () => clearInterval(intervalo);
@@ -143,6 +151,72 @@ const NotificationPanel = () => {
       default:
         return "#868e96";
     }
+  };
+
+  // Renderizar descripción con link al ticket
+  const renderDescripcion = (notificacion) => {
+    const descripcion = notificacion.descripcion;
+    const idEvento = notificacion.id_evento;
+    const tipo = notificacion.tipo;
+
+    // Si es una notificación de ticket y tiene id_evento, buscar el patrón "Ticket #N" o "Tiquete #N"
+    if (tipo === "ticket_estado" && idEvento) {
+      const regex = /(Tiquete|Ticket)\s*#?(\d+)/i;
+      const match = descripcion.match(regex);
+
+      if (match) {
+        const [fullMatch, palabra, numero] = match;
+        const partes = descripcion.split(fullMatch);
+
+        return (
+          <Typography
+            variant="body2"
+            component="span"
+            sx={{
+              fontWeight: notificacion.estado_leida ? "normal" : "bold",
+              color: notificacion.estado_leida ? "#666" : "#000",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+            }}
+          >
+            {partes[0]}
+            <Link
+              to={`/ticket/${idEvento}`}
+              style={{
+                color: "#1976d2",
+                textDecoration: "none",
+                fontWeight: "bold",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
+              }}
+            >
+              {palabra} #{numero}
+            </Link>
+            {partes[1]}
+          </Typography>
+        );
+      }
+    }
+
+    // Si no hay match, mostrar descripción normal
+    return (
+      <Typography
+        variant="body2"
+        component="span"
+        sx={{
+          fontWeight: notificacion.estado_leida ? "normal" : "bold",
+          color: notificacion.estado_leida ? "#666" : "#000",
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+          whiteSpace: "normal",
+        }}
+      >
+        {descripcion}
+      </Typography>
+    );
   };
 
   const open = Boolean(anchorEl);
@@ -309,21 +383,9 @@ const NotificationPanel = () => {
                       </Avatar>
 
                       <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: notificacion.estado_leida
-                              ? "normal"
-                              : "bold",
-                            color: notificacion.estado_leida ? "#666" : "#000",
-                            mb: 0.5,
-                            wordWrap: "break-word",
-                            overflowWrap: "break-word",
-                            whiteSpace: "normal",
-                          }}
-                        >
-                          {notificacion.descripcion}
-                        </Typography>
+                        <Box sx={{ mb: 0.5 }}>
+                          {renderDescripcion(notificacion)}
+                        </Box>
 
                         <Stack
                           direction="row"

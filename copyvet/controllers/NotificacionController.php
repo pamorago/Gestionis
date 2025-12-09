@@ -11,7 +11,12 @@ class notificacion
             $id_usuario = isset($_GET['id_usuario']) ? (int)$_GET['id_usuario'] : null;
 
             if (!$id_usuario) {
-                throw new Exception("ID de usuario requerido");
+                http_response_code(400);
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'ID de usuario requerido'
+                ]);
+                return;
             }
 
             $result = $model->getByUsuario($id_usuario);

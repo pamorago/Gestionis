@@ -5,8 +5,12 @@ const BASE_URL = import.meta.env.VITE_BASE_URL || window.location.origin + '/cop
 const NotificacionService = {
   // Obtener todas las notificaciones del usuario
   getByUsuario: (id_usuario) => {
+    if (!id_usuario) {
+      console.warn('NotificacionService.getByUsuario: id_usuario is empty or undefined');
+      return Promise.reject(new Error('ID de usuario no proporcionado'));
+    }
     const url = `${BASE_URL}notificacion?id_usuario=${id_usuario}`;
-    console.log('NotificacionService.getByUsuario URL:', url);
+    console.log('NotificacionService.getByUsuario URL:', url, 'id_usuario:', id_usuario);
     return axios.get(url);
   },
 
@@ -17,6 +21,10 @@ const NotificacionService = {
 
   // Contar notificaciones no leídas
   contarNoLeidas: (id_usuario) => {
+    if (!id_usuario) {
+      console.warn('NotificacionService.contarNoLeidas: id_usuario is empty or undefined');
+      return Promise.reject(new Error('ID de usuario no proporcionado'));
+    }
     return axios.get(`${BASE_URL}notificacion/contarNoLeidas/${id_usuario}`);
   },
 
