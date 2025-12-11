@@ -7,7 +7,6 @@ import {
   Stack,
   Rating,
   LinearProgress,
-  Chip,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import StarIcon from "@mui/icons-material/Star";
@@ -207,14 +206,18 @@ function RatingByCategoryPanel({ data }) {
 RatingByCategoryPanel.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
-      id_categoria: PropTypes.number.isRequired,
+      id_categoria: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
       nombre_categoria: PropTypes.string.isRequired,
       valoracion_promedio: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
       ]),
-      total_valoraciones: PropTypes.number,
-      total_tickets: PropTypes.number,
+      total_valoraciones: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
+      total_tickets: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     })
   ),
 };

@@ -74,8 +74,11 @@ CategoriesWithNonComplianceChart.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
       nombre_categoria: PropTypes.string,
-      total: PropTypes.number,
-      incumplimientos: PropTypes.number,
+      total: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      incumplimientos: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
     })
   ),
 };

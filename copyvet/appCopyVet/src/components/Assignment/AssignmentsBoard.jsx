@@ -36,7 +36,11 @@ function VeterinarianTickets({ id }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || id === "" || isNaN(id)) {
+      setTickets([]);
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     VeterinarioService.getTickets(id)
@@ -70,8 +74,7 @@ function VeterinarianTickets({ id }) {
 
         setTickets(sortedTickets);
       })
-      .catch((err) => {
-        console.error("Error loading vet tickets:", err);
+      .catch(() => {
         setTickets([]);
       })
       .finally(() => {

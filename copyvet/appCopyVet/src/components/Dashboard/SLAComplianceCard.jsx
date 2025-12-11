@@ -166,9 +166,8 @@ export default function SLAComplianceCard({ data }) {
 
 SLAComplianceCard.propTypes = {
   data: PropTypes.shape({
-    total_tickets: PropTypes.number,
-    dentro_sla: PropTypes.number,
-    fuera_sla: PropTypes.number,
+    total_tickets: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    dentro_sla: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    fuera_sla: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
 };
-

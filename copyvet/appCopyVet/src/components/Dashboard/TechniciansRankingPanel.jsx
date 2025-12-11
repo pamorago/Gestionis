@@ -157,11 +157,21 @@ export default function TechniciansRankingPanel({ data }) {
 TechniciansRankingPanel.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
-      id_usuario: PropTypes.number.isRequired,
+      id_usuario: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
       nombre_completo: PropTypes.string.isRequired,
-      tickets_resueltos: PropTypes.number.isRequired,
-      valoracion_promedio: PropTypes.number,
-      total_valoraciones: PropTypes.number.isRequired,
+      tickets_resueltos: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]).isRequired,
+      valoracion_promedio: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
+      total_valoraciones: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]).isRequired,
     })
   ),
 };

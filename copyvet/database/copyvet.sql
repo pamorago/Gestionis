@@ -601,8 +601,8 @@ VALUES
     (
         'Vacunación anual para Max',
         'Aplicar vacuna antirrábica y revisión general',
-        '2025-10-24 09:00:00',
-        '2025-10-26 10:00:00',
+        '2025-08-15 09:00:00',
+        '2025-08-17 10:00:00',
         2,
         1,
         1,
@@ -612,8 +612,8 @@ VALUES
     (
         'Revisión quirúrgica de Luna',
         'Revisar sutura tras operación reciente',
-        '2025-10-05 11:00:00',
-        '2025-10-07 14:00:00',
+        '2025-08-22 11:00:00',
+        '2025-08-24 14:00:00',
         2,
         2,
         2,
@@ -623,8 +623,8 @@ VALUES
     (
         'Emergencia - Accidente Zeus',
         'Fractura en pata trasera, requiere atención inmediata',
-        '2025-10-08 15:30:00',
-        '2025-10-08 16:00:00',
+        '2025-09-05 15:30:00',
+        '2025-09-05 16:00:00',
         2,
         5,
         8,
@@ -634,9 +634,9 @@ VALUES
     (
         'Consulta Dermatológica Nina',
         'Presenta manchas en la piel y pérdida de pelo',
-        '2025-10-09 10:00:00',
-        '2025-10-10 11:30:00',
-        1,
+        '2025-09-18 10:00:00',
+        '2025-09-19 11:30:00',
+        2,
         8,
         5,
         15,
@@ -645,8 +645,8 @@ VALUES
     (
         'Revisión Coco - Especies Exóticas',
         'Control rutinario y revisión de pico',
-        '2025-10-10 14:00:00',
-        '2025-10-11 15:00:00',
+        '2025-09-25 14:00:00',
+        '2025-09-26 15:00:00',
         2,
         7,
         10,
@@ -656,8 +656,8 @@ VALUES
     (
         'Cirugía Mayor - Bella',
         'Extracción de tumor en abdomen',
-        '2025-10-11 08:00:00',
-        '2025-10-11 09:00:00',
+        '2025-10-02 08:00:00',
+        '2025-10-02 09:00:00',
         2,
         6,
         7,
@@ -667,8 +667,8 @@ VALUES
     (
         'Control rutinario Lucas',
         'Chequeo general y vacunas pendientes',
-        '2025-10-12 11:00:00',
-        '2025-10-14 14:00:00',
+        '2025-10-15 11:00:00',
+        '2025-10-17 14:00:00',
         1,
         10,
         9,
@@ -678,8 +678,8 @@ VALUES
     (
         'Emergencia - Toby intoxicación',
         'Ingesta de sustancia tóxica, vómitos frecuentes',
-        '2025-10-12 20:00:00',
-        '2025-10-12 20:15:00',
+        '2025-11-03 20:00:00',
+        '2025-11-03 20:15:00',
         2,
         5,
         6,
@@ -689,8 +689,8 @@ VALUES
     (
         'Control Dermatológico Luna',
         'Revisión por alergia en piel',
-        '2025-10-01 13:00:00',
-        '2025-10-02 15:00:00',
+        '2025-08-10 13:00:00',
+        '2025-08-11 15:00:00',
         3,
         8,
         2,
@@ -700,8 +700,8 @@ VALUES
     (
         'Cirugía Milo - Esterilización',
         'Procedimiento de esterilización programado',
-        '2025-10-02 09:00:00',
-        '2025-10-03 11:00:00',
+        '2025-09-12 09:00:00',
+        '2025-09-13 11:00:00',
         4,
         2,
         4,
@@ -711,8 +711,8 @@ VALUES
     (
         'Vacunación Rocky',
         'Vacuna contra rabia',
-        '2025-10-03 14:00:00',
-        '2025-10-04 16:00:00',
+        '2025-10-08 14:00:00',
+        '2025-10-09 16:00:00',
         3,
         1,
         3,
@@ -722,8 +722,8 @@ VALUES
     (
         'Emergencia Nina - Accidente',
         'Caída desde altura',
-        '2025-10-05 19:00:00',
-        '2025-10-05 19:15:00',
+        '2025-11-20 19:00:00',
+        '2025-11-20 19:15:00',
         3,
         5,
         5,
@@ -733,8 +733,8 @@ VALUES
     (
         'Control Coco - Pruebas sangre',
         'Exámenes de rutina',
-        '2025-10-06 10:00:00',
-        '2025-10-07 11:00:00',
+        '2025-12-01 10:00:00',
+        '2025-12-02 11:00:00',
         4,
         7,
         10,
@@ -761,40 +761,40 @@ VALUES
     (
         1,
         'consulta-veterinaria-1.jpg',
-        '2025-10-02 10:30:00'
+        '2025-08-16 10:30:00'
     ), -- Consulta General Max - En proceso
-    (2, 'post operatoria.jpg', '2025-10-05 12:00:00'), -- Revisión Postoperatoria Bella - En proceso
-    (3, 'fractura simba.jpg', '2025-10-08 16:30:00'), -- Emergencia Fractura Simba - En proceso
+    (2, 'post operatoria.jpg', '2025-08-23 12:00:00'), -- Revisión Postoperatoria Bella - En proceso
+    (3, 'fractura simba.jpg', '2025-09-05 16:30:00'), -- Emergencia Fractura Simba - En proceso
     (
         4,
         'CopyVetRadiografiaNina.jpeg',
-        '2025-10-09 10:30:00'
+        '2025-09-18 10:30:00'
     ), -- Consulta Dermatológica Nina - En proceso
     (
         5,
         'CopyVetConsultaExotica.jpg',
-        '2025-10-10 14:30:00'
+        '2025-09-25 14:30:00'
     ), -- Revisión Coco - En proceso
-    (6, 'boxer como nuevo.jpg', '2025-10-11 08:45:00'), -- Cirugía Mayor Bella - En proceso
+    (6, 'boxer como nuevo.jpg', '2025-10-02 08:45:00'), -- Cirugía Mayor Bella - En proceso
     (
         8,
         'perico coco vomito.jpg',
-        '2025-10-12 20:30:00'
+        '2025-11-03 20:30:00'
     ), -- Emergencia Intoxicación Coco - En proceso
     (
         9,
         'CopyVetDermatologiaLuna.jpg',
-        '2025-10-01 13:30:00'
+        '2025-08-10 13:30:00'
     ), -- Control Dermatológico Luna - Cerrado
     (
         11,
         'CopyVetVacunacionRocky.jpeg',
-        '2025-10-03 14:30:00'
+        '2025-10-08 14:30:00'
     ), -- Vacunación Rocky - Cerrado
     (
         12,
         'CopyVetRadiografiaNina.jpeg',
-        '2025-10-05 11:30:00'
+        '2025-11-20 19:30:00'
     );
 
 -- Revisión quirúrgica Luna - Cerrado
@@ -820,203 +820,210 @@ INSERT INTO
 VALUES
     (
         1,
-        '2025-10-01 09:30:00',
+        '2025-08-15 09:30:00',
         'Ticket creado por cliente',
         'Abierto',
         5
     ),
     (
         1,
-        '2025-10-02 10:00:00',
+        '2025-08-16 10:00:00',
         'Asignado a veterinario Carlos Méndez',
         'En proceso',
         1
     ),
     (
         2,
-        '2025-10-05 11:30:00',
-        'Ticket creado y asignado a Ana Gómez',
+        '2025-08-22 11:00:00',
+        'Ticket creado por cliente',
+        'Abierto',
+        13
+    ),
+    (
+        2,
+        '2025-08-22 11:30:00',
+        'Asignado a Dr. Carlos Méndez',
         'En proceso',
-        10
+        1
     ),
     (
         3,
-        '2025-10-08 15:30:00',
+        '2025-09-05 15:30:00',
         'Emergencia reportada - Fractura',
         'Abierto',
         11
     ),
     (
         3,
-        '2025-10-08 15:35:00',
+        '2025-09-05 15:35:00',
         'Asignado a Dr. Mario Castro - Traumatología',
         'En proceso',
         1
     ),
     (
         3,
-        '2025-10-08 16:00:00',
+        '2025-09-05 16:00:00',
         'Inicio de atención de emergencia',
         'En proceso',
         7
     ),
     (
         4,
-        '2025-10-09 10:00:00',
+        '2025-09-18 10:00:00',
         'Consulta dermatológica agendada',
         'Abierto',
         12
     ),
     (
         4,
-        '2025-10-09 10:15:00',
+        '2025-09-18 10:15:00',
         'Asignado a Dr. Ricardo Soto',
         'En proceso',
         1
     ),
     (
         5,
-        '2025-10-10 14:00:00',
+        '2025-09-25 14:00:00',
         'Revisión de ave exótica agendada',
         'Abierto',
         13
     ),
     (
         5,
-        '2025-10-10 14:15:00',
+        '2025-09-25 14:15:00',
         'Asignado a Dra. Sofia Torres - Especies Exóticas',
         'En proceso',
         1
     ),
     (
         6,
-        '2025-10-11 08:00:00',
+        '2025-10-02 08:00:00',
         'Ingreso para cirugía mayor',
         'Abierto',
         10
     ),
     (
         6,
-        '2025-10-11 08:15:00',
+        '2025-10-02 08:15:00',
         'Preparación para cirugía - Dr. Carlos Méndez',
         'En proceso',
         2
     ),
     (
         7,
-        '2025-10-12 11:00:00',
+        '2025-10-15 11:00:00',
         'Agendamiento control rutinario',
         'Abierto',
         12
     ),
     (
         8,
-        '2025-10-12 20:00:00',
+        '2025-11-03 20:00:00',
         'Emergencia por intoxicación reportada',
         'Abierto',
         13
     ),
     (
         8,
-        '2025-10-12 20:05:00',
+        '2025-11-03 20:05:00',
         'Asignado urgentemente a Dr. Carlos Méndez',
         'En proceso',
         1
     ),
     (
         8,
-        '2025-10-12 20:15:00',
+        '2025-11-03 20:15:00',
         'Inicio de tratamiento de emergencia',
         'En proceso',
         2
     ),
     (
         9,
-        '2025-10-01 13:00:00',
+        '2025-08-10 13:00:00',
         'Solicitud de control dermatológico',
         'Abierto',
         10
     ),
     (
         9,
-        '2025-10-01 14:00:00',
+        '2025-08-10 14:00:00',
         'Asignado a Dr. Ricardo Soto para atención',
         'En proceso',
         4
     ),
     (
         9,
-        '2025-10-02 15:00:00',
+        '2025-08-11 15:00:00',
         'Tratamiento completado, sin reacciones alérgicas',
         'Cerrado',
         4
     ),
     (
         10,
-        '2025-10-02 09:00:00',
+        '2025-09-12 09:00:00',
         'Programación de cirugía',
         'Abierto',
         6
     ),
     (
         10,
-        '2025-10-02 10:00:00',
+        '2025-09-12 10:00:00',
         'Cancelado por solicitud del cliente - Reprogramar',
         'Cancelado',
         6
     ),
     (
         11,
-        '2025-10-03 14:00:00',
+        '2025-10-08 14:00:00',
         'Ingreso para vacunación',
         'Abierto',
         11
     ),
     (
         11,
-        '2025-10-03 15:00:00',
+        '2025-10-08 15:00:00',
         'Iniciando proceso de vacunación - Dra. Ana Gómez',
         'En proceso',
         3
     ),
     (
         11,
-        '2025-10-04 16:30:00',
+        '2025-10-09 16:30:00',
         'Vacuna aplicada, sin reacciones adversas',
         'Cerrado',
         3
     ),
     (
         12,
-        '2025-10-05 19:00:00',
+        '2025-11-20 19:00:00',
         'Ingreso por emergencia',
         'Abierto',
         12
     ),
     (
         12,
-        '2025-10-05 19:15:00',
+        '2025-11-20 19:15:00',
         'Atención iniciada por Dr. Mario Castro',
         'En proceso',
         7
     ),
     (
         12,
-        '2025-10-05 20:30:00',
+        '2025-11-20 20:30:00',
         'Tratamiento completado, radiografías normales',
         'Cerrado',
         7
     ),
     (
         13,
-        '2025-10-06 10:00:00',
+        '2025-12-01 10:00:00',
         'Programación de exámenes',
         'Abierto',
         13
     ),
     (
         13,
-        '2025-10-06 11:00:00',
+        '2025-12-01 11:00:00',
         'Cancelado - Ave presenta síntomas de estrés',
         'Cancelado',
         5
@@ -1127,13 +1134,13 @@ INSERT INTO
     )
 SELECT
     'ticket_estado',
-    'El ticket #2 ha cambiado de estado: En proceso → Cerrado',
+    'El ticket #2 ha sido asignado y está en proceso',
     (CURRENT_TIMESTAMP - INTERVAL 6 HOUR),
-    4,
+    2,
     2,
     TRUE,
     'normal',
-    'Ana Gómez'
+    'Admin'
 WHERE
     NOT EXISTS (
         SELECT
@@ -1142,7 +1149,7 @@ WHERE
             notificaciones
         WHERE
             tipo = 'ticket_estado'
-            AND id_usuario = 4
+            AND id_usuario = 2
             AND id_evento = 2
         LIMIT
             1
@@ -1161,10 +1168,44 @@ INSERT INTO
     )
 SELECT
     'ticket_estado',
-    'El ticket #2 ha cambiado de estado: En proceso → Cerrado',
-    (CURRENT_TIMESTAMP - INTERVAL 6 HOUR),
-    2,
-    2,
+    'El ticket #9 ha cambiado de estado: En proceso → Cerrado',
+    (CURRENT_TIMESTAMP - INTERVAL 3 DAY),
+    4,
+    9,
+    TRUE,
+    'normal',
+    'Ricardo Soto'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 4
+            AND id_evento = 9
+        LIMIT
+            1
+    );
+
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #11 ha cambiado de estado: En proceso → Cerrado',
+    (CURRENT_TIMESTAMP - INTERVAL 2 DAY),
+    3,
+    11,
     TRUE,
     'normal',
     'Ana Gómez'
@@ -1176,8 +1217,253 @@ WHERE
             notificaciones
         WHERE
             tipo = 'ticket_estado'
-            AND id_usuario = 2
-            AND id_evento = 2
+            AND id_usuario = 3
+            AND id_evento = 11
+        LIMIT
+            1
+    );
+
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #4 ha cambiado de estado: Abierto → En proceso',
+    (CURRENT_TIMESTAMP - INTERVAL 1 DAY),
+    15,
+    4,
+    FALSE,
+    'normal',
+    'Admin'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 15
+            AND id_evento = 4
+        LIMIT
+            1
+    );
+
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #11 ha cambiado de estado: En proceso → Cerrado',
+    (CURRENT_TIMESTAMP - INTERVAL 2 DAY),
+    15,
+    11,
+    TRUE,
+    'normal',
+    'Ana Gómez'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 15
+            AND id_evento = 11
+        LIMIT
+            1
+    );
+
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #12 ha cambiado de estado: En proceso → Cerrado',
+    (CURRENT_TIMESTAMP - INTERVAL 1 DAY),
+    15,
+    12,
+    TRUE,
+    'normal',
+    'Mario Castro'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 15
+            AND id_evento = 12
+        LIMIT
+            1
+    );
+
+-- Notificaciones ticket #9 (Cerrado) - Pedro Jiménez (cliente)
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #9 ha cambiado de estado: Abierto → En proceso',
+    '2025-08-10 14:00:00',
+    13,
+    9,
+    TRUE,
+    'normal',
+    'Admin'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 13
+            AND id_evento = 9
+            AND descripcion LIKE '%Abierto → En proceso%'
+        LIMIT
+            1
+    );
+
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #9 ha cambiado de estado: En proceso → Cerrado',
+    '2025-08-11 15:00:00',
+    13,
+    9,
+    TRUE,
+    'normal',
+    'Ricardo Soto'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 13
+            AND id_evento = 9
+            AND descripcion LIKE '%→ Cerrado%'
+        LIMIT
+            1
+    );
+
+-- Notificaciones ticket #11 (Cerrado) - Juan Vargas (cliente) ya existe una, añadir Abierto → En proceso
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #11 ha cambiado de estado: Abierto → En proceso',
+    '2025-10-08 15:00:00',
+    15,
+    11,
+    TRUE,
+    'normal',
+    'Admin'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 15
+            AND id_evento = 11
+            AND descripcion LIKE '%Abierto → En proceso%'
+        LIMIT
+            1
+    );
+
+-- Notificaciones ticket #12 (Cerrado) - Juan Vargas (cliente) ya existe cerrado, añadir Abierto → En proceso
+INSERT INTO
+    notificaciones (
+        tipo,
+        descripcion,
+        fecha_evento,
+        id_usuario,
+        id_evento,
+        estado_leida,
+        importancia,
+        responsable
+    )
+SELECT
+    'ticket_estado',
+    'El ticket #12 ha cambiado de estado: Abierto → En proceso',
+    '2025-11-20 19:15:00',
+    15,
+    12,
+    TRUE,
+    'alta',
+    'Admin'
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            notificaciones
+        WHERE
+            tipo = 'ticket_estado'
+            AND id_usuario = 15
+            AND id_evento = 12
+            AND descripcion LIKE '%Abierto → En proceso%'
         LIMIT
             1
     );

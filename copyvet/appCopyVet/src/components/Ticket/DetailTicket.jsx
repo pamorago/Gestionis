@@ -59,7 +59,11 @@ export default function DetailTicket() {
   const [history, setHistory] = useState([]);
   const [imagenes, setImagenes] = useState([]);
   const [openValoracionDialog, setOpenValoracionDialog] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     if (!id) return;
@@ -70,7 +74,15 @@ export default function DetailTicket() {
       TicketService.getImagenes(id).catch(() => ({ data: [] })),
     ])
       .then(([ticketResponse, historyResponse, imagenesResponse]) => {
-        setTicket(ticketResponse.data || ticketResponse.data?.[0] || null);
+        const ticketData =
+          ticketResponse.data || ticketResponse.data?.[0] || null;
+
+        // Convertir valoracion de string a number para el componente Rating
+        if (ticketData && ticketData.valoracion) {
+          ticketData.valoracion = Number(ticketData.valoracion);
+        }
+
+        setTicket(ticketData);
         setHistory(
           Array.isArray(historyResponse.data) ? historyResponse.data : []
         );
@@ -139,7 +151,8 @@ export default function DetailTicket() {
       console.error("Error al valorar ticket:", error);
       setSnackbar({
         open: true,
-        message: error.response?.data?.message || "Error al enviar la valoración",
+        message:
+          error.response?.data?.message || "Error al enviar la valoración",
         severity: "error",
       });
     }
@@ -339,20 +352,31 @@ export default function DetailTicket() {
           {/* Valoración */}
           {isCerrado && (
             <Paper sx={{ p: 3, mb: 3 }}>
-              <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              >
                 <StarRateIcon color="warning" />
                 Valoración del Servicio
               </Typography>
-              
+
               {ticket.valoracion ? (
                 <Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
                     <Rating value={ticket.valoracion} readOnly size="large" />
                     <Typography variant="body1" fontWeight="bold">
                       ({ticket.valoracion}/5)
                     </Typography>
                   </Box>
-                  
+
                   {ticket.comentario_valoracion && (
                     <Box sx={{ mb: 2 }}>
                       <Typography variant="caption" color="text.secondary">
@@ -363,14 +387,18 @@ export default function DetailTicket() {
                       </Typography>
                     </Box>
                   )}
-                  
+
                   <Typography variant="caption" color="text.secondary">
                     Valorado el: {formatDate(ticket.fecha_valoracion)}
                   </Typography>
                 </Box>
               ) : (
                 <Box>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
                     Este ticket aún no ha sido valorado.
                   </Typography>
                   {ticket.id_creado_por_usuario == userId ? (

@@ -13,7 +13,8 @@ class Response
     public function toJSON($response = [],$message="")
     {
         //Verificar respuesta
-        if (isset($response) && !empty($response)) {
+        // Permitir arrays vacíos (importante para resultados sin datos)
+        if (isset($response) && ($response !== null && $response !== '')) {
             $json = $response;
         } else {
             $this->status =400;

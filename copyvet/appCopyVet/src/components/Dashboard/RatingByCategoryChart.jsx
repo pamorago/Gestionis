@@ -128,8 +128,11 @@ RatingByCategoryChart.propTypes = {
         PropTypes.string,
         PropTypes.number,
       ]),
-      total_valoraciones: PropTypes.number,
-      total_tickets: PropTypes.number,
+      total_valoraciones: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
+      total_tickets: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     })
   ),
 };

@@ -35,14 +35,17 @@ class NotificacionModel
                     ORDER BY fecha_evento DESC";
             $result = $this->enlace->ExecuteSQL($vSql);
 
+            // Asegurar que siempre devuelva un array
+            if (!$result || !is_array($result)) {
+                return [];
+            }
+
             // Convertir tipos de datos para el frontend
-            if ($result && is_array($result)) {
-                foreach ($result as $notif) {
-                    $notif->estado_leida = (bool)$notif->estado_leida;
-                    $notif->id_notificacion = (int)$notif->id_notificacion;
-                    $notif->id_usuario = (int)$notif->id_usuario;
-                    $notif->id_evento = $notif->id_evento ? (int)$notif->id_evento : null;
-                }
+            foreach ($result as $notif) {
+                $notif->estado_leida = (bool)$notif->estado_leida;
+                $notif->id_notificacion = (int)$notif->id_notificacion;
+                $notif->id_usuario = (int)$notif->id_usuario;
+                $notif->id_evento = $notif->id_evento ? (int)$notif->id_evento : null;
             }
 
             return $result;
@@ -71,14 +74,17 @@ class NotificacionModel
                     ORDER BY fecha_evento DESC";
             $result = $this->enlace->ExecuteSQL($vSql);
 
+            // Asegurar que siempre devuelva un array
+            if (!$result || !is_array($result)) {
+                return [];
+            }
+
             // Convertir tipos de datos para el frontend
-            if ($result && is_array($result)) {
-                foreach ($result as $notif) {
-                    $notif->estado_leida = (bool)$notif->estado_leida;
-                    $notif->id_notificacion = (int)$notif->id_notificacion;
-                    $notif->id_usuario = (int)$notif->id_usuario;
-                    $notif->id_evento = $notif->id_evento ? (int)$notif->id_evento : null;
-                }
+            foreach ($result as $notif) {
+                $notif->estado_leida = (bool)$notif->estado_leida;
+                $notif->id_notificacion = (int)$notif->id_notificacion;
+                $notif->id_usuario = (int)$notif->id_usuario;
+                $notif->id_evento = $notif->id_evento ? (int)$notif->id_evento : null;
             }
 
             return $result;
